@@ -3,6 +3,13 @@
 import { useEffect, useRef } from "react";
 
 class Particle {
+  radius: number;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  color: string;
+
   constructor(public effect: Effect) {
     this.radius = Math.random() * 5 + 2;
     this.x = this.radius + Math.random() * (this.effect.width - this.radius * 2);
@@ -28,16 +35,16 @@ class Particle {
 }
 
 class Effect {
+  width: number;
+  height: number;
+  particles: Particle[];
+
   constructor(public canvas: HTMLCanvasElement, public particleCount: number, public maxDistance: number) {
     this.width = canvas.width;
     this.height = canvas.height;
     this.particles = [];
     this.createParticles();
   }
-
-  particles: Particle[];
-  width: number;
-  height: number;
 
   createParticles() {
     for (let i = 0; i < this.particleCount; i++) {
