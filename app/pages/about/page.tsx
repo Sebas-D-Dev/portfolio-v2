@@ -6,15 +6,15 @@ import "../../styles/about.css";
 
 // List of tech stacks with corresponding icons
 const techStacks = [
-  { name: "Python", icon: "/python.svg" },
-  { name: "JavaScript", icon: "/javascript.svg" },
-  { name: "MongoDB", icon: "/mongodb.svg" },
-  { name: "React", icon: "/react.svg" },
-  { name: "Next.js", icon: "/nextjs.svg" },
-  { name: "TailwindCSS", icon: "/tailwindcss.svg" },
-  { name: "Firebase", icon: "/firebase.svg" },
-  { name: "Node.js", icon: "/nodejs.svg" },
-  { name: "Flask", icon: "/flask.svg" },
+  { name: "Python", icon: "./python.svg" },
+  { name: "JavaScript", icon: "./javascript.svg" },
+  { name: "MongoDB", icon: "./mongodb.svg" },
+  { name: "React", icon: "./react.svg" },
+  { name: "Next.js", icon: "./nextjs.svg" },
+  { name: "TailwindCSS", icon: "./tailwindcss.svg" },
+  { name: "Firebase", icon: "./firebase.svg" },
+  { name: "Node.js", icon: "./nodejs.svg" },
+  { name: "Flask", icon: "./flask.svg" },
 ];
 
 export default function About() {
