@@ -6,15 +6,15 @@ import "../../styles/about.css";
 
 // List of tech stacks with corresponding icons
 const techStacks = [
-  { name: "Python", icon: "/assets/python.svg" },
-  { name: "JavaScript", icon: "/assets/javascript.svg" },
-  { name: "MongoDB", icon: "/assets/mongodb.svg" },
-  { name: "React", icon: "/assets/react.svg" },
-  { name: "Next.js", icon: "/assets/nextjs.svg" },
-  { name: "TailwindCSS", icon: "/assets/tailwindcss.svg" },
-  { name: "Firebase", icon: "/assets/firebase.svg" },
-  { name: "Node.js", icon: "/assets/nodejs.svg" },
-  { name: "Flask", icon: "/assets/flask.svg" },
+  { name: "Python", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/python.svg" : "/assets/python.svg" },
+  { name: "JavaScript", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/javascript.svg" : "/assets/javascript.svg" },
+  { name: "MongoDB", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/mongodb.svg" : "/assets/mongodb.svg" },
+  { name: "React", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/react.svg" : "/assets/react.svg" },
+  { name: "Next.js", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/nextjs.svg" : "/assets/nextjs.svg" },
+  { name: "TailwindCSS", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/tailwindcss.svg" : "/assets/tailwindcss.svg" },
+  { name: "Firebase", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/firebase.svg" : "/assets/firebase.svg" },
+  { name: "Node.js", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/nodejs.svg" : "/assets/nodejs.svg" },
+  { name: "Flask", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/flask.svg" : "/assets/flask.svg" },
 ];
 
 export default function About() {
