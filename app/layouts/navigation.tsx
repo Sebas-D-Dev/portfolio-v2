@@ -11,7 +11,17 @@ const Navigation = () => {
       <div className="flex justify-between items-center max-w-7xl mx-auto">
         {/* Logo */}
         <div className="flex items-center space-x-2 cursor-pointer" onClick={() => router.push("/")}>
-          <Image src="/portfolio-v2/favicon.ico" alt="Logo" width={30} height={30} unoptimized />
+          <Image
+            src={
+              process.env.NODE_ENV === "production"
+                ? "/portfolio-v2/favicon.ico" // GitHub Pages path
+                : "/favicon.ico" // Local development path
+            }
+            alt="Logo"
+            width={30}
+            height={30}
+            unoptimized
+          />
           <span className="font-bold text-xl">Sebastian Torres</span>
         </div>
 
