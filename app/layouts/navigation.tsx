@@ -11,7 +11,7 @@ const Navigation = () => {
       <div className="flex justify-between items-center max-w-7xl mx-auto">
         {/* Logo */}
         <div className="flex items-center space-x-2 cursor-pointer" onClick={() => router.push("/")}>
-          <Image src="/favicon.ico" alt="Logo" width={30} height={30} />
+          <Image src="./favicon.ico" alt="Logo" width={30} height={30} />
           <span className="font-bold text-xl">Sebastian Torres</span>
         </div>
 
@@ -20,7 +20,7 @@ const Navigation = () => {
           <button onClick={() => router.push("/pages/about")} className="hover:text-gray-600">About</button>
           <button onClick={() => router.push("/pages/work")} className="hover:text-gray-600">Work</button>
           <button onClick={() => router.push("/pages/contact")} className="hover:text-gray-600">Contact</button>
-          <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600">Resume</a>
+          <a href="./resume.pdf" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600">Resume</a>
         </div>
       </div>
     </nav>
