@@ -20,7 +20,17 @@ const Navigation = () => {
           <button onClick={() => router.push("/pages/about")} className="hover:text-gray-600">About</button>
           <button onClick={() => router.push("/pages/work")} className="hover:text-gray-600">Work</button>
           <button onClick={() => router.push("/pages/contact")} className="hover:text-gray-600">Contact</button>
-          <button onClick={() => router.push("./resume.pdf")} className="hover:text-gray-600">Resume</button>
+          <a 
+            href={
+              process.env.NODE_ENV === "production"
+                ? "https://sebas-d-dev.github.io/portfolio-v2/assets/resume.pdf"
+                : "/assets/resume.pdf"
+              }
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="hover:text-gray-600">
+            Resume
+          </a>
         </div>
       </div>
     </nav>

@@ -100,7 +100,16 @@ function Main() {
         </button>
 
         {/* Resume Button */}
-          <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg transition">
+          <a 
+            href={
+              process.env.NODE_ENV === "production"
+                ? "https://sebas-d-dev.github.io/portfolio-v2/assets/resume.pdf"
+                : "/assets/resume.pdf"
+              }
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg transition">
+              
             Resume
           </a>
       </div>
