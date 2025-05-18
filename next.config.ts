@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   // config altered to static export for GitHub Pages deployment
   output: "export",
   // Output directory for static files
-  distDir: "dist",
+  distDir: "out",
   // Enable React's strict mode for better error detection
   reactStrictMode: true,
 };
