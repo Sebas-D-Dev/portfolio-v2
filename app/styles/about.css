@@ -1,0 +1,109 @@
+/* General container styling */
+.about-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 4rem;
+}
+
+/* Title styling */
+.title-container {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.title-container h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: white;
+}
+
+/* Description styling */
+.description-container {
+  max-width: 48rem;
+  text-align: center;
+  color: #d1d5db;
+  margin-bottom: 3rem;
+}
+
+.description-container p {
+  font-size: 1.2rem;
+}
+
+/* Scrollbar Container */
+.scroll-container {
+  max-width: 60rem;
+  overflow: hidden; /* Changed from overflow-x: auto to hide scrollbar */
+  white-space: nowrap;
+  padding: 1rem;
+  border-radius: 0.75rem;
+}
+
+/* WebKit Scrollbar - keeping for compatibility but not needed for auto-scroll */
+.scroll-container::-webkit-scrollbar {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 9999px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+  background-color: #9333ea;
+  border: 0.2rem solid #1e1e1e;
+  border-radius: 9999px;
+}
+
+.scroll-container::-webkit-scrollbar-track {
+  background-color: #1e1e1e;
+  border-radius: 9999px;
+}
+
+/* Tech items */
+.scroll-wrapper {
+  display: flex;
+  gap: 1rem;
+}
+
+/* Animation for infinite scroll */
+.animate-scroll {
+  animation: scroll 30s linear infinite;
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%); /* Move by half the width for seamless loop */
+  }
+}
+
+.tech-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: black;
+  padding: 1rem;
+  border-radius: 10px;
+  min-width: 120px;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Gradient background for tech items */
+.gradient-bg {
+  background: linear-gradient(135deg, #4f46e5 0%, #9333ea 100%);
+  box-shadow: 0 0 15px rgba(147, 51, 234, 0.3);
+}
+
+.tech-item:hover {
+  box-shadow: 0 0.5rem 1rem rgba(255, 255, 255, 0.1);
+  transform: scale(1.05);
+}
+
+.tech-item p {
+  margin-top: 0.5rem;
+  color: white;
+  font-size: 1rem;
+}
