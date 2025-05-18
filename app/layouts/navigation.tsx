@@ -20,7 +20,7 @@ const Navigation = () => {
           <button onClick={() => router.push("/pages/about")} className="hover:text-gray-600">About</button>
           <button onClick={() => router.push("/pages/work")} className="hover:text-gray-600">Work</button>
           <button onClick={() => router.push("/pages/contact")} className="hover:text-gray-600">Contact</button>
-          <a href="./resume.pdf" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600">Resume</a>
+          <a href="../resume.pdf" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600">Resume</a>
         </div>
       </div>
     </nav>
