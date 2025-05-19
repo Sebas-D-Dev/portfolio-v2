@@ -1,6 +1,7 @@
 "use client"; // Enables interactivity in Next.js
 
 import Navigation from "../../layouts/navigation";
+import Footer from "../../layouts/footer";
 import "../../styles/contact.css";
 
 export default function Contact() {
@@ -17,6 +18,9 @@ export default function Contact() {
           <p>This is the Contact section with my contact information.</p>
         </div>
       </section>
+
+      {/* Footer */}
+      <Footer /> {/* Using the reusable component */}
     </main>
   );
 }

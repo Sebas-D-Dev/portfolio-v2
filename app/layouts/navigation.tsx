@@ -1,44 +1,37 @@
 "use client"; // Enables interactivity in Next.js
-
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import "../styles/navigation.css";
 
 const Navigation = () => {
-  const router = useRouter(); // Initialize the router instance
+  const router = useRouter();
 
   return (
-    <nav className="fixed top-0 left-0 w-full bg-black shadow-md z-50 px-6 py-4">
-      <div className="flex justify-between items-center max-w-7xl mx-auto">
+    <nav>
+      <div className="nav-container">
         {/* Logo */}
-        <div className="flex items-center space-x-2 cursor-pointer" onClick={() => router.push("/")}>
+        <div className="logo" onClick={() => router.push("/")}>
           <Image
-            src={
-              process.env.NODE_ENV === "production"
-                ? "/portfolio-v2/favicon.ico" // GitHub Pages path
-                : "/favicon.ico" // Local development path
-            }
+            src={process.env.NODE_ENV === "production" ? "/portfolio-v2/favicon.ico" : "/favicon.ico"}
             alt="Logo"
             width={30}
             height={30}
             unoptimized
           />
-          <span className="font-bold text-xl">Sebastian Torres</span>
+          <span>Sebastian Torres</span>
         </div>
 
         {/* Navigation Buttons */}
-        <div className="flex items-center space-x-6">
-          <button onClick={() => router.push("/pages/about")} className="hover:text-gray-600">About</button>
-          <button onClick={() => router.push("/pages/work")} className="hover:text-gray-600">Work</button>
-          <button onClick={() => router.push("/pages/contact")} className="hover:text-gray-600">Contact</button>
+        <div className="nav-buttons">
+          <button onClick={() => router.push("/pages/about")}>About</button>
+          <button onClick={() => router.push("/pages/work")}>Work</button>
+          <button onClick={() => router.push("/pages/contact")}>Contact</button>
           <a 
-            href={
-              process.env.NODE_ENV === "production"
-                ? "https://sebas-d-dev.github.io/portfolio-v2/assets/resume.pdf"
-                : "/assets/resume.pdf"
-              }
+            href={process.env.NODE_ENV === "production" 
+              ? "https://sebas-d-dev.github.io/portfolio-v2/assets/resume.pdf" 
+              : "/assets/resume.pdf"}
             target="_blank" 
-            rel="noopener noreferrer" 
-            className="hover:text-gray-600">
+            rel="noopener noreferrer">
             Resume
           </a>
         </div>

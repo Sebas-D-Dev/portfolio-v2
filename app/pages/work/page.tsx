@@ -1,6 +1,7 @@
 "use client"; // Enables interactivity in Next.js
 
 import Navigation from "../../layouts/navigation";
+import Footer from "../../layouts/footer";
 import "../../styles/work.css";
 
 export default function Work() {
@@ -17,6 +18,9 @@ export default function Work() {
           <p>This is the Work section with my career timeline.</p>
         </div>
       </section>
+
+      {/* Footer */}
+      <Footer /> {/* Using the reusable component */}
     </main>
   );
 }

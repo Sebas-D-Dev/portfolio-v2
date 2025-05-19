@@ -1,6 +1,7 @@
 "use client"; // Enables interactivity in Next.js
 
 import Navigation from "../../layouts/navigation";
+import Footer from "../../layouts/footer";
 import Image from "next/image";
 import "../../styles/about.css";
 
@@ -28,7 +29,7 @@ export default function About() {
   return (
     <main className="relative">
       {/* Navigation Bar */}
-      <Navigation />
+      <Navigation /> {/* Using the reusable component */}
 
       {/* Main About Section */}
       <section className="about-container">
@@ -82,6 +83,9 @@ export default function About() {
           </div>
         </div>
       </section>
+
+      {/* Footer Section */}
+      <Footer /> {/* Using the reusable component */}
     </main>
   );
 }

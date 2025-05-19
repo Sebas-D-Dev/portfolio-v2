@@ -1,0 +1,40 @@
+.footer {
+  background: linear-gradient(85deg, #176e17, #1636d5, #000000);
+  border-top: 2px solid #0cba9d;
+  padding: 20px;
+  text-align: center;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+}
+
+.footer.visible {
+  opacity: 1;
+}
+
+.socials {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.socials a {
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  transition: color 0.3s ease-in-out;
+}
+
+.socials a:hover {
+  color: cyan;
+}
+
+.copyright {
+  margin-top: 10px;
+  font-size: 14px;
+  color: white;
+}
