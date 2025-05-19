@@ -21,6 +21,7 @@ const Footer = () => {
     <footer className={`footer ${isVisible ? "visible" : ""}`}>
       <div className="topSection">
         <div className="socials">
+          {/* Social Media Links: Don't forget to add icon images */}
           <a href="https://github.com/Sebas-D-Dev" target="_blank" rel="noopener noreferrer">GitHub</a>
           <a href="https://www.linkedin.com/in/sebastian-torres-cs/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
           <a href="https://discord.com/users/465700207867330611/" target="_blank" rel="noopener noreferrer">Discord</a>
