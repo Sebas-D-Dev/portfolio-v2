@@ -1,0 +1,93 @@
+/* Dark Mode Background */
+.contact-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 4rem;
+  background: linear-gradient(to bottom right, #1e1e2f, #3b3b5b);
+}
+
+/* Layout: Contact Info and Form */
+.contact-content {
+  display: flex;
+  max-width: 800px;
+  width: 100%;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+/* Contact Info (Left Side) */
+.contact-info {
+  flex: 1;
+  background: #29294d;
+  padding: 1.5rem;
+  border-radius: 12px;
+  color: #ccc;
+}
+
+.info-title {
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #a78bfa;
+  margin-bottom: 1rem;
+}
+
+/* Contact Box (Right Side) */
+.contact-box {
+  flex: 2;
+  padding: 2rem;
+  border-radius: 12px;
+  border: 2px solid #555;
+  background-color: #202033;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+/* Title */
+.contact-title {
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #a78bfa;
+  margin-bottom: 1rem;
+}
+
+/* Form Styling */
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.input-field {
+  width: 100%;
+  padding: 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #666;
+  background-color: #33334d;
+  color: #ddd;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s ease-in-out;
+}
+
+.input-field:focus {
+  border-color: #a78bfa;
+}
+
+/* Button */
+.send-button {
+  width: 100%;
+  padding: 0.8rem;
+  background-color: #7c3aed;
+  color: white;
+  border-radius: 8px;
+  font-size: 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.send-button:hover {
+  background-color: #5b21b6;
+}

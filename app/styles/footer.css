@@ -1,6 +1,6 @@
 .footer {
-  background: linear-gradient(85deg, #176e17, #1636d5, #000000);
-  border-top: 2px solid #0cba9d;
+  background: linear-gradient(220deg, #b730e4, #3916d5, #000000);
+  border-top: 2px solid #728ebf;
   padding: 20px;
   text-align: center;
   position: fixed;
@@ -22,17 +22,50 @@
   gap: 20px;
 }
 
+/* Social Media Links */
 .socials a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   color: white;
   text-decoration: none;
   font-size: 18px;
+  position: relative;
   transition: color 0.3s ease-in-out;
 }
 
 .socials a:hover {
-  color: cyan;
+  color: #e72e81;
 }
 
+/* Drawn Underline Animation */
+.socials a::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #e72e81;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease-in-out;
+}
+
+.socials a:hover::after {
+  transform: scaleX(1);
+}
+
+/* Social Icons */
+.social-icon {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+  transition: transform 0.3s ease-in-out;
+  filter: saturate(150%);
+}
+
+/* Copyright Text */
 .copyright {
   margin-top: 10px;
   font-size: 14px;
