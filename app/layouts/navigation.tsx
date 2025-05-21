@@ -1,6 +1,7 @@
 "use client"; // Enables interactivity in Next.js
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import "../globals.css";
 import "../styles/navigation.css";
 
 const Navigation = () => {
@@ -24,7 +25,7 @@ const Navigation = () => {
         {/* Navigation Buttons */}
         <div className="nav-buttons">
           <button onClick={() => router.push("/pages/about")}>About</button>
-          <button onClick={() => router.push("/pages/work")}>Work</button>
+          <button onClick={() => router.push("/pages/work")}>Experience</button>
           <button onClick={() => router.push("/pages/contact")}>Contact</button>
           <a 
             href={process.env.NODE_ENV === "production" 

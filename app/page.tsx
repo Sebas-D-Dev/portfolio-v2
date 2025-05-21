@@ -12,6 +12,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import ParticlesBackground from "@/components/ParticlesBackground";
+import "./globals.css";
+import "../app/styles/home.css"
 
 export default function Page() {
   return (
@@ -40,23 +42,23 @@ function RootLayout({ children }: { children: React.ReactNode }) {
     <html lang="en">
       <body className="antialiased relative">
         {/* Background Effect & Blur Overlay */}
-        <div className="absolute inset-0 w-full h-full -z-10">
+        <div className="background-container">
           <ParticlesBackground />
-          <BlurOverlay /> {/* Moved here */}
+          <BlurOverlay />
         </div>
 
         {/* Main Content Container */}
-        <div className="flex flex-col items-center justify-center h-screen text-white">
+        <div className="portfolio-container">
           {/* Title Section */}
-          <div className="text-center">
-            <h1 className="text-5xl font-bold">Sebastian&apos;s Portfolio</h1>
-            <p className="mt-4 text-2xl font-light opacity-80 transition-opacity duration-1000">
-              Working with <span className="font-semibold">{activeSkill}</span>
+          <div className="title-section">
+            <h1 className="title-heading">Sebastian&apos;s Portfolio</h1>
+            <p className="skill-text">
+              Working with <span className="skill-highlight">{activeSkill}</span>
             </p>
           </div>
 
           {/* Description Below Title */}
-          <div className="mt-6 text-lg text-gray-300 text-center">
+          <div className="description-text">
             <p>Explore my work, projects, and passions in software development.</p>
           </div>
 
@@ -74,10 +76,10 @@ function Main() {
   return (
     <main className="flex flex-col items-center justify-center">
       {/* Button Container */}
-      <div className="bg-gradient-to-r from-black to-purple-800 rounded-2xl shadow-lg p-8 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6">
+      <div className="button-container">
         {/* About Button */}
         <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition"
+          className="blue-button"
           onClick={() => router.push("/pages/about")}
         >
           About Me
@@ -85,15 +87,15 @@ function Main() {
 
         {/* Work Button */}
         <button
-          className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg transition"
+          className="purple-button"
           onClick={() => router.push("/pages/work")}
         >
-          My Work
+          My Experience
         </button>
 
         {/* Contact Button */}
         <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition"
+          className="blue-button"
           onClick={() => router.push("/pages/contact")}
         >
           Contact Me
@@ -108,7 +110,7 @@ function Main() {
               }
             target="_blank" 
             rel="noopener noreferrer" 
-            className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg transition">
+            className="purple-button">
               
             Resume
           </a>
@@ -121,7 +123,7 @@ function Main() {
 function BlurOverlay() {
   return (
     <div
-      className="absolute top-0 left-0 w-full h-full -z-5 bg-gray-300/5 backdrop-blur-sm opacity-60"
+      className="blur-overlay"
       aria-hidden="true"
     />
   );

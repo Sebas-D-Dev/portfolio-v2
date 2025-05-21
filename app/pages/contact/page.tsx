@@ -2,7 +2,8 @@
 
 import Navigation from "../../layouts/navigation";
 import Footer from "../../layouts/footer";
-import "../../styles/contact.css"; // Importing styles
+import "../../globals.css";
+import "../../styles/contact.css";
 
 export default function Contact() {
   return (
@@ -15,9 +16,9 @@ export default function Contact() {
           {/* Contact Details (Left Side) */}
           <div className="contact-info">
             <h3 className="info-title">Get in Touch</h3>
-            <p>📍 Boynton Beach, FL</p>
-            <p>📧 your-email@example.com</p>
-            <p>📞 +1 (123) 456-7890</p>
+            <h3>📍 Boynton Beach, FL</h3>
+            <h3>📧 sebas.t.nait@gmail.com</h3>
+            <h3>📞 +1 (954) 304-7962</h3>
           </div>
 
           {/* Contact Form (Right Side) */}

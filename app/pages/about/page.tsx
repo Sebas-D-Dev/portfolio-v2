@@ -3,6 +3,7 @@
 import Navigation from "../../layouts/navigation";
 import Footer from "../../layouts/footer";
 import Image from "next/image";
+import "../../globals.css";
 import "../../styles/about.css";
 
 // List of tech stacks with corresponding icons
