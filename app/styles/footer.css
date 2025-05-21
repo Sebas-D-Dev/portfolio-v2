@@ -1,3 +1,4 @@
+/* Importing TailwindCSS for utility classes and base styles */
 @import "tailwindcss";
 
 .footer {
@@ -27,15 +28,16 @@
   position: relative;
   transition: color 0.3s ease-in-out;
 }
-  .socials a:hover {
-    background: linear-gradient(90deg, #e72e81, #f5a623);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
 
-  /* Drawn Underline Animation */
-  .socials a::after {
+.socials a:hover {
+  background: linear-gradient(90deg, #e72e81, #f5a623);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Drawn Underline Animation */
+.socials a::after {
   content: "";
   position: absolute;
   bottom: -4px;
@@ -43,60 +45,10 @@
   width: 100%;
   height: 2px;
   background: linear-gradient(90deg, #e72e81, #f5a623);
-  transform: scaleX(0);  background: linear-gradient(220deg, #b730e4, #3916d5);
-  border-top: 2px solid #728ebf;
-  padding: 20px;
-  text-align: center;
-  position: fixed;
-  width: 100%;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  opacity: 0;
-  transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease-in-out;
 }
-
-.footer.visible {
-  opacity: 1;
-}
-
-.socials {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-}
-
-/* Social Media Links */
-.socials a {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: white;
-  text-decoration: none;
-  font-size: 18px;
-  position: relative;
-  transition: color 0.3s ease-in-out;
-}
-  .socials a:hover {
-    background: linear-gradient(90deg, #e72e81, #f5a623);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  /* Drawn Underline Animation */
-  .socials a::after {
-    content: "";
-    position: absolute;
-    bottom: -4px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg, #e72e81, #f5a623);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.3s ease-in-out;
-  }
 
 .socials a:hover::after {
   transform: scaleX(1);
@@ -107,7 +59,6 @@
   width: 24px;
   height: 24px;
   fill: currentColor;
-  transition: transform 0.3s ease-in-out;
   filter: saturate(150%);
 }
 
