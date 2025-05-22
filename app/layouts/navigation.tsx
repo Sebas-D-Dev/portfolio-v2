@@ -1,7 +1,6 @@
 "use client"; // Enables interactivity in Next.js
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import "../globals.css";
 import "../styles/navigation.css";
 
 const Navigation = () => {

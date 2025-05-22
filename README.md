@@ -1,166 +1,151 @@
-# Portfolio v2
+<div align="center">
 
-## Project Overview
+![Banner](https://capsule-render.vercel.app/api?type=waving&color=gradient&height=200&section=header&text=Portfolio%20Website&fontSize=80&animation=fadeIn&fontAlignY=35)
 
-This is a modern, responsive portfolio website built with Next.js. It showcases professional work, skills, and experience in an interactive and visually appealing manner. The site features a particle background animation for enhanced visual engagement.
+<p align="center">
+  <a href="#features">Features</a> •
+  <a href="#demo">Demo</a> •
+  <a href="#screenshots">Screenshots</a> •
+  <a href="#installation">Installation</a> •
+  <a href="#tech-stack">Tech Stack</a>
+</p>
 
-### Purpose
-To provide a professional online presence that effectively displays projects, skills, and contact information for potential employers or clients.
+[![GitHub license](https://img.shields.io/github/license/Sebas-D-Dev/portfolio-v2?style=flat-square)](LICENSE)
+[![Website](https://img.shields.io/website?style=flat-square&url=https%3A%2F%2Fsebas-d-dev.github.io%2Fportfolio-v2)](https://sebas-d-dev.github.io/portfolio-v2)
+[![Made with React](https://img.shields.io/badge/Made%20with-React-61DAFB?style=flat-square&logo=react)](https://reactjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org)
 
-### Target Audience
-- Potential employers
-- Clients seeking professional services
-- Fellow developers and collaborators
-- Recruiters and hiring managers
+<p align="center">A modern, responsive portfolio website showcasing professional experience, projects, and skills. Built with React, Next.js, and TypeScript, featuring smooth animations and dynamic content. ✨</p>
 
-### Motivation
-This portfolio (version 2) represents an evolution from a previous design, incorporating modern web technologies and improved user experience to better showcase professional capabilities.
+</div>
 
-## Installation and Setup
+## ✨ Features
 
-### Prerequisites
-- Node.js (v14 or newer)
-- npm or yarn package manager
+<div align="center">
 
-### Dependencies
-- Next.js
-- React
-- TypeScript
-- Particle animation library (for the background effects)
+```mermaid
+mindmap
+  root((Portfolio Website))
+    User Interface
+      Responsive Design
+      Smooth Animations
+      Dynamic Content
+    Sections
+      About Me
+      Experience
+      Projects
+      Contact
+    Technical Features
+      Next.js Integration
+      TypeScript Support
+      SEO Optimization
+    Integrations
+      Social Media
+      Email Contact
+      Project Showcase
+```
 
-### Installation Steps
+</div>
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/portfolio-v2.git
-   ```
+## 🚀 Demo
 
-2. Navigate to the project directory:
-   ```bash
-   cd portfolio-v2
-   ```
+Experience the live portfolio at [https://sebas-d-dev.github.io/portfolio-v2](https://sebas-d-dev.github.io/portfolio-v2)
 
-3. Install dependencies:
-   ```bash
-   npm install
-   ```
+## 📸 Screenshots
 
-4. Set up environment variables (if needed):
-   Create a `.env.local` file in the root directory with any required environment variables.
+<div align="center">
+  <!-- Replace with your actual screenshot if available -->
+  <img src="assets/portfolio-preview.jpg" alt="Portfolio Home Page" width="600px"/>
+</div>
 
-## Usage Instructions
+## 🛠️ Installation
 
-### Development Mode
-To run the project in development mode with hot-reloading:
+1️⃣ Clone the repository:
+
+```bash
+git clone https://github.com/Sebas-D-Dev/portfolio-v2.git
+```
+
+2️⃣ Navigate to project directory:
+
+```bash
+cd portfolio-v2
+```
+
+3️⃣ Install dependencies:
+
+```bash
+npm install
+```
+
+4️⃣ Run development server:
 
 ```bash
 npm run dev
 ```
 
-This will start the development server, typically at `http://localhost:3000`.
+5️⃣ Open in browser:
 
-### Production Build
-To create an optimized production build:
+- Visit [http://localhost:3000](http://localhost:3000)
 
-```bash
-npm run build
-```
+## 💻 Tech Stack
 
-### Starting Production Server
-To start the production server after building:
+<table align="center">
+  <tr>
+    <td align="center" width="96">
+      <img src="https://skillicons.dev/icons?i=react" width="48" height="48" alt="React" />
+      <br>React
+    </td>
+    <td align="center" width="96">
+      <img src="https://skillicons.dev/icons?i=nextjs" width="48" height="48" alt="Next.js" />
+      <br>Next.js
+    </td>
+    <td align="center" width="96">
+      <img src="https://skillicons.dev/icons?i=ts" width="48" height="48" alt="TypeScript" />
+      <br>TypeScript
+    </td>
+    <td align="center" width="96">
+      <img src="https://skillicons.dev/icons?i=tailwind" width="48" height="48" alt="TailwindCSS" />
+      <br>TailwindCSS
+    </td>
+    <td align="center" width="96">
+      <img src="https://skillicons.dev/icons?i=styledcomponents" width="48" height="48" alt="styled-components" />
+      <br>styled-components
+    </td>
+  </tr>
+</table>
 
-```bash
-npm start
-```
+## ⚡ Core Features
 
-## Project Architecture and Structure
+- 📱 **Responsive Design**
 
-The project follows Next.js's conventional structure with TypeScript integration:
+  - Mobile-first approach
+  - Seamless experience across all devices
+  - Adaptive layouts and components
 
-```
-portfolio-v2/
-├── components/           # Reusable React components
-│   ├── ParticlesBackground.tsx  # Interactive particle animation background
-│   └── ...
-├── pages/                # Next.js pages and routing
-├── public/               # Static assets (images, fonts, etc.)
-├── styles/               # CSS/SCSS stylesheets
-├── next.config.ts        # Next.js configuration
-├── tsconfig.json         # TypeScript configuration
-└── package.json          # Project dependencies and scripts
-```
+- 🎯 **Dynamic Content**
 
-### Key Components
+  - Real-time project showcase
+  - Interactive experience section
+  - Animated skill representations
 
-- **ParticlesBackground**: Provides an interactive animated background using particle effects
-- **Next.js Configuration**: Custom configuration for optimizing the application, with environment-specific settings (development vs. production)
+- 🎨 **Modern UI/UX**
 
-## Features
+  - Custom particle background animation
+  - Intuitive navigation
+  - Clean and professional design
 
-- Responsive design that works across devices
-- Interactive particle background for visual engagement
-- Optimized image loading and rendering
-- TypeScript for improved code quality and developer experience
-- Environment-specific configurations for development and production
+- 🔍 **SEO Optimized**
+  - Meta tags optimization
+  - Semantic HTML structure
+  - Performance optimized
 
-## Testing and Quality Assurance
+## 📄 License
 
-### Running Tests
-To run the test suite:
+<div align="center">
 
-```bash
-npm test
-```
+MIT License © [Sebastian Torres](LICENSE)
 
-### Linting
-To check code quality and formatting:
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=100&section=footer" width="100%"/>
 
-```bash
-npm run lint
-```
-
-## Deployment
-
-The portfolio is configured for easy deployment to various platforms:
-
-### Vercel (Recommended)
-As a Next.js project, it's optimized for deployment on Vercel:
-
-1. Connect your GitHub repository to Vercel
-2. Vercel will automatically detect Next.js and configure the build settings
-3. Your site will be deployed and updated on each push to the main branch
-
-### Other Hosting Options
-The project can also be deployed to Netlify, GitHub Pages, or any other static hosting service after building.
-
-## Contribution Guidelines
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/your-feature-name`
-3. Commit your changes: `git commit -m 'Add some feature'`
-4. Push to the branch: `git push origin feature/your-feature-name`
-5. Open a pull request
-
-Please ensure your code follows the project's style guidelines and passes all tests.
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Acknowledgements
-
-- Next.js team for the excellent framework
-- Particle animation library creators
-- All open-source contributors whose libraries made this project possible
-
-## Future Improvements
-
-- Add blog functionality
-- Implement dark/light theme toggle
-- Enhance accessibility features
-- Add internationalization support
-- Integrate with a CMS for easier content management
-
----
-
-**Note**: This portfolio is continuously evolving. Check back for updates and new features!
+</div>
