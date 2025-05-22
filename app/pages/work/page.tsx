@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Navigation from "../../layouts/navigation";
 import Footer from "../../layouts/footer";
-import "../../globals.css";
 import "../../styles/work.css";
 
 const experiences = [

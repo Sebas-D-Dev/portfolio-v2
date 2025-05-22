@@ -3,7 +3,6 @@
 import Navigation from "../../layouts/navigation";
 import Footer from "../../layouts/footer";
 import Image from "next/image";
-import "../../globals.css";
 import "../../styles/about.css";
 
 // List of tech stacks with corresponding icons
@@ -70,7 +69,7 @@ export default function About() {
         {/* Description Container */}
         <div className="description-container">
           <p>
-            I'm a full-stack developer with a passion for building scalable applications using modern technologies.
+            I&apos;am a full-stack developer with a passion for building scalable applications using modern technologies.
             I love working with frameworks like <strong>React, Next.js</strong>, and <strong>MongoDB</strong>, and I always seek to optimize code efficiency and user experience.
           </p>
         </div>
@@ -125,10 +124,10 @@ export default function About() {
             <div key={index} className="project-card">
               <div className="project-image-container">
                 {project.image ? (
-                  <img src={project.image} alt={project.title} className="project-image" />
+                  <Image src={project.image} alt={project.title} className="project-image" width={500} height={300} />
                 ) : (
                   <div className="hosting-logo">
-                    <img src={process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/github-logo.svg" : "/assets/github-logo.svg"} alt="GitHub" />
+                    <Image src={process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/github-logo.svg" : "/assets/github-logo.svg"} alt="GitHub" width={50} height={50} />
                   </div>
                 )}
               </div>
@@ -166,8 +165,7 @@ export default function About() {
                 </div>
               </div>
             </div>
-          ))}
-        </div>
+          ))}        </div>
       </section>
 
       {/* Footer Section */}

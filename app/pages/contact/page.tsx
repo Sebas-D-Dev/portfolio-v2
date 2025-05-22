@@ -4,7 +4,6 @@ import { useState, FormEvent, useRef } from "react";
 import emailjs from '@emailjs/browser';
 import Navigation from "../../layouts/navigation";
 import Footer from "../../layouts/footer";
-import "../../globals.css";
 import "../../styles/contact.css";
 
 // EmailJS configuration constants

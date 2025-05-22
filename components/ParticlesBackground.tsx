@@ -1,6 +1,7 @@
-"use client"; // Required for Next.js client-side rendering
+"use client";
 
 import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 
 class Particle {
   radius: number;
@@ -101,7 +102,11 @@ interface ParticlesBackgroundProps {
 
 const ParticlesBackground = ({ particleCount = 200, maxDistance = 100 }: ParticlesBackgroundProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animationRef = useRef<number | null>(null);
+  const effectRef = useRef<Effect | null>(null);
+  const pathname = usePathname();
 
+  // This effect handles initialization and cleanup
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -109,27 +114,44 @@ const ParticlesBackground = ({ particleCount = 200, maxDistance = 100 }: Particl
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    // Setup canvas
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+      
+      // Recreate effect when canvas is resized
+      if (effectRef.current) {
+        effectRef.current = new Effect(canvas, particleCount, maxDistance);
+      }
     };
 
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
 
-    const effect = new Effect(canvas, particleCount, maxDistance);
+    // Create effect
+    effectRef.current = new Effect(canvas, particleCount, maxDistance);
 
+    // Animation function
     const animate = () => {
-      effect.handleParticles(ctx);
-      requestAnimationFrame(animate);
+      if (effectRef.current && ctx) {
+        effectRef.current.handleParticles(ctx);
+        animationRef.current = requestAnimationFrame(animate);
+      }
     };
 
+    // Start animation
     animate();
 
+    // Cleanup function
     return () => {
       window.removeEventListener("resize", resizeCanvas);
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+        animationRef.current = null;
+      }
+      effectRef.current = null;
     };
-  }, [particleCount, maxDistance]);
+  }, [particleCount, maxDistance, pathname]); // Add pathname to dependencies to reinitialize on route change
 
   return <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full -z-10" />;
 };
