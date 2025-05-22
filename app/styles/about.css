@@ -274,3 +274,10 @@
   display: flex;
   align-content: center;
 }
+
+.projects-scroll-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem; /* Adjust spacing as needed */
+}

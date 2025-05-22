@@ -2,6 +2,7 @@
 
 import Navigation from "../../layouts/navigation";
 import Footer from "../../layouts/footer";
+import ScrollButton from "@/components/ScrollButton";
 import Image from "next/image";
 import "../../styles/about.css";
 
@@ -33,7 +34,7 @@ const projects = [
     description: "A modern, responsive portfolio website built with Next.js featuring interactive elements and smooth animations.",
     githubUrl: "https://github.com/Sebas-D-Dev/portfolio-v2",
     techStack: ["Next.js", "React", "TypeScript", "TailwindCSS"],
-    services: ["Vercel", "Responsive Design", "Animation"]
+    services: ["Github Pages", "Responsive Design", "Animation"]
   },
   {
     title: "E-Commerce Platform",
@@ -55,7 +56,7 @@ const projects = [
 
 export default function About() {
   return (
-    <main className="relative">
+    <main className="relative" id="top">
       {/* Navigation Bar */}
       <Navigation />
 
@@ -69,8 +70,8 @@ export default function About() {
         {/* Description Container */}
         <div className="description-container">
           <p>
-            I&apos;am a full-stack developer with a passion for building scalable applications using modern technologies.
-            I love working with frameworks like <strong>React, Next.js</strong>, and <strong>MongoDB</strong>, and I always seek to optimize code efficiency and user experience.
+            I am a full-stack developer with a passion for building scalable applications using modern technologies.
+            I love working with frameworks like <strong>React, Next.js</strong>, and <strong>Flask</strong>, and I always seek to optimize code efficiency and user experience.
           </p>
         </div>
 
@@ -110,12 +111,19 @@ export default function About() {
             ))}
           </div>
         </div>
+
+        <ScrollButton 
+          targetId="projects-section" 
+          direction="down" 
+          buttonText="View Projects" 
+          className="about-scroll-button"
+        />
       </section>
 
       {/* Projects Section */}
       <section className="projects-section">
         {/* Projects Title */}
-        <div className="projects-title-container">
+        <div className="projects-title-container" id="projects-section">
           <h2>My Projects</h2>
         </div>
         
@@ -165,7 +173,17 @@ export default function About() {
                 </div>
               </div>
             </div>
-          ))}        </div>
+          ))}        
+        </div>
+
+        <div className="projects-scroll-button-container">
+        <ScrollButton
+          targetId="top" 
+          direction="up" 
+          buttonText="Back to Top" 
+          className="projects-scroll-button"
+        />
+        </div>
       </section>
 
       {/* Footer Section */}

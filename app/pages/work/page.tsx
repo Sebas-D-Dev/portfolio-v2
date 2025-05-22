@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Navigation from "../../layouts/navigation";
 import Footer from "../../layouts/footer";
+import ScrollButton from "@/components/ScrollButton";
 import "../../styles/work.css";
 
 const experiences = [
@@ -106,7 +107,7 @@ export default function Work() {
   timelineItems.sort((a, b) => a.index - b.index);
 
   return (
-    <main className="relative">
+    <main className="relative" id="top">
       <Navigation />
 
       {/* Single Timeline Section */}
@@ -145,8 +146,18 @@ export default function Work() {
                 />
               );
             }
-          })}        </div>
+          })}        
+        </div>
       </section>
+
+      <div className="scroll-button-container">
+        <ScrollButton
+          targetId="top"
+          direction="up"
+          buttonText="Back to Top"
+          className="scroll-button"
+        />
+      </div>
 
       <Footer />
     </main>
