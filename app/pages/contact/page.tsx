@@ -54,9 +54,10 @@ export default function Contact() {
       }
     } catch (error) {
       // Type-safe error logging
+      type EmailJSError = { text?: string };
       const errorText =
         typeof error === "object" && error !== null && "text" in error
-          ? (error as any).text
+          ? (error as EmailJSError).text
           : "";
       console.error('Error sending email:', error, JSON.stringify(error), errorText);
       setSubmitStatus({ 
