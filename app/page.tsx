@@ -1,13 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import ParticlesBackground from "@/components/ParticlesBackground";
 import "./globals.css";
 import "./styles/home.css";
 
 export default function HomePage() {
-  const skillSet = ["Artificial Intelligence", "Machine Learning", "Database Management", "Web Development", "UI/UX Design"];
+  const skillSet = useMemo(
+    () => [
+      "Artificial Intelligence",
+      "Machine Learning",
+      "Database Management",
+      "Web Development",
+      "UI/UX Design"
+    ],
+    []
+  );
   const [activeSkill, setActiveSkill] = useState(skillSet[0]);
   const router = useRouter();
 
