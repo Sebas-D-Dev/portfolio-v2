@@ -53,8 +53,12 @@ export default function Contact() {
         });
       }
     } catch (error) {
-      // Improved error logging
-      console.error('Error sending email:', error, JSON.stringify(error), error?.text);
+      // Type-safe error logging
+      const errorText =
+        typeof error === "object" && error !== null && "text" in error
+          ? (error as any).text
+          : "";
+      console.error('Error sending email:', error, JSON.stringify(error), errorText);
       setSubmitStatus({ 
         success: false, 
         message: "An error occurred. Please try again later." 
