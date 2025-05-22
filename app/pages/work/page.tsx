@@ -8,17 +8,17 @@ import "../../styles/work.css";
 
 const experiences = [
   { 
-    title: "Customer Service & Produce Clerk",
-    company: "Publix Super Market",
-    date: "October 2023 - April 2025",
-    description: "Provided exceptional customer service and assisted in produce department operations. Developed strong communication and teamwork skills."
+    title: "Student Affairs IT Intern",
+    company: "Florida Atlantic University",
+    date: "June 2024 - Present",
+    description: "Assisting in the deployment and maintenance of IT systems. Collaborating with the IT team to support student services and improve technology infrastructure."
   },
 
   { 
-    title: "Student Affair IT Intern",
-    company: "Florida Atlantic University",
-    date: "June 2024 - Present",
-    description: "Assisting in the development and maintenance of internal applications. Collaborating with cross-functional teams to enhance user experience."
+    title: "Global Career Accelerator: Data Analytics",
+    institution: "CareerBase",
+    date: "August 2025 - December 2025",
+    description: "Gained proficiency in data analysis, data visualization, and data-driven decision-making. Completed a capstone project using Python and data visualization tools."
   },
 ];
 
@@ -27,13 +27,13 @@ const education = [
     title: "Computer Science - B.A.",
     institution: "Florida Atlantic University",
     date: "August 2023 - May 2026",
-    description: "Developing responsive web applications using React and Next.js. Implementing UI/UX designs and optimizing performance."
+    description: "Studying software development, algorithms, and data structures. Learning about web development, mobile app development, and database management."
   },
 
-  { title: "Global Career Accelerator: Data Analytics",
-    institution: "CareerBase",
-    date: "2025",
-    description: "Gained proficiency in data analysis, data visualization, and data-driven decision-making. Completed a capstone project using Python and data visualization tools."
+  { title: "Artificial Intelligence - Minor",
+    institution: "Florida Atlantic University",
+    date: "August 2024 - May 2025",
+    description: "Studying machine learning algorithms, natural language processing, and computer vision. Participating in AI research projects and hackathons."
   },
 ];
 
