@@ -8,7 +8,7 @@ import "../../styles/contact.css";
 
 // EmailJS configuration constants
 const EMAILJS_SERVICE_ID = 'service_tsegt3z';
-const EMAILJS_TEMPLATE_ID = 'template_yq64z3i';
+const EMAILJS_TEMPLATE_ID = 'template_3020lhf';
 const EMAILJS_PUBLIC_KEY = '6jl4hXL-cfRAhy6fv';
 const RECIPIENT_EMAIL = 'sebas.t.nait@gmail.com';
 
@@ -19,9 +19,15 @@ export default function Contact() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    
+
     if (!form.current) return;
-    
+
+    // Set the time field before sending
+    const timeInput = form.current.querySelector('input[name="time"]') as HTMLInputElement;
+    if (timeInput) {
+      timeInput.value = new Date().toLocaleString();
+    }
+
     setIsSubmitting(true);
     setSubmitStatus(null);
 
@@ -47,7 +53,8 @@ export default function Contact() {
         });
       }
     } catch (error) {
-      console.error('Error sending email:', error);
+      // Improved error logging
+      console.error('Error sending email:', error, JSON.stringify(error), error?.text);
       setSubmitStatus({ 
         success: false, 
         message: "An error occurred. Please try again later." 
@@ -104,6 +111,13 @@ export default function Contact() {
                 type="hidden" 
                 name="to_email" 
                 value={RECIPIENT_EMAIL}
+              />
+              
+              {/* Hidden field for timestamp */}
+              <input 
+                type="hidden" 
+                name="time" 
+                value={new Date().toLocaleString()} 
               />
 
               <button 
