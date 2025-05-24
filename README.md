@@ -54,7 +54,10 @@ Experience the live portfolio at [https://sebas-d-dev.github.io/portfolio-v2](ht
 ## 📸 Screenshots
 
 <p align="center">
-  <img src="home-page.png" alt="Portfolio Home Page" width="600px"/>
+  <img src="images/home-page.png" alt="Portfolio Home Page" width="600px" loading="lazy"/>
+  <img src="images/about-page.png" alt="About Page" width="600px" loading="lazy"/>
+  <img src="images/experience-page.png" alt="Experience Page" width="600px" loading="lazy"/>
+  <img src="images/contact-page.png" alt="Projects Page" width="600px" loading="lazy"/>
 </p>
 
 ## 🛠️ Installation

@@ -30,7 +30,7 @@ const techStacks = [
 const projects = [
   {
     title: "Portfolio Website",
-    image: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/portfolio-preview.jpg" : "/assets/portfolio-preview.jpg",
+    image: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/home-page.jpg" : "/assets/home-page.jpg",
     description: "A modern, responsive portfolio website built with Next.js featuring interactive elements and smooth animations.",
     githubUrl: "https://github.com/Sebas-D-Dev/portfolio-v2",
     techStack: ["Next.js", "React", "TypeScript", "TailwindCSS"],
