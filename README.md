@@ -1,6 +1,6 @@
 <div align="center">
 
-![Banner](https://capsule-render.vercel.app/api?type=waving&color=0D6EFD,6F42C1&height=200&section=header&text=Portfolio%20Website&fontSize=80&animation=fadeIn&fontAlignY=35)
+![Banner](https://capsule-render.vercel.app/api?type=waving&color=gradient&height=200&section=header&text=Portfolio%20Website&fontSize=80&animation=fadeIn&fontAlignY=35)
 
 <p align="center">
   <a href="#features">Features</a> •
@@ -148,6 +148,6 @@ npm run dev
 
 MIT License © [Sebastian Torres](LICENSE)
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0D6EFD,6F42C1&height=100&section=footer" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=100&section=footer" width="100%"/>
 
 </div>
