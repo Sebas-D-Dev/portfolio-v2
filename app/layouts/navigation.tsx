@@ -22,40 +22,26 @@ const NAV_ITEMS = [
 const Navigation = () => {
   const router = useRouter();
   const [isMobile, setIsMobile] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   // Responsive check
   useEffect(() => {
-    setMounted(true);
     const checkMobile = () => setIsMobile(window.innerWidth < 700);
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // Close dropdown on route change
-  useEffect(() => {
-    const handleRouteChange = () => setDropdownOpen(false);
-    router.events?.on?.("routeChangeStart", handleRouteChange);
-    return () => {
-      router.events?.off?.("routeChangeStart", handleRouteChange);
-    };
-  }, [router]);
-
   // Dropdown handler
   const handleDropdownSelect = (item: string) => {
     const nav = NAV_ITEMS.find((navItem) => navItem.label === item);
     if (!nav) return;
-    setDropdownOpen(false);
     if (nav.external) {
       window.open(nav.path, "_blank", "noopener,noreferrer");
     } else {
       router.push(nav.path);
     }
   };
-
-  if (!mounted) return null; // Prevent hydration mismatch
 
   return (
     <nav>
