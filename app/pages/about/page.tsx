@@ -70,7 +70,7 @@ export default function About() {
         {/* Description Container */}
         <div className="description-container">
           <p>
-            I am a full-stack developer with a passion for building scalable applications using modern technologies.
+            I am an aspiring full-stack developer with a passion for building scalable applications using modern technologies.
             I love working with frameworks like <strong>React, Next.js</strong>, and <strong>Flask</strong>, and I always seek to optimize code efficiency and user experience.
           </p>
         </div>

@@ -43,7 +43,7 @@ export default function HomePage() {
       <div className="portfolio-container">
         {/* Title Section */}
         <div className="title-section">
-          <h1 className="title-heading">Sebastian&apos;s Portfolio</h1>
+          <h1 className="title-heading">Sebastian Torres</h1>
           <p className="skill-text">
             Working with <span className="skill-highlight">{activeSkill}</span>
           </p>
