@@ -281,3 +281,36 @@
   align-items: center;
   margin-top: 2rem;
 }
+
+/* Responsive: Single column for projects on small screens with scroll snap */
+@media (max-width: 700px) {
+  .projects-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 80vh;
+    scroll-snap-type: y mandatory;
+    /* Optional: for smooth scrolling */
+    scroll-behavior: smooth;
+    padding-bottom: 2rem;
+  }
+  .project-card {
+    scroll-snap-align: start;
+    min-height: 80vh;
+    /* Optional: add some margin for visual separation */
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 1200px) {
+  .nav-container,
+  .about-container,
+  .projects-section,
+  .contact-container,
+  .timeline-container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}

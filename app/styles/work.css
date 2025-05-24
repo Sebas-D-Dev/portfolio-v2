@@ -427,3 +427,14 @@ html {
   margin-top: 1rem;
   margin-bottom: 1rem;
 }
+
+@media (max-width: 1200px) {
+  .nav-container,
+  .about-container,
+  .projects-section,
+  .contact-container,
+  .timeline-container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}

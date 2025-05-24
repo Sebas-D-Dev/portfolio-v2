@@ -122,11 +122,9 @@ export default function About() {
 
       {/* Projects Section */}
       <section className="projects-section">
-        {/* Projects Title */}
         <div className="projects-title-container" id="projects-section">
           <h2>My Projects</h2>
         </div>
-        
         <div className="projects-grid">
           {projects.map((project, index) => (
             <div key={index} className="project-card">
@@ -177,12 +175,12 @@ export default function About() {
         </div>
 
         <div className="projects-scroll-button-container">
-        <ScrollButton
-          targetId="top" 
-          direction="up" 
-          buttonText="Back to Top" 
-          className="projects-scroll-button"
-        />
+          <ScrollButton
+            targetId="top" 
+            direction="up" 
+            buttonText="Back to Top" 
+            className="projects-scroll-button"
+          />
         </div>
       </section>
 

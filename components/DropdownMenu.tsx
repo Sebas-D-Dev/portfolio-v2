@@ -5,18 +5,30 @@ type DropdownMenuProps = {
   label?: string;
   items: string[];
   onSelect?: (item: string) => void;
+  open: boolean;
+  setOpen: (open: boolean) => void;
 };
 
 const DropdownMenu: React.FC<DropdownMenuProps> = ({
-  label = 'Menu',
   items,
   onSelect,
+  open,
+  setOpen,
 }) => {
+  const handleSelect = (item: string) => {
+    onSelect?.(item);
+    setOpen(false); // Close dropdown after selection
+  };
+
   return (
     <StyledWrapper>
       <label className="main">
-        {label}
-        <input className="inp" type="checkbox" />
+        <input
+          className="inp"
+          type="checkbox"
+          checked={open}
+          onChange={() => setOpen(!open)}
+        />
         <div className="bar">
           <span className="top bar-list" />
           <span className="middle bar-list" />
@@ -27,7 +39,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
             <div
               className="menu-list"
               key={item}
-              onClick={() => onSelect?.(item)}
+              onClick={() => handleSelect(item)}
               tabIndex={0}
               role="button"
               style={{ cursor: onSelect ? 'pointer' : 'default' }}
@@ -49,61 +61,75 @@ const StyledWrapper = styled.div`
     font-weight: 800;
     color: white;
     background-color: darkviolet;
-    padding: 3px 15px;
+    padding: 3px 8px;
     border-radius: 10px;
-
     display: flex;
     align-items: center;
     height: 2.5rem;
-    width: 12rem;
+    width: 3rem;
     position: relative;
     cursor: pointer;
-    justify-content: space-between;
-  }
-
-  .arrow {
-    height: 34%;
-    aspect-ratio: 1;
-    margin-block: auto;
-    position: relative;
-    display: flex;
     justify-content: center;
-    transition: all 0.3s;
   }
 
-  .arrow::after,
-  .arrow::before {
-    content: "";
-    position: absolute;
+  /* Remove arrow styles if not needed, or leave as is */
+
+  .bar {
+    display: flex;
+    height: 50%;
+    width: 20px;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .bar-list {
+    display: block;
+    width: 100%;
+    height: 3px;
+    border-radius: 50px;
     background-color: white;
-    height: 100%;
-    width: 2.5px;
-    border-radius: 500px;
-    transform-origin: bottom;
+    transition: background-color 0.4s;
+    position: relative;
+    /* Remove transform and opacity transitions */
   }
 
-  .arrow::after {
-    transform: rotate(35deg) translateX(-0.5px);
+  /* Remove hamburger-to-X animation by commenting out or deleting these: */
+  /*
+  .inp:not(:checked) ~ .bar > .top {
+    transform-origin: top right;
+    transform: translateY(var(--transform)) rotate(-45deg);
   }
-  .arrow::before {
-    transform: rotate(-35deg) translateX(0.5px);
+  .inp:not(:checked) ~ .bar > .middle {
+    transform: translateX(-50%);
+    opacity: 0;
   }
-
-  .main > .inp:checked + .arrow {
-    transform: rotateX(180deg);
+  .inp:not(:checked) ~ .bar > .bottom {
+    transform-origin: bottom right;
+    transform: translateY(calc(var(--transform) * -1)) rotate(45deg);
   }
+  */
 
   .menu-container {
     background-color: white;
     color: darkviolet;
     border-radius: 10px;
     position: absolute;
-    width: 100%;
-    left: 0;
+    left: 50%;
     top: 130%;
-    overflow: hidden;
-    clip-path: inset(0% 0% 0% 0% round 10px);
-    transition: all 0.4s;
+    transform: translateX(-50%);
+    overflow: visible;
+    clip-path: inset(0% 100% 0% 100% round 10px); /* hidden by default */
+    transition: all 0.4s, box-shadow 0.3s;
+    box-sizing: border-box;
+    width: max-content;
+    min-width: 100%;
+    z-index: 1000;
+    box-shadow: none;
+  }
+
+  .inp:checked ~ .menu-container {
+    clip-path: inset(0% 0% 0% 0% round 10px); /* fully visible when checked */
+    box-shadow: 0 0 16px 4px rgba(148, 0, 211, 0.4); /* Purple glow */
   }
 
   .menu-list {
@@ -132,13 +158,14 @@ const StyledWrapper = styled.div`
     background-color: rgb(223, 223, 223);
   }
 
-  .inp:checked ~ .menu-container {
-    clip-path: inset(10% 50% 90% 50% round 10px);
+  .inp:checked ~ .menu-container .menu-list {
+    transform: translateY(0);
+    opacity: 1;
   }
 
   .inp:not(:checked) ~ .menu-container .menu-list {
-    transform: translateY(0);
-    opacity: 1;
+    transform: translateY(30px);
+    opacity: 0;
   }
 
   .inp:not(:checked) ~ .menu-container .menu-list:nth-child(1) {
@@ -169,40 +196,6 @@ const StyledWrapper = styled.div`
     -webkit-appearance: none;
     display: none;
     visibility: hidden;
-  }
-
-  .bar {
-    display: flex;
-    height: 50%;
-    width: 20px;
-    flex-direction: column;
-    gap: 3px;
-  }
-
-  .bar-list {
-    --transform: -25%;
-    display: block;
-    width: 100%;
-    height: 3px;
-    border-radius: 50px;
-    background-color: white;
-    transition: all 0.4s;
-    position: relative;
-  }
-
-  .inp:not(:checked) ~ .bar > .top {
-    transform-origin: top right;
-    transform: translateY(var(--transform)) rotate(-45deg);
-  }
-
-  .inp:not(:checked) ~ .bar > .middle {
-    transform: translateX(-50%);
-    opacity: 0;
-  }
-
-  .inp:not(:checked) ~ .bar > .bottom {
-    transform-origin: bottom right;
-    transform: translateY(calc(var(--transform) * -1)) rotate(45deg);
   }
 `;
 

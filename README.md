@@ -54,7 +54,7 @@ Experience the live portfolio at [https://sebas-d-dev.github.io/portfolio-v2](ht
 ## 📸 Screenshots
 
 <p align="center">
-  <img src="public/assets/home-page.jpg" alt="Portfolio Home Page" width="600px"/>
+  <img src="home-page.png" alt="Portfolio Home Page" width="600px"/>
 </p>
 
 ## 🛠️ Installation
