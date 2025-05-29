@@ -36,7 +36,7 @@
 
 /* Scrollbar Container */
 .scroll-container {
-  max-width: 60rem;
+  max-width: 80rem;
   overflow: hidden;
   white-space: nowrap;
   padding: 1rem;
@@ -103,7 +103,7 @@
   background-color: black;
   padding: 1rem;
   border-radius: 10px;
-  min-width: 120px;
+  min-width: 135px; /* was 120px */
   cursor: pointer;
   transition: transform 0.2s ease-in-out;
 }
@@ -122,7 +122,7 @@
 .tech-item p {
   margin-top: 0.5rem;
   color: white;
-  font-size: 1rem;
+  font-size: 0.9rem; /* was 1rem */
 }
 
 /* Projects Section Styling */
@@ -299,8 +299,29 @@
   .project-card {
     scroll-snap-align: start;
     min-height: 80vh;
-    /* Optional: add some margin for visual separation */
     margin-bottom: 1rem;
+  }
+  .scroll-container {
+    max-width: 100vw;
+    padding: 0.5rem;
+    margin: 0 auto;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+  .scroll-wrapper {
+    gap: 0.5rem;
+  }
+  .tech-item {
+    min-width: 80px;
+    padding: 0.5rem;
+  }
+  .about-container {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+  .description-container {
+    margin-bottom: 2rem;
+    padding: 0 0.5rem;
   }
 }
 

@@ -8,22 +8,22 @@ import "../../styles/about.css";
 
 // List of tech stacks with corresponding icons
 const techLanguages = [
-  { name: "Python", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/python.svg" : "/assets/python.svg" },
-  { name: "JavaScript", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/javascript.svg" : "/assets/javascript.svg" },
-  { name: "TypeScript", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/typescript.svg" : "/assets/typescript.svg" },
-  { name: "HTML", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/html.svg" : "/assets/html.svg" },
-  { name: "CSS", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/css.svg" : "/assets/css.svg" },
-  { name: "SQL", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/sql.svg" : "/assets/sql.svg" },
-  { name: "Java", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/java.svg" : "/assets/java.svg" },
+  { name: "Python", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/python.svg" : "/assets/python.svg", url: "https://www.python.org/" },
+  { name: "JavaScript", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/javascript.svg" : "/assets/javascript.svg", url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript" },
+  { name: "TypeScript", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/typescript.svg" : "/assets/typescript.svg", url: "https://www.typescriptlang.org/" },
+  { name: "HTML", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/html.svg" : "/assets/html.svg", url: "https://developer.mozilla.org/en-US/docs/Web/HTML" },
+  { name: "CSS", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/css.svg" : "/assets/css.svg", url: "https://developer.mozilla.org/en-US/docs/Web/CSS" },
+  { name: "SQL", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/sql.svg" : "/assets/sql.svg", url: "https://en.wikipedia.org/wiki/SQL" },
+  { name: "Java", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/java.svg" : "/assets/java.svg", url: "https://www.java.com/" },
 ];
 const techStacks = [
-  { name: "MongoDB", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/mongodb.svg" : "/assets/mongodb.svg" },
-  { name: "React", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/react.svg" : "/assets/react.svg" },
-  { name: "Next.js", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/nextjs.svg" : "/assets/nextjs.svg" },
-  { name: "TailwindCSS", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/tailwindcss.svg" : "/assets/tailwindcss.svg" },
-  { name: "Firebase", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/firebase.svg" : "/assets/firebase.svg" },
-  { name: "Node.js", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/nodejs.svg" : "/assets/nodejs.svg" },
-  { name: "Flask", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/flask.svg" : "/assets/flask.svg" },
+  { name: "MongoDB", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/mongodb.svg" : "/assets/mongodb.svg", url: "https://www.mongodb.com/" },
+  { name: "React", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/react.svg" : "/assets/react.svg", url: "https://react.dev/" },
+  { name: "Next.js", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/nextjs.svg" : "/assets/nextjs.svg", url: "https://nextjs.org/" },
+  { name: "TailwindCSS", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/tailwindcss.svg" : "/assets/tailwindcss.svg", url: "https://tailwindcss.com/" },
+  { name: "Firebase", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/firebase.svg" : "/assets/firebase.svg", url: "https://firebase.google.com/" },
+  { name: "Node.js", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/nodejs.svg" : "/assets/nodejs.svg", url: "https://nodejs.org/" },
+  { name: "Flask", icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/flask.svg" : "/assets/flask.svg", url: "https://flask.palletsprojects.com/" },
 ];
 
 // List of projects
@@ -79,17 +79,35 @@ export default function About() {
         <div className="scroll-container">
           <div className="scroll-wrapper animate-scroll-left">
             {techLanguages.map((tech) => (
-              <div key={tech.name} className="tech-item gradient-bg">
-                <Image src={tech.icon} alt={tech.name} width={50} height={50} />
-                <p>{tech.name}</p>
-              </div>
+              <a
+                key={tech.name}
+                href={tech.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="tech-link"
+                tabIndex={0}
+              >
+                <div className="tech-item gradient-bg">
+                  <Image src={tech.icon} alt={tech.name} width={50} height={50} />
+                  <p>{tech.name}</p>
+                </div>
+              </a>
             ))}
             {/* Duplicate items for seamless loop */}
             {techLanguages.map((tech) => (
-              <div key={`${tech.name}-duplicate`} className="tech-item gradient-bg">
-                <Image src={tech.icon} alt={tech.name} width={50} height={50} />
-                <p>{tech.name}</p>
-              </div>
+              <a
+                key={`${tech.name}-duplicate`}
+                href={tech.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="tech-link"
+                tabIndex={0}
+              >
+                <div className="tech-item gradient-bg">
+                  <Image src={tech.icon} alt={tech.name} width={50} height={50} />
+                  <p>{tech.name}</p>
+                </div>
+              </a>
             ))}
           </div>
         </div>
@@ -97,17 +115,35 @@ export default function About() {
         <div className="scroll-container">
           <div className="scroll-wrapper animate-scroll-right">
             {techStacks.map((tech) => (
-              <div key={tech.name} className="tech-item gradient-bg">
-                <Image src={tech.icon} alt={tech.name} width={50} height={50} />
-                <p>{tech.name}</p>
-              </div>
+              <a
+                key={tech.name}
+                href={tech.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="tech-link"
+                tabIndex={0}
+              >
+                <div className="tech-item gradient-bg">
+                  <Image src={tech.icon} alt={tech.name} width={50} height={50} />
+                  <p>{tech.name}</p>
+                </div>
+              </a>
             ))}
             {/* Duplicate items for seamless loop */}
             {techStacks.map((tech) => (
-              <div key={`${tech.name}-duplicate`} className="tech-item gradient-bg">
-                <Image src={tech.icon} alt={tech.name} width={50} height={50} />
-                <p>{tech.name}</p>
-              </div>
+              <a
+                key={`${tech.name}-duplicate`}
+                href={tech.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="tech-link"
+                tabIndex={0}
+              >
+                <div className="tech-item gradient-bg">
+                  <Image src={tech.icon} alt={tech.name} width={50} height={50} />
+                  <p>{tech.name}</p>
+                </div>
+              </a>
             ))}
           </div>
         </div>
@@ -147,44 +183,23 @@ export default function About() {
                     </svg>
                   </a>
                 </div>
-                
-                <p className="project-description">
-                  {project.description}
-                </p>
-                
+                <p className="project-description">{project.description}</p>
                 <div className="project-tech-stack">
-                  <h4 className="section-title">Tech Stack</h4>
-                  <div className="tech-list">
-                    {project.techStack.map((tech, i) => (
-                      <span key={i} className="tech-item">{tech}</span>
-                    ))}
-                  </div>
+                  {project.techStack.map((tech, techIndex) => (
+                    <span key={techIndex} className="tech-tag">{tech}</span>
+                  ))}
                 </div>
-                
                 <div className="project-services">
-                  <h4 className="section-title">Services</h4>
-                  <div className="services-list">
-                    {project.services.map((service, i) => (
-                      <span key={i} className="service-item">{service}</span>
-                    ))}
-                  </div>
+                  {project.services.map((service, serviceIndex) => (
+                    <span key={serviceIndex} className="service-tag">{service}</span>
+                  ))}
                 </div>
               </div>
             </div>
-          ))}        
-        </div>
-
-        <div className="projects-scroll-button-container">
-          <ScrollButton
-            targetId="top" 
-            direction="up" 
-            buttonText="Back to Top" 
-            className="projects-scroll-button"
-          />
+          ))}
         </div>
       </section>
 
-      {/* Footer Section */}
       <Footer />
     </main>
   );
