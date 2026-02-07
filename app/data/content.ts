@@ -55,15 +55,15 @@ export const personalInfo = {
   ],
   social: {
     github: "https://github.com/Sebas-D-Dev",
-    linkedin: "https://www.linkedin.com/in/sebastian-torres-dev/",
-    discord: "https://discord.com/users/your-discord-id", // Update with actual
-    instagram: "https://www.instagram.com/your-instagram/", // Update with actual
+    linkedin: "https://www.linkedin.com/in/sebastian-torres-cs/",
+    discord: "https://discord.com/users/1373891287392194620/",
+    instagram: "https://www.instagram.com/xsea_bassx/",
   },
 };
 
 // Tech Stack Data
-const getAssetPath = (filename: string) => 
-  process.env.NODE_ENV === 'production' ? `/portfolio-v2/assets/${filename}` : `/assets/${filename}`;
+// Next.js automatically adds basePath from next.config.ts
+const getAssetPath = (filename: string) => `/assets/${filename}`;
 
 export const techLanguages: TechStack[] = [
   { name: "Python", icon: getAssetPath("python.svg"), url: "https://www.python.org/", category: 'language' },
@@ -103,6 +103,7 @@ export const projects: Project[] = [
     image: getAssetPath("stack-inventory.png"),
     description: "AI integrated inventory management system with user roles, permissions, and posting capabilities. Admin capabilities include inventory tracking, order management, and analytics.",
     githubUrl: "https://github.com/Sebas-D-Dev/stack-inventory",
+    liveUrl: "https://stack-inventory.vercel.app/",
     techStack: ["React", "TypeScript", "Next.js", "Prisma", "PostgreSQL", "TailwindCSS", "Gemini AI"],
     services: ["CRUD Operations", "JWT Authentication", "User Authentication", "AI Integration"],
   },
@@ -141,42 +142,50 @@ export const projects: Project[] = [
   },
 ];
 
-// Experience & Education Data
+// Experience & Education Data (in reverse chronological order - newest first)
 export const experiences: Experience[] = [
   {
     type: 'work',
-    title: "Student Affairs IT Intern",
-    company: "Florida Atlantic University",
-    date: "June 2024 - Present",
-    description: "Assisting in the deployment and maintenance of IT systems and devices. Collaborating with the IT team to support student services and improve technology infrastructure.",
-    technologies: ["Windows", "Network Administration", "Help Desk", "IT Support", "System Deployment"],
+    title: "Full Stack Python Developer",
+    company: "Mr. Sure Thing",
+    date: "January 2026 - Present",
+    description: "Developing and maintaining a full-stack Python application for a local business. Implementing features, optimizing performance, and ensuring a seamless user experience. Collaborating with stakeholders to understand requirements and deliver solutions that meet business needs.",
+    technologies: ["Python", "Node.js", "Next.js", "Git", "Supabase", "MongoDB", "AI Integration", "Web Development", "Database Management"],
   },
   {
     type: 'work',
-    title: "Software Developer Intern",
-    company: "Company Name",
-    date: "Month Year - Month Year",
-    description: "Add your experience description here. Detail your responsibilities, achievements, and the technologies you worked with. Highlight specific projects or contributions that demonstrate your skills.",
-    technologies: ["React", "Node.js", "MongoDB", "Git", "Agile"],
+    title: "Front-End UI/UX Prototyping Intern",
+    company: "Local Fiber",
+    date: "August 2025 - Present",
+    description: "Designing and prototyping user interfaces for a fiber internet service provider. Creating responsive web components and implementing modern design patterns using Vite and React. Collaborating with the development team to ensure seamless integration of UI/UX designs into the production environment.",
+    technologies: ["React", "TypeScript", "Vite", "TailwindCSS", "Figma", "Git", "Agile", "UI/UX Design"],
+  },
+  {
+    type: 'work',
+    title: "Student Affairs IT & Programming Intern",
+    company: "Florida Atlantic University",
+    date: "June 2024 - January 2026",
+    description: "Assisted in the deployment and maintenance of IT systems and devices for student services. Collaborated with the IT team to support technology infrastructure and improve student experience. Gained hands-on experience with web development, database management, and system administration.",
+    technologies: ["PHP", "JavaScript", "Web Development", "MSSQL", "IT Support", "System Administration"],
   },
 ];
 
 export const education: Education[] = [
   {
     type: 'education',
-    title: "Computer Science - B.A.",
+    title: "Bachelor of Arts in Computer Science",
     institution: "Florida Atlantic University",
     date: "August 2023 - May 2026",
-    description: "Studying software development, algorithms, and data structures. Learning about web development, mobile app development, and database management.",
-    technologies: ["Java", "Python", "C", "C++", "Data Structures", "Algorithms", "SQL", "Linux"],
+    description: "Studying software development, algorithms, and data structures. Learning about web development, mobile app development, database management, and machine learning.",
+    technologies: ["Python", "JavaScript", "HTML", "CSS", "MySQL", "MongoDB", "Git", "Swift"],
   },
   {
     type: 'education',
-    title: "Artificial Intelligence - Minor",
+    title: "Minor in Artificial Intelligence & Cybersecurity",
     institution: "Florida Atlantic University",
-    date: "August 2024 - May 2025",
-    description: "Studying machine learning algorithms, natural language processing, and computer vision. Participating in AI research projects and programming multilayer neural networks in Python.",
-    technologies: ["Python", "TensorFlow", "PyTorch", "Machine Learning", "Neural Networks", "NLP", "Computer Vision"],
+    date: "August 2024 - May 2026",
+    description: "Studying machine learning algorithms, natural language processing, and computer vision. Participating in AI research projects and programming multilayer neural networks in Python. Learning about cybersecurity principles, ethical hacking, and network security.",
+    technologies: ["TensorFlow", "PyTorch", "Neural Networks", "NLP", "Computer Vision", "Ethical Hacking", "Network Security"],
   },
   {
     type: 'education',
@@ -188,19 +197,11 @@ export const education: Education[] = [
   },
   {
     type: 'education',
-    title: "Certificate/Course Name",
-    institution: "Institution Name",
-    date: "Month Year - Month Year",
-    description: "Add your education or certification details here. Describe what you learned, key projects completed, and skills acquired. Mention any awards, honors, or notable achievements.",
-    technologies: ["Technology 1", "Technology 2", "Technology 3", "Technology 4"],
-  },
-  {
-    type: 'education',
-    title: "High School Diploma / Previous Degree",
-    institution: "School/College Name",
-    date: "Month Year - Month Year",
-    description: "Add details about your previous educational background. Include relevant coursework, projects, or achievements that are relevant to your career in technology and computer science.",
-    technologies: ["Mathematics", "Science", "Programming Fundamentals", "Problem Solving"],
+    title: "High School Diploma",
+    institution: "Spanish River Community High School",
+    date: "2019 - 2023",
+    description: "Graduated with honors. Participated in computer science club and coding competitions. Completed coursework in programming, web development, and data structures.",
+    technologies: ["Calculus", "Java", "Programming Fundamentals", "Object-Oriented Programming", "Data Structures"],
   },
 ];
 

@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import "../styles/footer.css";
@@ -18,27 +20,27 @@ const Footer = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Social media icons with conditional paths for production/development
+  // Social media icons - Next.js automatically adds basePath from next.config.ts
   const socialLinks = [
     { 
       name: "GitHub", 
       url: "https://github.com/Sebas-D-Dev", 
-      icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/github.svg" : "/assets/github.svg" 
+      icon: "/assets/github.svg"
     },
     { 
       name: "LinkedIn", 
       url: "https://www.linkedin.com/in/sebastian-torres-cs/", 
-      icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/linkedin.svg" : "/assets/linkedin.svg" 
+      icon: "/assets/linkedin.svg"
     },
     { 
       name: "Discord", 
       url: "https://discord.com/users/1373891287392194620/", 
-      icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/discord.svg" : "/assets/discord.svg" 
+      icon: "/assets/discord.svg"
     },
     { 
       name: "Instagram", 
       url: "https://www.instagram.com/xsea_bassx/", 
-      icon: process.env.NODE_ENV === "production" ? "/portfolio-v2/assets/instagram.svg" : "/assets/instagram.svg" 
+      icon: "/assets/instagram.svg"
     },
   ];
 
