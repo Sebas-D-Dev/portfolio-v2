@@ -65,14 +65,12 @@ export default function NewsInterestsSection() {
       setError(null);
 
       try {
-        const fetchedArticles: RSSArticle[] = [];
-        
-        // Fetch from all categories at once
-        for (const category of newsCategories) {
-          for (const feed of category.feeds) {
+        // Collect all feed fetch promises
+        const feedPromises = newsCategories.flatMap(category =>
+          category.feeds.map(async (feed) => {
             try {
               const controller = new AbortController();
-              const timeoutId = setTimeout(() => controller.abort(), 10000);
+              const timeoutId = setTimeout(() => controller.abort(), 3000);
               
               const response = await fetch(
                 `https://api.allorigins.win/raw?url=${encodeURIComponent(feed.url)}`,
@@ -81,61 +79,67 @@ export default function NewsInterestsSection() {
               
               clearTimeout(timeoutId);
               
-              if (response.ok) {
-                const text = await response.text();
-                const parser = new DOMParser();
-                const xmlDoc = parser.parseFromString(text, 'text/xml');
-                const items = xmlDoc.querySelectorAll('item, entry');
+              if (!response.ok) return [];
+              
+              const text = await response.text();
+              const parser = new DOMParser();
+              const xmlDoc = parser.parseFromString(text, 'text/xml');
+              const items = xmlDoc.querySelectorAll('item, entry');
+              
+              if (items.length === 0) return [];
+              
+              return Array.from(items).slice(0, 3).map((item) => {
+                const getTextContent = (tagName: string) => {
+                  const element = item.querySelector(tagName);
+                  return element?.textContent || '';
+                };
                 
-                if (items.length > 0) {
-                  const articles = Array.from(items).slice(0, 3).map((item) => {
-                    const getTextContent = (tagName: string) => {
-                      const element = item.querySelector(tagName);
-                      return element?.textContent || '';
-                    };
-                    
-                    // Extract image from various possible locations
-                    let imageUrl = '';
-                    const mediaContent = item.querySelector('media\\:content, content');
-                    const mediaThumbnail = item.querySelector('media\\:thumbnail, thumbnail');
-                    const enclosure = item.querySelector('enclosure[type^="image"]');
-                    
-                    if (mediaContent) {
-                      imageUrl = mediaContent.getAttribute('url') || '';
-                    } else if (mediaThumbnail) {
-                      imageUrl = mediaThumbnail.getAttribute('url') || '';
-                    } else if (enclosure) {
-                      imageUrl = enclosure.getAttribute('url') || '';
-                    } else {
-                      // Try to extract from description
-                      const description = getTextContent('description');
-                      const imgMatch = description.match(/<img[^>]+src="([^"]+)"/);
-                      if (imgMatch) {
-                        imageUrl = imgMatch[1];
-                      }
-                    }
-                    
-                    const description = getTextContent('description') || getTextContent('summary');
-                    const cleanDescription = description.replace(/<[^>]*>/g, '');
-                    
-                    return {
-                      title: getTextContent('title'),
-                      description: cleanDescription.substring(0, 150) + (cleanDescription.length > 150 ? '...' : ''),
-                      url: getTextContent('link') || item.querySelector('link')?.getAttribute('href') || '',
-                      urlToImage: imageUrl,
-                      publishedAt: getTextContent('pubDate') || getTextContent('published') || new Date().toISOString(),
-                      source: { id: feed.id, name: feed.source },
-                      category: category.id,
-                    };
-                  });
-                  fetchedArticles.push(...articles);
+                // Extract image from various possible locations
+                let imageUrl = '';
+                const mediaContent = item.querySelector('media\\:content, content');
+                const mediaThumbnail = item.querySelector('media\\:thumbnail, thumbnail');
+                const enclosure = item.querySelector('enclosure[type^="image"]');
+                
+                if (mediaContent) {
+                  imageUrl = mediaContent.getAttribute('url') || '';
+                } else if (mediaThumbnail) {
+                  imageUrl = mediaThumbnail.getAttribute('url') || '';
+                } else if (enclosure) {
+                  imageUrl = enclosure.getAttribute('url') || '';
+                } else {
+                  // Try to extract from description
+                  const description = getTextContent('description');
+                  const imgMatch = description.match(/<img[^>]+src="([^"]+)"/);
+                  if (imgMatch) {
+                    imageUrl = imgMatch[1];
+                  }
                 }
-              }
+                
+                const description = getTextContent('description') || getTextContent('summary');
+                const cleanDescription = description.replace(/<[^>]*>/g, '');
+                
+                return {
+                  title: getTextContent('title'),
+                  description: cleanDescription.substring(0, 150) + (cleanDescription.length > 150 ? '...' : ''),
+                  url: getTextContent('link') || item.querySelector('link')?.getAttribute('href') || '',
+                  urlToImage: imageUrl,
+                  publishedAt: getTextContent('pubDate') || getTextContent('published') || new Date().toISOString(),
+                  source: { id: feed.id, name: feed.source },
+                  category: category.id,
+                };
+              });
             } catch (feedError) {
-              console.warn(`Failed to fetch ${feed.source}:`, feedError);
+              // Silently ignore failed feeds
+              return [];
             }
-          }
-        }
+          })
+        );
+
+        // Fetch all feeds in parallel
+        const results = await Promise.allSettled(feedPromises);
+        const fetchedArticles = results
+          .filter(result => result.status === 'fulfilled')
+          .flatMap(result => (result as PromiseFulfilledResult<RSSArticle[]>).value);
 
         setAllArticles(fetchedArticles);
       } catch (err) {

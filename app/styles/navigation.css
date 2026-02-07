@@ -115,7 +115,7 @@
 .side-nav-link:hover {
   background: rgba(37, 99, 235, 0.1);
   border-left-color: var(--primary-400);
-  color: var(--primary-600);
+  color: white;
 }
 
 .side-nav-link.active {
