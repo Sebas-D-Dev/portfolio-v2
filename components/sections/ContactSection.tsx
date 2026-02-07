@@ -18,43 +18,94 @@ export default function ContactSection() {
 
     if (!form.current) return;
 
-    // Set the time field before sending
-    const timeInput = form.current.querySelector(
-      'input[name="time"]'
-    ) as HTMLInputElement;
-    if (timeInput) {
-      timeInput.value = new Date().toLocaleString();
-    }
-
     setIsSubmitting(true);
     setSubmitStatus(null);
 
     try {
-      // Environment variables should be used here
-      const result = await emailjs.sendForm(
-        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || 'service_tsegt3z',
-        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || 'template_3020lhf',
-        form.current,
-        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || '6jl4hXL-cfRAhy6fv'
+      // Validate environment variables are configured
+      const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
+      const userMessageTemplateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_USER_MESSAGE;
+      const autoReplyTemplateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_AUTO_REPLY;
+      const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+
+      if (!serviceId || !userMessageTemplateId || !autoReplyTemplateId || !publicKey) {
+        throw new Error('EmailJS configuration is missing. Please check your environment variables.');
+      }
+
+      // Get form data
+      const formData = new FormData(form.current);
+      const userName = formData.get('from_name') as string;
+      const userEmail = formData.get('from_email') as string;
+      const message = formData.get('message') as string;
+      const timestamp = new Date().toLocaleString('en-US', {
+        dateStyle: 'long',
+        timeStyle: 'short',
+      });
+
+      // Send notification email to portfolio owner
+      const ownerEmailParams = {
+        name: userName,
+        from_name: userName,
+        from_email: userEmail,
+        reply_to: userEmail,
+        to_email: personalInfo.email,
+        message: message,
+        time: timestamp,
+      };
+
+      const ownerResult = await emailjs.send(
+        serviceId,
+        userMessageTemplateId,
+        ownerEmailParams,
+        publicKey
       );
 
-      if (result.text === 'OK') {
-        setSubmitStatus({
-          success: true,
-          message: 'Thank you! Your message has been sent successfully.',
-        });
-        form.current.reset();
-      } else {
-        setSubmitStatus({
-          success: false,
-          message: 'Failed to send message. Please try again.',
-        });
+      if (ownerResult.text !== 'OK') {
+        throw new Error('Failed to send notification email');
       }
+
+      // Send auto-reply email to user
+      const autoReplyParams = {
+        to_name: userName,
+        to_email: userEmail,
+        from_name: personalInfo.name,
+        reply_to: personalInfo.email,
+        time: timestamp,
+      };
+
+      await emailjs.send(
+        serviceId,
+        autoReplyTemplateId,
+        autoReplyParams,
+        publicKey
+      );
+
+      // Success - both emails sent
+      setSubmitStatus({
+        success: true,
+        message: 'Thank you! Your message has been sent successfully.',
+      });
+      form.current.reset();
     } catch (error) {
       console.error('Error sending email:', error);
+      
+      // Provide helpful error messages
+      let errorMessage = 'An error occurred. Please try again later.';
+      
+      if (error instanceof Error && error.message.includes('configuration')) {
+        errorMessage = error.message;
+      } else if (typeof error === 'object' && error !== null && 'text' in error) {
+        const emailError = error as { text?: string; status?: number };
+        if (emailError.text?.includes('recipients address is empty')) {
+          errorMessage = 'Email configuration error. Please ensure EmailJS templates are set up correctly with {{to_email}} in the "To Email" field.';
+        } else if (emailError.text) {
+          errorMessage = `Email service error: ${emailError.text}`;
+        }
+      }
+      
       setSubmitStatus({
         success: false,
-        message: 'An error occurred. Please try again later.',
+        message: errorMessage,
       });
     } finally {
       setIsSubmitting(false);
@@ -219,9 +270,6 @@ export default function ContactSection() {
                   placeholder="Your message..."
                 ></textarea>
               </div>
-
-              <input type="hidden" name="to_email" value={personalInfo.email} />
-              <input type="hidden" name="time" />
 
               <button
                 type="submit"

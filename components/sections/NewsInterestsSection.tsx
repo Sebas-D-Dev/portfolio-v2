@@ -128,7 +128,7 @@ export default function NewsInterestsSection() {
                   category: category.id,
                 };
               });
-            } catch (feedError) {
+            } catch {
               // Silently ignore failed feeds
               return [];
             }

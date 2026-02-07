@@ -42,7 +42,13 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.8 }}
-            className="mb-4 bg-gradient-to-r from-primary-400 via-secondary-400 to-accent-400 bg-clip-text text-5xl font-bold text-transparent md:text-7xl"
+            className="mb-4 text-5xl font-bold md:text-7xl text-white [text-shadow:_0_0_30px_rgb(96_165_250_/_50%)] dark-reader-mode"
+            style={{
+              background: 'linear-gradient(to right, #60a5fa, #38bdf8, #22d3ee)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}
           >
             {personalInfo.name}
           </motion.h1>
@@ -62,7 +68,13 @@ export default function HeroSection() {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -50, scale: 0.8 }}
                   transition={{ duration: 0.5, ease: [0.43, 0.13, 0.23, 0.96] }}
-                  className="absolute inset-0 flex items-center justify-center font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary-400 via-secondary-400 to-accent-400"
+                  className="absolute inset-0 flex items-center justify-center font-bold text-white [text-shadow:_0_0_20px_rgb(96_165_250_/_40%)] dark-reader-mode"
+                  style={{
+                    background: 'linear-gradient(to right, #60a5fa, #38bdf8, #22d3ee)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                  }}
                 >
                   {skills[activeSkill]}
                 </motion.span>
