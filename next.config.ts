@@ -1,18 +1,20 @@
 import type { NextConfig } from "next";
 
-// Check if in npm dev or production environment
-const isProd = process.env.NODE_ENV === "production";
+// Determine if deploying to GitHub Pages (not Vercel)
+// GitHub Pages needs basePath, Vercel does not
+const isGitHubPages = process.env.GITHUB_PAGES === "true" || process.env.DEPLOY_TARGET === "github-pages";
 
 const nextConfig: NextConfig = {
-  // Update image config path
-  basePath: isProd ? "/portfolio-v2" : "",
-  // config altered to static expot for GitHub Pages deployment
+  // Only use basePath for GitHub Pages deployment
+  // Vercel deployments should NOT have basePath (served at root domain)
+  basePath: isGitHubPages ? "/portfolio-v2" : "",
+  // Static export for GitHub Pages deployment
   output: "export",
   // Output directory for static files
   distDir: "out",
   // Enable React's strict mode for better error detection
   reactStrictMode: true,
-  // Disable image optimization
+  // Disable image optimization for static export
   images: {
     unoptimized: true,
   },

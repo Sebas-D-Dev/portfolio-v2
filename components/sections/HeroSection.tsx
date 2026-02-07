@@ -121,7 +121,7 @@ export default function HeroSection() {
             </button>
             
             <a
-              href={process.env.NODE_ENV === 'production' ? '/portfolio-v2/assets/resume.pdf' : '/assets/resume.pdf'}
+              href="/assets/resume.pdf"
               target="_blank"
               rel="noopener noreferrer"
               className="group relative overflow-hidden rounded-lg border-2 border-accent-400 bg-dark-800/50 px-8 py-4 font-semibold text-accent-400 transition-all duration-300 hover:bg-accent-400 hover:text-white hover:scale-105"
