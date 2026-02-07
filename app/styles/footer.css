@@ -1,20 +1,24 @@
-/* Importing TailwindCSS for utility classes and base styles */
-@import "tailwindcss";
-
 .footer {
-  background: linear-gradient(220deg, #b730e4, #3916d5, #000000);
-  border-top: 2px solid #728ebf;
-  padding: 20px;
+  background: rgba(2, 6, 23, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 2px solid var(--primary-500);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+  padding: 20px 1.5rem;
   text-align: center;
   width: 100%;
   bottom: 0;
   left: 0;
+  position: relative;
 }
 
 .socials {
   display: flex;
   justify-content: center;
   gap: 20px;
+  max-width: 80rem;
+  margin: 0 auto;
+  width: 100%;
 }
 
 /* Social Media Links */
@@ -30,7 +34,7 @@
 }
 
 .socials a:hover {
-  background: linear-gradient(90deg, #e72e81, #f5a623);
+  background: linear-gradient(90deg, var(--primary-400), var(--accent-400));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -44,7 +48,7 @@
   left: 0;
   width: 100%;
   height: 2px;
-  background: linear-gradient(90deg, #e72e81, #f5a623);
+  background: linear-gradient(90deg, var(--primary-500), var(--accent-400));
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.3s ease-in-out;

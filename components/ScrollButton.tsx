@@ -1,47 +1,64 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import "../app/styles/ScrollButton.css";
 
 interface ScrollButtonProps {
-    targetId: string;
-    className?: string;
-    direction: 'up' | 'down';  // New prop for direction
-    buttonText?: string;  // New prop for custom button text
-    children?: React.ReactNode;
+  direction: 'up' | 'down';
+  className?: string;
 }
 
 const ScrollButton: React.FC<ScrollButtonProps> = ({
-    targetId,
-    className = "",
-    direction = 'down',
-    buttonText = "",
-    children,
+  direction = 'up',
+  className = "",
 }) => {
-    const handleScroll = () => {
-        const targetElement = document.getElementById(targetId);
-        if (targetElement) {
-            targetElement.scrollIntoView({ behavior: "smooth" });
-        }
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const toggleVisibility = () => {
+      if (window.pageYOffset > 300) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
     };
 
-    const arrowPath = direction === 'down' 
-        ? "M169.4 470.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 370.8V64c0-17.7-14.3-32-32-32s-32 14.3-32 32v306.8L49.4 265.3c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"
-        : "M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2V448c0 17.7 14.3 32 32 32s32-14.3 32-32V141.2l105.4 105.3c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z";
+    window.addEventListener("scroll", toggleVisibility);
+    return () => window.removeEventListener("scroll", toggleVisibility);
+  }, []);
 
-    return (
-        <div className={`scroll-button ${className}`}>
-            <button className="ScrollButton-button" onClick={handleScroll} data-text={buttonText}>
-                {children ? (
-                    children
-                ) : (
-                    <svg className="ScrollButton-svgIcon" viewBox="0 0 384 512">
-                        <path d={arrowPath}></path>
-                    </svg>
-                )}
-            </button>
-        </div>
-    );
+  const handleScroll = () => {
+    if (direction === 'up') {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+    }
+  };
+
+  return (
+    <AnimatePresence>
+      {isVisible && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.5 }}
+          transition={{ duration: 0.3 }}
+          className={`scroll-button ${className}`}
+        >
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            className="ScrollButton-button"
+            onClick={handleScroll}
+            aria-label={`Scroll ${direction}`}
+          >
+            <span className="text-2xl font-bold">{direction === 'up' ? '↑' : '↓'}</span>
+          </motion.button>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
 };
 
 export default ScrollButton;

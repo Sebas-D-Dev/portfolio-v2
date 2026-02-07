@@ -1,113 +1,63 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
-import { useRouter } from "next/navigation";
+import { useRef, useEffect, useState } from "react";
 import ParticlesBackground from "@/components/ParticlesBackground";
-import "./globals.css";
-import "./styles/home.css";
+import SectionDivider from "@/components/SectionDivider";
+import HeroSection from "@/components/sections/HeroSection";
+import AboutExperienceSection from "@/components/sections/AboutExperienceSection";
+import ProjectsSection from "@/components/sections/ProjectsSection";
+import NewsInterestsSection from "@/components/sections/NewsInterestsSection";
+import ContactSection from "@/components/sections/ContactSection";
+import Navigation from "./layouts/navigation";
+import Footer from "./layouts/footer";
+import ScrollButton from "@/components/ScrollButton";
 
 export default function HomePage() {
-  const skillSet = useMemo(
-    () => [
-      "Artificial Intelligence",
-      "Machine Learning",
-      "Database Management",
-      "Web Development",
-      "UI/UX Design"
-    ],
-    []
-  );
-  const [activeSkill, setActiveSkill] = useState(skillSet[0]);
-  const router = useRouter();
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [cardRect, setCardRect] = useState<DOMRect | null>(null);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveSkill((prev) => {
-        const nextIndex = (skillSet.indexOf(prev) + 1) % skillSet.length;
-        return skillSet[nextIndex];
-      });
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, [skillSet]);
+    const updateRect = () => {
+      if (cardRef.current) {
+        setCardRect(cardRef.current.getBoundingClientRect());
+      }
+    };
+    updateRect();
+    window.addEventListener("resize", updateRect);
+    return () => window.removeEventListener("resize", updateRect);
+  }, []);
 
   return (
-    <div className="relative min-h-screen">
-      {/* Background Effect & Blur Overlay */}
-      <div className="background-container">
-        <ParticlesBackground />
-        <BlurOverlay />
+    <div className="relative w-full">
+      {/* Fixed Navigation */}
+      <Navigation />
+
+      {/* Background Effect for Hero Section Only */}
+      <div className="fixed inset-0 z-0 h-screen">
+        <ParticlesBackground cardRect={cardRect} particleCount={100} />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-dark-950/50 to-dark-950"></div>
       </div>
 
-      {/* Main Content Container */}
-      <div className="portfolio-container">
-        {/* Title Section */}
-        <div className="title-section">
-          <h1 className="title-heading">Sebastian Torres</h1>
-          <p className="skill-text">
-            Working with <span className="skill-highlight">{activeSkill}</span>
-          </p>
+      {/* Main Content - Centered Container */}
+      <main className="relative z-10 w-full">
+        <div ref={cardRef}>
+          <HeroSection />
         </div>
+        <SectionDivider variant="default" />
+        <AboutExperienceSection />
+        <SectionDivider variant="dots" />
+        <ProjectsSection />
+        <SectionDivider variant="wave" />
+        <NewsInterestsSection />
+        <SectionDivider variant="default" />
+        <ContactSection />
+      </main>
 
-        {/* Description Below Title */}
-        <div className="description-text">
-          <p>Explore my work, projects, and passions in software development.</p>
-        </div>
+      {/* Footer */}
+      <Footer />
 
-        {/* Main Content */}
-        <main className="flex flex-col items-center justify-center relative z-10 p-8">
-          {/* Button Container */}
-          <div className="button-container">
-            {/* About Button */}
-            <button
-              className="blue-button"
-              onClick={() => router.push("/pages/about")}
-            >
-              About Me
-            </button>
-
-            {/* Work Button */}
-            <button
-              className="purple-button"
-              onClick={() => router.push("/pages/work")}
-            >
-              My Experience
-            </button>
-
-            {/* Contact Button */}
-            <button
-              className="blue-button"
-              onClick={() => router.push("/pages/contact")}
-            >
-              Contact Me
-            </button>
-
-            {/* Resume Button */}
-            <a 
-              href={
-                process.env.NODE_ENV === "production"
-                  ? "https://sebas-d-dev.github.io/portfolio-v2/assets/resume.pdf"
-                  : "/assets/resume.pdf"
-              }
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="purple-button">
-                
-              Resume
-            </a>
-          </div>
-        </main>
-      </div>
+      {/* Scroll Button */}
+      <ScrollButton direction="up" />
     </div>
-  );
-}
-
-/* BlurOverlay with adjustable blur intensity and opacity */
-function BlurOverlay() {
-  return (
-    <div
-      className="blur-overlay"
-      aria-hidden="true"
-    />
   );
 }

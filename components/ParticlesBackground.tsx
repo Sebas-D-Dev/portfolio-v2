@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import { usePathname } from "next/navigation";
 
 class Particle {
@@ -17,7 +17,7 @@ class Particle {
     this.y = this.radius + Math.random() * (this.effect.height - this.radius * 2);
     this.vx = (Math.random() - 0.5) * 2;
     this.vy = (Math.random() - 0.5) * 2;
-    this.color = Math.random() > 0.5 ? "#3b82f6" : "#9333ea"; // Blue & Purple variation
+    this.color = Math.random() > 0.5 ? "#3b82f6" : "#2563eb"; // Blue variations
   }
 
   draw(ctx: CanvasRenderingContext2D) {
@@ -80,7 +80,7 @@ class Effect {
             this.particles[j].y
           );
           gradient.addColorStop(0, "#3b82f6"); // Blue
-          gradient.addColorStop(1, "#9333ea"); // Purple
+          gradient.addColorStop(1, "#2563eb"); // Darker Blue
 
           ctx.strokeStyle = gradient;
           ctx.globalAlpha = 1 - distance / this.maxDistance;
@@ -98,9 +98,10 @@ class Effect {
 interface ParticlesBackgroundProps {
   particleCount?: number;
   maxDistance?: number;
+  cardRect?: DOMRect | null;
 }
 
-const ParticlesBackground = ({ particleCount = 200, maxDistance = 100 }: ParticlesBackgroundProps) => {
+const ParticlesBackground = ({ particleCount = 200, maxDistance = 100, cardRect }: ParticlesBackgroundProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number | null>(null);
   const effectRef = useRef<Effect | null>(null);
@@ -110,7 +111,6 @@ const ParticlesBackground = ({ particleCount = 200, maxDistance = 100 }: Particl
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
@@ -134,12 +134,39 @@ const ParticlesBackground = ({ particleCount = 200, maxDistance = 100 }: Particl
     // Animation function
     const animate = () => {
       if (effectRef.current && ctx) {
-        effectRef.current.handleParticles(ctx);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        effectRef.current.particles.forEach((particle) => {
+          // Check if particle is under the card
+          let isUnderCard = false;
+          if (cardRect) {
+            const x = particle.x;
+            const y = particle.y;
+            if (
+              x >= cardRect.left &&
+              x <= cardRect.right &&
+              y >= cardRect.top &&
+              y <= cardRect.bottom
+            ) {
+              isUnderCard = true;
+            }
+          }
+          if (isUnderCard) {
+            // Draw glow
+            ctx.save();
+            ctx.shadowColor = particle.color;
+            ctx.shadowBlur = 50;
+            particle.draw(ctx);
+            ctx.restore();
+          } else {
+            particle.draw(ctx);
+          }
+          particle.update();
+        });
+        effectRef.current.connectParticles(ctx);
         animationRef.current = requestAnimationFrame(animate);
       }
     };
 
-    // Start animation
     animate();
 
     // Cleanup function
@@ -151,7 +178,7 @@ const ParticlesBackground = ({ particleCount = 200, maxDistance = 100 }: Particl
       }
       effectRef.current = null;
     };
-  }, [particleCount, maxDistance, pathname]); // Add pathname to dependencies to reinitialize on route change
+  }, [particleCount, maxDistance, cardRect, pathname]); // Add pathname to dependencies to reinitialize on route change
 
   return <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full -z-10" />;
 };

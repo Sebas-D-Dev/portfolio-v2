@@ -1,14 +1,13 @@
 "use client";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { useEffect, useState } from "react";
-import DropdownMenu from "@/components/DropdownMenu";
 import "../styles/navigation.css";
 
 const NAV_ITEMS = [
-  { label: "About", path: "/pages/about" },
-  { label: "Experience", path: "/pages/work" },
-  { label: "Contact", path: "/pages/contact" },
+  { label: "Home", id: "home" },
+  { label: "About", id: "about" },
+  { label: "Projects", id: "projects" },
+  { label: "News", id: "news" },
+  { label: "Contact", id: "contact" },
   {
     label: "Resume",
     path:
@@ -20,83 +19,124 @@ const NAV_ITEMS = [
 ];
 
 const Navigation = () => {
-  const router = useRouter();
-  const [isMobile, setIsMobile] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("home");
 
-  // Responsive check
+  // Track active section
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 700);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
+    const handleScroll = () => {
+      const sections = NAV_ITEMS.filter((item) => item.id).map((item) => item.id!);
+      const scrollPosition = window.scrollY + 100;
+
+      for (const sectionId of sections) {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          const offsetTop = element.offsetTop;
+          const offsetBottom = offsetTop + element.offsetHeight;
+
+          if (scrollPosition >= offsetTop && scrollPosition < offsetBottom) {
+            setActiveSection(sectionId);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Dropdown handler
-  const handleDropdownSelect = (item: string) => {
-    const nav = NAV_ITEMS.find((navItem) => navItem.label === item);
-    if (!nav) return;
-    if (nav.external) {
-      window.open(nav.path, "_blank", "noopener,noreferrer");
+  // Close drawer when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (isOpen && !target.closest('.side-nav') && !target.closest('.nav-toggle-btn')) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [isOpen]);
+
+  // Prevent body scroll when drawer is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
     } else {
-      router.push(nav.path);
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+      setIsOpen(false);
+    }
+  };
+
+  const handleNavClick = (item: typeof NAV_ITEMS[number]) => {
+    if (item.external) {
+      window.open(item.path, "_blank", "noopener,noreferrer");
+      setIsOpen(false);
+    } else if (item.id) {
+      scrollToSection(item.id);
     }
   };
 
   return (
-    <nav>
-      <div className="nav-container" style={isMobile ? { flexDirection: "column", alignItems: "center" } : {}}>
-        {/* Logo */}
-        <div
-          className="logo"
-          onClick={() => router.push("/")}
-          style={isMobile ? { justifyContent: "center", marginBottom: "0.5rem" } : {}}
-        >
-          <Image
-            src={
-              process.env.NODE_ENV === "production"
-                ? "/portfolio-v2/favicon.ico"
-                : "/favicon.ico"
-            }
-            alt="Logo"
-            width={30}
-            height={30}
-            unoptimized
-          />
-          <span>Sebastian Torres</span>
+    <>
+      {/* Hamburger Menu Button - Fixed Top Right */}
+      <button
+        className="nav-toggle-btn"
+        onClick={() => setIsOpen(!isOpen)}
+        aria-label="Toggle navigation menu"
+      >
+        <div className={`hamburger ${isOpen ? 'open' : ''}`}>
+          <span></span>
+          <span></span>
+          <span></span>
         </div>
+      </button>
 
-        {/* Desktop Nav or Mobile Dropdown */}
-        {!isMobile ? (
-          <div className="nav-buttons">
-            <button onClick={() => router.push("/pages/about")}>About</button>
-            <button onClick={() => router.push("/pages/work")}>Experience</button>
-            <button onClick={() => router.push("/pages/contact")}>Contact</button>
-            <a
-              href={
-                process.env.NODE_ENV === "production"
-                  ? "https://sebas-d-dev.github.io/portfolio-v2/assets/resume.pdf"
-                  : "/assets/resume.pdf"
-              }
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Resume
-            </a>
-          </div>
-        ) : (
-          <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-            <DropdownMenu
-              label="Menu"
-              items={NAV_ITEMS.map((item) => item.label)}
-              onSelect={handleDropdownSelect}
-              open={dropdownOpen}
-              setOpen={setDropdownOpen}
-            />
-          </div>
-        )}
-      </div>
-    </nav>
+      {/* Overlay */}
+      <div 
+        className={`nav-overlay ${isOpen ? 'open' : ''}`}
+        onClick={() => setIsOpen(false)}
+      />
+
+      {/* Side Navigation Drawer */}
+      <nav className={`side-nav ${isOpen ? 'open' : ''}`}>
+        <div className="side-nav-items" style={{ paddingTop: '3rem' }}>
+          {NAV_ITEMS.map((item) => (
+            item.external ? (
+              <a
+                key={item.label}
+                href={item.path}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="side-nav-link"
+                onClick={() => setIsOpen(false)}
+              >
+                {item.label}
+              </a>
+            ) : (
+              <button
+                key={item.label}
+                onClick={() => handleNavClick(item)}
+                className={`side-nav-link ${activeSection === item.id ? 'active' : ''}`}
+              >
+                {item.label}
+              </button>
+            )
+          ))}
+        </div>
+      </nav>
+    </>
   );
 };
 
