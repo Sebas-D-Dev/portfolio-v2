@@ -179,12 +179,9 @@ RSS feeds from multiple sources:
    ```env
    # EmailJS Configuration (required for contact form)
    NEXT_PUBLIC_EMAILJS_SERVICE_ID=your_service_id
-   NEXT_PUBLIC_EMAILJS_TEMPLATE_ID=your_template_id
+   NEXT_PUBLIC_EMAILJS_TEMPLATE_USER_MESSAGE=your_user_message_template_id
+   NEXT_PUBLIC_EMAILJS_TEMPLATE_AUTO_REPLY=your_auto_reply_template_id
    NEXT_PUBLIC_EMAILJS_PUBLIC_KEY=your_public_key
-   
-   # News API (optional - for RSS news feed)
-   # Get free API key at https://newsapi.org
-   NEXT_PUBLIC_NEWS_API_KEY=your_news_api_key
    ```
 
 4. **Run development server**
@@ -303,17 +300,31 @@ Edit `/app/globals.css` for:
 
 ## 📧 EmailJS Setup
 
-1. Create account at [EmailJS](https://www.emailjs.com/)
-2. Create an email service
-3. Create an email template
-4. Add credentials to `.env.local`
+> **💡 See [EMAILJS_SETUP_GUIDE.md](./Docs/Email/EMAILJS_SETUP_GUIDE.md) for complete setup guide with HTML templates**
 
-Template variables:
-- `{{from_name}}` - Sender name
-- `{{from_email}}` - Sender email
-- `{{message}}` - Message content
-- `{{to_email}}` - Recipient email
-- `{{time}}` - Timestamp
+This portfolio uses **dual-email system**:
+1. **User Message Template** - Sends you a notification when someone contacts you
+2. **Auto-Reply Template** - Sends the user an automatic confirmation with social links
+
+### Quick Setup
+
+1. Create account at [EmailJS](https://www.emailjs.com/)
+2. Create an email service (Gmail, Outlook, etc.)
+3. Create **two templates** (see [Docs/Email/](./Docs/Email/) for HTML templates)
+4. Add credentials to `.env.local`:
+   ```env
+   NEXT_PUBLIC_EMAILJS_SERVICE_ID=service_xxxxx
+   NEXT_PUBLIC_EMAILJS_TEMPLATE_USER_MESSAGE=template_xxxxx
+   NEXT_PUBLIC_EMAILJS_TEMPLATE_AUTO_REPLY=template_xxxxx
+   NEXT_PUBLIC_EMAILJS_PUBLIC_KEY=your_public_key
+   ```
+
+### Benefits
+- ✅ Professional auto-reply with social media links (Portfolio, GitHub, LinkedIn)
+- ✅ Clean, formatted email notifications for you
+- ✅ Easy reply with pre-configured reply-to headers
+- ✅ Mobile-responsive HTML templates
+- ✅ Reduces "Did you get my message?" follow-ups
 
 ## 📰 News API Setup
 
@@ -325,24 +336,59 @@ Template variables:
 
 ## 🚀 Deployment
 
-### GitHub Pages
+> **📖 See [DEPLOYMENT_FIX.md](./Docs/DEPLOYMENT_FIX.md) for detailed deployment configuration**
 
-1. Update `next.config.ts` basePath if needed
-2. Build the project:
-   ```bash
-   npm run build
-   ```
-3. Deploy the `out/` directory to GitHub Pages
+This portfolio supports **dual deployment** with automatic environment detection:
 
 ### Vercel (Recommended)
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Sebas-D-Dev/portfolio-v2)
 
+**Steps:**
 1. Import repository to Vercel
-2. Add environment variables
-3. Deploy automatically
+2. Add environment variables (EmailJS credentials)
+3. **Do NOT set GITHUB_PAGES env var** (Vercel auto-detects)
+4. Deploy automatically
+
+**Result:** Deploys to root domain (e.g., `portfolio-v2.vercel.app`)
+
+### GitHub Pages
+
+**Automatic Deployment via GitHub Actions:**
+- Push to `main` branch
+- Workflow automatically builds with `basePath="/portfolio-v2"`
+- Deploys to `https://username.github.io/portfolio-v2/`
+
+**Manual Deployment:**
+```bash
+# Set environment variable for GitHub Pages
+export GITHUB_PAGES=true  # Linux/Mac
+$env:GITHUB_PAGES="true"  # PowerShell
+
+# Build and deploy
+npm run build
+# Upload the out/ directory to GitHub Pages
+```
+
+### Configuration Difference
+
+| Platform | basePath | Environment Variable |
+|----------|----------|---------------------|
+| **Vercel** | None (root) | None needed |
+| **GitHub Pages** | `/portfolio-v2` | `GITHUB_PAGES=true` |
+| **Local Dev** | None | None |
+
+The `next.config.ts` automatically detects the deployment target and configures paths accordingly.
 
 ## 🐛 Troubleshooting
+
+### Vercel 404 Errors
+
+**Issue**: All assets return 404 (_next/static/..., fonts, CSS)
+
+**Solution**: 
+- Ensure `GITHUB_PAGES` environment variable is NOT set in Vercel dashboard
+- See [DEPLOYMENT_FIX.md](./Docs/DEPLOYMENT_FIX.md) for details
 
 ### Build Errors
 

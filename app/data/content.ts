@@ -156,7 +156,7 @@ export const experiences: Experience[] = [
     type: 'work',
     title: "Front-End UI/UX Prototyping Intern",
     company: "Local Fiber",
-    date: "August 2025 - Present",
+    date: "August 2025 - February 2026",
     description: "Designing and prototyping user interfaces for a fiber internet service provider. Creating responsive web components and implementing modern design patterns using Vite and React. Collaborating with the development team to ensure seamless integration of UI/UX designs into the production environment.",
     technologies: ["React", "TypeScript", "Vite", "TailwindCSS", "Figma", "Git", "Agile", "UI/UX Design"],
   },
@@ -164,7 +164,7 @@ export const experiences: Experience[] = [
     type: 'work',
     title: "Student Affairs IT & Programming Intern",
     company: "Florida Atlantic University",
-    date: "June 2024 - January 2026",
+    date: "June 2024 - February 2026",
     description: "Assisted in the deployment and maintenance of IT systems and devices for student services. Collaborated with the IT team to support technology infrastructure and improve student experience. Gained hands-on experience with web development, database management, and system administration.",
     technologies: ["PHP", "JavaScript", "Web Development", "MSSQL", "IT Support", "System Administration"],
   },
@@ -199,7 +199,7 @@ export const education: Education[] = [
     type: 'education',
     title: "High School Diploma",
     institution: "Spanish River Community High School",
-    date: "2019 - 2023",
+    date: "August 2019 - June 2023",
     description: "Graduated with honors. Participated in computer science club and coding competitions. Completed coursework in programming, web development, and data structures.",
     technologies: ["Calculus", "Java", "Programming Fundamentals", "Object-Oriented Programming", "Data Structures"],
   },
@@ -213,11 +213,11 @@ const parseTimelineDate = (dateString: string): number => {
   return date.getTime();
 };
 
-// Combine and sort timeline items (pre-computed for consistency)
+// Combine and sort timeline items in chronological order (oldest to newest)
 export const timelineItems: TimelineItem[] = [...experiences, ...education].sort((a, b) => {
   const dateA = parseTimelineDate(a.date);
   const dateB = parseTimelineDate(b.date);
-  const timeDiff = dateB - dateA;
+  const timeDiff = dateA - dateB; // Changed to dateA - dateB for chronological order
   
   // If dates are equal or invalid, use title for deterministic sorting
   if (timeDiff === 0 || isNaN(timeDiff)) {
