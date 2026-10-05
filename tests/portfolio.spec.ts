@@ -40,6 +40,34 @@ test('export has working images, links, metadata and honest project statuses', a
     await expect(card).toHaveCSS('opacity', '1');
   }
   await page.locator('#projects').screenshot({ path: test.info().outputPath('project-showcase.png'), style: '.nav-toggle-btn, .scroll-button, .skip-link { visibility: hidden !important; }' });
+  // Inspect the final card itself, not only its raw source image.
+  const portfolioCard = page.locator('article[aria-labelledby="project-portfolio"]');
+  await portfolioCard.scrollIntoViewIfNeeded();
+  await expect(portfolioCard).toHaveCSS('opacity', '1');
+  await expect(portfolioCard.locator('img')).toHaveCSS('object-fit', 'contain');
+  await portfolioCard.screenshot({ path: test.info().outputPath('portfolio-card.png'), style: '.nav-toggle-btn, .scroll-button, .skip-link { visibility: hidden !important; }' });
+
+  if (test.info().project.name === 'desktop') {
+    // At this viewport, the site's native 85svh hero rounds to exactly 800px.
+    // Capture only that section; do not include a divider or the next heading.
+    await page.setViewportSize({ width: 1280, height: 941 });
+    await page.goto('./');
+    await expect(page.locator('#home a').first().locator('..')).toHaveCSS('opacity', '1');
+    const hero = page.locator('#home');
+    const heroBounds = await hero.boundingBox();
+    const projectsBounds = await page.locator('#projects').boundingBox();
+    expect(heroBounds?.width).toBe(1280);
+    expect(Math.round(heroBounds?.height ?? 0)).toBe(800);
+    expect(projectsBounds?.y).toBeGreaterThan((heroBounds?.y ?? 0) + (heroBounds?.height ?? 0));
+    const thumbnail = await hero.screenshot({
+      path: test.info().outputPath('portfolio-thumbnail.png'),
+      scale: 'css',
+      style: '.nav-toggle-btn, .scroll-button, .skip-link { visibility: hidden !important; }',
+    });
+    expect(thumbnail.readUInt32BE(16)).toBe(1280);
+    expect(thumbnail.readUInt32BE(20)).toBe(800);
+  }
+
 });
 
 test('drawer supports dismissal, focus return, navigation and repeated opening', async ({ page }) => {
