@@ -10,6 +10,8 @@ test('export has working images, links, metadata and honest project statuses', a
   const errors: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
   await page.goto('./');
+  await expect(page.locator('#home a').first().locator('..')).toHaveCSS('opacity', '1');
+  await page.locator('#home').screenshot({ path: test.info().outputPath('hero.png'), style: '.skip-link { visibility: hidden !important; }' });
   await expect(page.getByRole('heading', { name: 'Personal Projects' })).toBeVisible();
   await expect(page.locator('#projects article')).toHaveCount(5);
   await expect(page.locator('#project-caverna')).toHaveText('Caverna D Sebas');
@@ -26,8 +28,11 @@ test('export has working images, links, metadata and honest project statuses', a
   expect(response.headers()['content-type']).toContain('application/pdf');
   expect(await page.locator('meta[property="og:image"]').getAttribute('content')).toMatch(/^https:\/\//);
   expect(errors).toEqual([]);
-  for (const card of await page.locator('#projects article').all()) await card.scrollIntoViewIfNeeded();
-  await page.locator('#projects').screenshot({ path: test.info().outputPath('project-showcase.png') });
+  for (const card of await page.locator('#projects article').all()) {
+    await card.scrollIntoViewIfNeeded();
+    await expect(card).toHaveCSS('opacity', '1');
+  }
+  await page.locator('#projects').screenshot({ path: test.info().outputPath('project-showcase.png'), style: '.nav-toggle-btn, .scroll-button, .skip-link { visibility: hidden !important; }' });
 });
 
 test('drawer supports dismissal, focus return, navigation and repeated opening', async ({ page }) => {
@@ -62,7 +67,17 @@ test('drawer supports dismissal, focus return, navigation and repeated opening',
 test('narrow viewport does not overflow before or after menu use', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 740 });
   await page.goto('./');
-  const fits = () => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth);
+  const fits = () => page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth);
+  await test.info().attach('viewport-diagnostics', {
+    body: JSON.stringify(await page.evaluate(() => ({
+      width: document.documentElement.clientWidth,
+      scrollWidth: document.documentElement.scrollWidth,
+      overflowing: Array.from(document.querySelectorAll('*')).map(element => {
+        const rect = element.getBoundingClientRect();
+        return { tag: element.tagName, className: element.className?.toString(), width: rect.width, right: rect.right };
+      }).filter(rect => rect.right > document.documentElement.clientWidth + 1).slice(0, 20),
+    }))), contentType: 'application/json',
+  });
   await expect.poll(fits).toBe(true);
   await page.getByRole('button', { name: 'Open navigation menu' }).click();
   await page.keyboard.press('Escape');
@@ -70,6 +85,14 @@ test('narrow viewport does not overflow before or after menu use', async ({ page
   await expect.poll(fits).toBe(true);
   await page.locator('#projects').scrollIntoViewIfNeeded();
   await expect.poll(fits).toBe(true);
+  await page.locator('#contact form').scrollIntoViewIfNeeded();
+  await expect.poll(fits).toBe(true);
+  for (const field of await page.locator('#contact form, #contact input, #contact textarea').all()) {
+    await expect.poll(() => field.evaluate(element => {
+      const bounds = element.getBoundingClientRect();
+      return bounds.left >= 0 && bounds.right <= document.documentElement.clientWidth;
+    })).toBe(true);
+  }
 });
 
 test('unconfigured email and unavailable feeds have useful fallback states', async ({ page }) => {

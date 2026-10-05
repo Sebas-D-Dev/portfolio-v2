@@ -206,7 +206,7 @@ export default function NewsInterestsSection() {
   };
 
   return (
-    <section id="news" aria-labelledby="news-heading" className="relative bg-dark-950 py-18">
+    <section id="news" aria-labelledby="news-heading" className="relative overflow-x-clip bg-dark-950 py-18">
       <div className="container mx-auto max-w-7xl px-6">
         {/* Section Title */}
         <motion.div

@@ -106,7 +106,7 @@ export default function ContactSection() {
   };
 
   return (
-    <section id="contact" aria-labelledby="contact-heading" className="relative bg-dark-950 py-18 pb-32">
+    <section id="contact" aria-labelledby="contact-heading" className="relative overflow-x-clip bg-dark-950 py-18 pb-32">
       <div className="container mx-auto max-w-7xl px-6">
         {/* Section Title */}
         <motion.div
@@ -122,14 +122,14 @@ export default function ContactSection() {
           <div className="mx-auto h-1 w-24 rounded-full bg-gradient-to-r from-primary-500 to-accent-400"></div>
         </motion.div>
 
-        <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-2">
+        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-12 lg:grid-cols-2">
           {/* Contact Info */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="space-y-6"
+            className="min-w-0 space-y-6"
           >
             <div>
               <h3 className="mb-8 text-3xl font-semibold text-white">
@@ -162,7 +162,7 @@ export default function ContactSection() {
                 </div>
                 <div>
                   <h4 className="font-semibold text-white">Email</h4>
-                  <a href={`mailto:${personalInfo.email}`} className="text-primary-400 hover:text-primary-300">
+                  <a href={`mailto:${personalInfo.email}`} className="break-all text-primary-400 hover:text-primary-300">
                     {personalInfo.email}
                   </a>
                 </div>
@@ -219,7 +219,7 @@ export default function ContactSection() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="rounded-xl border border-primary-500/20 bg-dark-800/50 p-10 backdrop-blur-sm"
+            className="min-w-0 rounded-xl border border-primary-500/20 bg-dark-800/50 p-6 backdrop-blur-sm sm:p-10"
           >
             {!isConfigured && (
               <p role="status" className="mb-6 rounded-lg border border-primary-400/30 bg-primary-500/10 p-4 text-sm text-gray-200">
@@ -236,7 +236,7 @@ export default function ContactSection() {
                   id="from_name"
                   name="from_name"
                   required
-                  className="w-full rounded-lg border border-primary-500/20 bg-dark-900/50 px-4 py-3 text-white placeholder-gray-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/50"
+                  className="min-w-0 w-full rounded-lg border border-primary-500/20 bg-dark-900/50 px-4 py-3 text-white placeholder-gray-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/50"
                   placeholder="Your Name"
                 />
               </div>
@@ -250,7 +250,7 @@ export default function ContactSection() {
                   id="from_email"
                   name="from_email"
                   required
-                  className="w-full rounded-lg border border-primary-500/20 bg-dark-900/50 px-4 py-3 text-white placeholder-gray-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/50"
+                  className="min-w-0 w-full rounded-lg border border-primary-500/20 bg-dark-900/50 px-4 py-3 text-white placeholder-gray-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/50"
                   placeholder="your.email@example.com"
                 />
               </div>
@@ -264,7 +264,7 @@ export default function ContactSection() {
                   name="message"
                   required
                   rows={5}
-                  className="w-full rounded-lg border border-primary-500/20 bg-dark-900/50 px-4 py-3 text-white placeholder-gray-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/50"
+                  className="min-w-0 w-full rounded-lg border border-primary-500/20 bg-dark-900/50 px-4 py-3 text-white placeholder-gray-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/50"
                   placeholder="Your message..."
                 ></textarea>
               </div>

@@ -9,6 +9,7 @@ jobs:
   export:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         github-pages: ['false', 'true']
     env:

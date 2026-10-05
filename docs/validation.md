@@ -22,3 +22,5 @@ Tests block real EmailJS calls. No live email was sent, and successful delivery 
 ## Review
 
 An independent source and screenshot review found an IntersectionObserver margin portability issue; the implementation now uses viewport-height-derived pixel margins and recreates the observer on resize. No material source-review findings remained after this correction. This is a bounded review, not a full accessibility or security audit.
+
+The first CI browser run caught a missing Shift+Tab wrap in the drawer and a horizontal overflow at a 320px desktop viewport. Follow-up fixes explicitly wrap focus at the dialog boundaries and use a one-column, shrinkable contact grid with responsive padding, and clip horizontal entrance effects within the news/contact sections. The same tests remain in place; consult the latest CI run for their result.
