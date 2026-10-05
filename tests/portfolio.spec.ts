@@ -44,7 +44,15 @@ test('export has working images, links, metadata and honest project statuses', a
   const portfolioCard = page.locator('article[aria-labelledby="project-portfolio"]');
   await portfolioCard.scrollIntoViewIfNeeded();
   await expect(portfolioCard).toHaveCSS('opacity', '1');
-  await expect(portfolioCard.locator('img')).toHaveCSS('object-fit', 'contain');
+  const portfolioImage = portfolioCard.locator('img');
+  await expect(portfolioImage).toHaveAttribute('src', /portfolio-v2-hero-card\.png$/);
+  await expect(portfolioImage).toHaveCSS('object-fit', 'contain');
+  const framing = await portfolioImage.evaluate((image: HTMLImageElement) => ({
+    naturalRatio: image.naturalWidth / image.naturalHeight,
+    renderedRatio: image.getBoundingClientRect().width / image.getBoundingClientRect().height,
+  }));
+  expect(framing.naturalRatio).toBeCloseTo(16 / 10, 3);
+  expect(framing.renderedRatio).toBeCloseTo(framing.naturalRatio, 3);
   await portfolioCard.screenshot({ path: test.info().outputPath('portfolio-card.png'), style: '.nav-toggle-btn, .scroll-button, .skip-link { visibility: hidden !important; }' });
 
   if (test.info().project.name === 'desktop') {

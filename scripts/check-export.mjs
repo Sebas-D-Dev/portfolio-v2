@@ -25,10 +25,10 @@ assert(html.indexOf('id="projects"') < html.indexOf('id="about"'), 'Personal pro
 assert.equal((html.match(/href="[^\"]*assets\/resume.pdf"/g) ?? []).length, 2, 'Both résumé links must use the shared asset path');
 assert(/property="og:image" content="https:\/\//.test(html), 'Open Graph image must be absolute');
 
-for (const stale of ['Caverna D Sebas', 'STRATUM', 'caverna-earlier-home.png', 'stack-inventory-posts.jpg', '/assets/home-page.jpg']) {
+for (const stale of ['Caverna D Sebas', 'STRATUM', 'caverna-earlier-home.png', 'stack-inventory-posts.jpg', '/assets/home-page.jpg', 'projects/portfolio-v2-home.png']) {
   assert(!html.includes(stale), `Outdated project name or image: ${stale}`);
 }
-assert(html.includes('assets/projects/portfolio-v2-home.png'), 'Updated portfolio screenshot is missing');
+assert(html.includes('assets/projects/portfolio-v2-hero-card.png'), 'Updated portfolio screenshot is missing');
 assert(html.includes('assets/projects/stack-inventory-logo.png'), 'Stack Inventory must use its project logo');
 // The 3D project stays text-only until a fresh renamed-build capture is verified.
 assert(!html.includes('View 3D Portfolio screenshot'), 'Do not advertise an unavailable 3D screenshot');

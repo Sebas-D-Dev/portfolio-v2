@@ -44,9 +44,9 @@ export const metadata: Metadata = {
     siteName: "Sebastian Torres Portfolio",
     images: [
       {
-        url: new URL("assets/projects/portfolio-v2-home.png", siteUrl).toString(),
-        width: 1280,
-        height: 612,
+        url: new URL("assets/projects/portfolio-v2-hero-card.png", siteUrl).toString(),
+        width: 1000,
+        height: 625,
         alt: "Sebastian Torres Portfolio",
       },
     ],
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Sebastian Torres | Full-Stack Developer Portfolio",
     description: "Full-stack developer specializing in React, Next.js, TypeScript, and modern web technologies.",
-    images: [new URL("assets/projects/portfolio-v2-home.png", siteUrl).toString()],
+    images: [new URL("assets/projects/portfolio-v2-hero-card.png", siteUrl).toString()],
   },
   robots: {
     index: true,
