@@ -15,7 +15,7 @@ function ProjectVisual({ project, featured }: { project: Project; featured: bool
             alt={project.imageAlt ?? project.title}
             fill
             sizes={featured ? '(min-width: 1024px) 55vw, 100vw' : '(min-width: 768px) 50vw, 100vw'}
-            className={`${project.id === 'stack-inventory' ? 'object-contain bg-[#080808]' : project.id === 'caverna' ? 'object-contain' : 'object-cover object-top'} transition-transform duration-500 motion-safe:group-hover:scale-[1.03]`}
+            className={`${project.id === 'stack-inventory' ? 'object-contain p-10 bg-dark-900' : 'object-contain'} transition-transform duration-500 motion-safe:group-hover:scale-[1.03]`}
           />
         ) : (
           <div aria-hidden="true" className="flex h-full flex-col items-center justify-center gap-5 bg-gradient-to-br from-primary-900/60 via-dark-900 to-secondary-900/40 p-8">
@@ -39,10 +39,10 @@ function ProjectCard({ project, featured = false }: { project: Project; featured
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.1 }}
       transition={{ duration: 0.35 }}
-      className={`group min-w-0 overflow-hidden rounded-2xl border border-primary-500/20 bg-dark-800/40 transition-colors hover:border-primary-400/60 ${featured ? 'grid lg:grid-cols-[1.2fr_1fr]' : 'flex flex-col'}`}
+      className={`group min-w-0 overflow-hidden rounded-2xl border border-primary-500/20 bg-dark-800/40 transition-colors hover:border-primary-400/60 ${featured && project.image ? 'grid lg:grid-cols-[1.2fr_1fr]' : 'flex flex-col'}`}
       aria-labelledby={`project-${project.id}`}
     >
-      <ProjectVisual project={project} featured={featured} />
+      {(project.image || project.visual) && <ProjectVisual project={project} featured={featured} />}
       <div className="flex min-w-0 flex-1 flex-col p-6 sm:p-8">
         <div className="mb-4 flex flex-wrap items-center gap-2 text-xs">
           <span className="rounded-full border border-primary-400/30 bg-primary-500/10 px-3 py-1 font-medium text-primary-200">{project.status}</span>
@@ -55,10 +55,10 @@ function ProjectCard({ project, featured = false }: { project: Project; featured
         <ul aria-label="Technologies and focus" className="mb-6 flex flex-wrap gap-2">
           {project.techStack.map((tech) => <li key={tech} className="rounded-md bg-primary-500/10 px-2.5 py-1 text-xs text-primary-200">{tech}</li>)}
         </ul>
-        <div className="mt-auto flex flex-wrap items-center gap-x-5 gap-y-3 border-t border-primary-500/15 pt-5 text-sm font-semibold">
+        {(project.image || project.githubUrl || project.liveUrl) && <div className="mt-auto flex flex-wrap items-center gap-x-5 gap-y-3 border-t border-primary-500/15 pt-5 text-sm font-semibold">
           {project.image && (
-            <a href={project.image} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-primary-300 hover:text-white" aria-label={`View ${project.title} screenshot (opens in a new tab)`}>
-              View screenshot <ArrowUpRight size={16} aria-hidden="true" />
+            <a href={project.image} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-primary-300 hover:text-white" aria-label={`View ${project.title} ${project.id === 'stack-inventory' ? 'logo' : 'screenshot'} (opens in a new tab)`}>
+              View {project.id === 'stack-inventory' ? 'logo' : 'screenshot'} <ArrowUpRight size={16} aria-hidden="true" />
             </a>
           )}
           {project.githubUrl && (
@@ -71,7 +71,7 @@ function ProjectCard({ project, featured = false }: { project: Project; featured
               {project.liveLabel} <ArrowUpRight size={16} aria-hidden="true" />
             </a>
           )}
-        </div>
+        </div>}
       </div>
     </motion.article>
   );

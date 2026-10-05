@@ -14,10 +14,17 @@ test('export has working images, links, metadata and honest project statuses', a
   await page.locator('#home').screenshot({ path: test.info().outputPath('hero.png'), style: '.skip-link { visibility: hidden !important; }' });
   await expect(page.getByRole('heading', { name: 'Personal Projects' })).toBeVisible();
   await expect(page.locator('#projects article')).toHaveCount(5);
-  await expect(page.locator('#project-caverna')).toHaveText('Caverna D Sebas');
+  await expect(page.locator('#project-3d-portfolio')).toHaveText('3D Portfolio');
   await expect(page.locator('#projects')).toContainText('Early prototype');
   await expect(page.locator('#projects')).toContainText('Not an app screenshot');
   await expect(page.locator('#projects button[disabled]')).toHaveCount(0);
+  await expect(page.locator('#projects')).not.toContainText('Caverna D Sebas');
+  await expect(page.locator('#projects')).not.toContainText('STRATUM');
+  await expect(page.locator('#projects')).not.toContainText('Earlier development build');
+  await expect(page.getByRole('link', { name: 'View 3D Portfolio screenshot (opens in a new tab)' })).toHaveCount(0);
+  await expect(page.getByRole('link', { name: 'View Stack Inventory logo (opens in a new tab)' })).toHaveAttribute('href', /stack-inventory-logo\.png$/);
+  await expect(page.getByRole('img', { name: 'Stack Inventory project logo', exact: true })).toHaveAttribute('src', /stack-inventory-logo\.png$/);
+
   for (const image of await page.locator('img').all()) {
     await image.scrollIntoViewIfNeeded();
     await expect.poll(() => image.evaluate((node: HTMLImageElement) => node.complete && node.naturalWidth > 0)).toBe(true);

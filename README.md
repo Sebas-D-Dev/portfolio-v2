@@ -10,13 +10,13 @@ The blue-on-dark single-page design includes a project showcase, experience and 
 
 Personal work appears directly after the hero; professional experience follows it. Each project states its current status and only offers relevant actions:
 
-- **Caverna D Sebas:** in-progress 3D portfolio, with a clearly labeled earlier development screenshot
+- **3D Portfolio:** in-progress spatial portfolio, currently presented without a screenshot while a fresh capture of the renamed build is verified
 - **portfolio-v2:** ongoing web portfolio, with source and live-site links
-- **Stack Inventory:** original inventory application, with source and a sign-in-required app link
+- **Stack Inventory:** inventory application shown with its verified project logo, plus source and a sign-in-required app link
 - **Nexus:** early desktop-tool prototype, with source and labeled concept artwork
 - **Directory Structure Generator:** developer-tool prototype, with source and labeled concept artwork
 
-Project content lives in `app/data/content.ts`. See [image provenance](docs/project-images.md) before replacing or adding screenshots. Project screenshots open directly in a new tab. Missing demos are not represented by disabled buttons or placeholder URLs.
+Project content lives in `app/data/content.ts`. See [image provenance](docs/project-images.md) before replacing or adding screenshots. Project screenshots and the Stack Inventory logo open directly in a new tab. Missing demos are not represented by disabled buttons or placeholder URLs.
 
 ## Local development
 
