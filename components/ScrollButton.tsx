@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import "../app/styles/ScrollButton.css";
 
 interface ScrollButtonProps {
@@ -13,6 +13,7 @@ const ScrollButton: React.FC<ScrollButtonProps> = ({
   direction = 'up',
   className = "",
 }) => {
+  const reduceMotion = useReducedMotion();
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -24,15 +25,16 @@ const ScrollButton: React.FC<ScrollButtonProps> = ({
       }
     };
 
+    toggleVisibility();
     window.addEventListener("scroll", toggleVisibility);
     return () => window.removeEventListener("scroll", toggleVisibility);
   }, []);
 
   const handleScroll = () => {
     if (direction === 'up') {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({ top: 0, behavior: reduceMotion ? "instant" : "smooth" });
     } else {
-      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+      window.scrollTo({ top: document.body.scrollHeight, behavior: reduceMotion ? "instant" : "smooth" });
     }
   };
 

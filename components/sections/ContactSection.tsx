@@ -5,6 +5,14 @@ import { motion } from 'framer-motion';
 import emailjs from '@emailjs/browser';
 import { personalInfo } from '@/app/data/content';
 
+const emailConfig = {
+  serviceId: process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
+  userMessageTemplateId: process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_USER_MESSAGE,
+  autoReplyTemplateId: process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_AUTO_REPLY,
+  publicKey: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY,
+};
+const isConfigured = Object.values(emailConfig).every(Boolean);
+
 export default function ContactSection() {
   const form = useRef<HTMLFormElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -16,21 +24,16 @@ export default function ContactSection() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    if (!form.current) return;
+    if (!form.current || isSubmitting || !isConfigured) return;
 
     setIsSubmitting(true);
     setSubmitStatus(null);
 
+    let ownerMessageSent = false;
     try {
       // Validate environment variables are configured
-      const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
-      const userMessageTemplateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_USER_MESSAGE;
-      const autoReplyTemplateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_AUTO_REPLY;
-      const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
-
-      if (!serviceId || !userMessageTemplateId || !autoReplyTemplateId || !publicKey) {
-        throw new Error('EmailJS configuration is missing. Please check your environment variables.');
-      }
+      const { serviceId, userMessageTemplateId, autoReplyTemplateId, publicKey } = emailConfig;
+      if (!serviceId || !userMessageTemplateId || !autoReplyTemplateId || !publicKey) return;
 
       // Get form data
       const formData = new FormData(form.current);
@@ -64,6 +67,8 @@ export default function ContactSection() {
         throw new Error('Failed to send notification email');
       }
 
+      ownerMessageSent = true;
+
       // Send auto-reply email to user
       const autoReplyParams = {
         to_name: userName,
@@ -86,34 +91,22 @@ export default function ContactSection() {
         message: 'Thank you! Your message has been sent successfully.',
       });
       form.current.reset();
-    } catch (error) {
-      console.error('Error sending email:', error);
-      
-      // Provide helpful error messages
-      let errorMessage = 'An error occurred. Please try again later.';
-      
-      if (error instanceof Error && error.message.includes('configuration')) {
-        errorMessage = error.message;
-      } else if (typeof error === 'object' && error !== null && 'text' in error) {
-        const emailError = error as { text?: string; status?: number };
-        if (emailError.text?.includes('recipients address is empty')) {
-          errorMessage = 'Email configuration error. Please ensure EmailJS templates are set up correctly with {{to_email}} in the "To Email" field.';
-        } else if (emailError.text) {
-          errorMessage = `Email service error: ${emailError.text}`;
-        }
-      }
-      
+    } catch {
+      // A failed auto-reply must not invite duplicate messages to the owner.
       setSubmitStatus({
-        success: false,
-        message: errorMessage,
+        success: ownerMessageSent,
+        message: ownerMessageSent
+          ? 'Your message was sent, but the confirmation email could not be delivered.'
+          : 'Your message could not be sent. Please try again or use the email link.',
       });
+      if (ownerMessageSent) form.current?.reset();
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <section className="relative bg-dark-950 py-18 pb-32">
+    <section id="contact" aria-labelledby="contact-heading" className="relative bg-dark-950 py-18 pb-32">
       <div className="container mx-auto max-w-7xl px-6">
         {/* Section Title */}
         <motion.div
@@ -123,7 +116,7 @@ export default function ContactSection() {
           transition={{ duration: 0.6 }}
           className="mb-12 text-center"
         >
-          <h2 id="contact" className="mb-6 text-4xl font-bold text-white md:text-5xl">
+          <h2 id="contact-heading" className="mb-6 text-4xl font-bold text-white md:text-5xl">
             Get In Touch
           </h2>
           <div className="mx-auto h-1 w-24 rounded-full bg-gradient-to-r from-primary-500 to-accent-400"></div>
@@ -228,6 +221,11 @@ export default function ContactSection() {
             transition={{ duration: 0.6 }}
             className="rounded-xl border border-primary-500/20 bg-dark-800/50 p-10 backdrop-blur-sm"
           >
+            {!isConfigured && (
+              <p role="status" className="mb-6 rounded-lg border border-primary-400/30 bg-primary-500/10 p-4 text-sm text-gray-200">
+                The contact form is currently unavailable. Please <a className="text-primary-300 underline" href={`mailto:${personalInfo.email}`}>email me directly</a> instead.
+              </p>
+            )}
             <form ref={form} onSubmit={handleSubmit} className="space-y-7">
               <div>
                 <label htmlFor="from_name" className="mb-3 block text-sm font-semibold text-gray-300">
@@ -273,14 +271,16 @@ export default function ContactSection() {
 
               <button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || !isConfigured}
                 className="w-full rounded-lg bg-gradient-to-r from-primary-600 to-primary-500 py-4 font-semibold text-white shadow-lg shadow-primary-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-primary-500/50 hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
               >
-                {isSubmitting ? 'Sending...' : 'Send Message'}
+                {!isConfigured ? 'Form unavailable' : isSubmitting ? 'Sending...' : 'Send Message'}
               </button>
 
               {submitStatus && (
                 <motion.div
+                  role="status"
+                  aria-live="polite"
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   className={`rounded-lg p-4 text-center ${

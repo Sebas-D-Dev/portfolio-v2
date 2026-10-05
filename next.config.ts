@@ -8,10 +8,9 @@ const nextConfig: NextConfig = {
   // Only use basePath for GitHub Pages deployment
   // Vercel deployments should NOT have basePath (served at root domain)
   basePath: isGitHubPages ? "/portfolio-v2" : "",
+  env: { NEXT_PUBLIC_BASE_PATH: isGitHubPages ? "/portfolio-v2" : "" },
   // Static export for GitHub Pages deployment
   output: "export",
-  // Output directory for static files
-  distDir: "out",
   // Enable React's strict mode for better error detection
   reactStrictMode: true,
   // Disable image optimization for static export

@@ -1,3 +1,5 @@
+import { assetPath } from '@/lib/site';
+
 // Centralized content for portfolio
 export interface TechStack {
   name: string;
@@ -8,10 +10,17 @@ export interface TechStack {
 
 export interface Project {
   title: string;
-  image: string;
+  id: string;
+  image?: string;
+  imageAlt?: string;
+  imageLabel: string;
+  status: string;
+  category: string;
+  visual?: 'controls' | 'directory';
   description: string;
-  githubUrl: string;
+  githubUrl?: string;
   liveUrl?: string;
+  liveLabel?: string;
   techStack: string[];
   services: string[];
 }
@@ -62,8 +71,7 @@ export const personalInfo = {
 };
 
 // Tech Stack Data
-// Next.js automatically adds basePath from next.config.ts
-const getAssetPath = (filename: string) => `/assets/${filename}`;
+const getAssetPath = assetPath;
 
 export const techLanguages: TechStack[] = [
   { name: "Python", icon: getAssetPath("python.svg"), url: "https://www.python.org/", category: 'language' },
@@ -90,55 +98,70 @@ export const allTechStack: TechStack[] = [...techLanguages, ...techFrameworks];
 // Projects Data
 export const projects: Project[] = [
   {
-    title: "Portfolio Website",
+    id: "caverna",
+    title: "Caverna D Sebas",
+    status: "In progress",
+    category: "3D engineering portfolio",
+    image: getAssetPath("projects/caverna-earlier-home.png"),
+    imageAlt: "Earlier Caverna D Sebas development build, with STRATUM branding, showing a 3D cavern workstation and hardware exhibits.",
+    imageLabel: "Earlier development build",
+    description: "An interactive portfolio set inside an underground engineering facility. A work-in-progress experiment in exploring projects through a spatial, 3D environment.",
+    techStack: ["3D", "Interactive design", "Web development"],
+    services: ["Spatial navigation", "Personal portfolio"],
+  },
+  {
+    id: "portfolio",
+    title: "portfolio-v2",
+    status: "Live · Ongoing",
+    category: "Web development",
     image: getAssetPath("home-page.jpg"),
-    description: "A modern, responsive portfolio website built with Next.js featuring interactive elements, smooth animations, and dynamic RSS feeds for tech news.",
+    imageAlt: "The blue-on-dark introduction screen of Sebastian Torres’s web portfolio",
+    imageLabel: "Earlier website screenshot",
+    description: "My web portfolio for projects, experience, and technology interests. Built with animated sections, an experience timeline, and an RSS-based news reader.",
     githubUrl: "https://github.com/Sebas-D-Dev/portfolio-v2",
     liveUrl: "https://sebas-d-dev.github.io/portfolio-v2/",
-    techStack: ["Next.js", "React", "TypeScript", "TailwindCSS", "Framer Motion"],
-    services: ["Github Pages", "Responsive Design", "Animation", "RSS Integration"],
+    liveLabel: "Visit website",
+    techStack: ["Next.js", "React", "TypeScript", "Tailwind CSS"],
+    services: ["GitHub Pages", "Responsive design", "RSS reader"],
   },
   {
+    id: "stack-inventory",
     title: "Stack Inventory",
-    image: getAssetPath("stack-inventory.png"),
-    description: "AI integrated inventory management system with user roles, permissions, and posting capabilities. Admin capabilities include inventory tracking, order management, and analytics.",
+    status: "Sign-in required",
+    category: "Full-stack application",
+    image: getAssetPath("projects/stack-inventory-posts.jpg"),
+    imageAlt: "The original Stack Inventory posts page showing three article cards.",
+    imageLabel: "Original application screenshot",
+    description: "An inventory application covering products, vendors, purchasing, role-based views, and analytics, with an experimental Gemini-backed inventory assistant.",
     githubUrl: "https://github.com/Sebas-D-Dev/stack-inventory",
     liveUrl: "https://stack-inventory.vercel.app/",
-    techStack: ["React", "TypeScript", "Next.js", "Prisma", "PostgreSQL", "TailwindCSS", "Gemini AI"],
-    services: ["CRUD Operations", "JWT Authentication", "User Authentication", "AI Integration"],
+    liveLabel: "Open app · Sign in",
+    techStack: ["Next.js", "TypeScript", "PostgreSQL", "Prisma"],
+    services: ["Inventory workflows", "Role-based views", "Experimental AI"],
   },
   {
-    title: "Nexus App",
-    image: getAssetPath("nexus.jpg"),
-    description: "A productivity application for accessing apps, functions, and data seamlessly with a virtual stream deck. Allows users to customize their workflow and access tools quickly with adjustable grids and action buttons.",
+    id: "nexus",
+    title: "Nexus",
+    status: "Early prototype",
+    category: "Desktop tooling",
+    visual: "controls",
+    imageLabel: "Concept artwork · Not an app screenshot",
+    description: "A customizable on-screen control-surface concept for organizing apps, shortcuts, and workflows. Current work includes a landing-page concept and an Electron application scaffold.",
     githubUrl: "https://github.com/Sebas-D-Dev/nexus-electron-vite",
-    techStack: ["React", "TypeScript", "TailwindCSS", "Electron", "Vite", "Node.js"],
-    services: ["Customizable Workflow", "Virtual Stream Deck", "Adjustable Grids"],
+    techStack: ["Electron", "React", "TypeScript", "Vite"],
+    services: ["Control-surface concept", "Desktop exploration"],
   },
   {
-    title: "Project Title 4",
-    image: getAssetPath("home-page.jpg"),
-    description: "Brief description of your fourth project. Explain the problem it solves, key features, and technologies used. Keep it concise and highlight what makes this project unique.",
-    githubUrl: "https://github.com/Sebas-D-Dev",
-    techStack: ["React", "TypeScript", "Node.js", "MongoDB", "TailwindCSS"],
-    services: ["Feature 1", "Feature 2", "Feature 3"],
-  },
-  {
-    title: "Project Title 5",
-    image: getAssetPath("home-page.jpg"),
-    description: "Brief description of your fifth project. Explain the problem it solves, key features, and technologies used. Keep it concise and highlight what makes this project unique.",
-    githubUrl: "https://github.com/Sebas-D-Dev",
-    liveUrl: "https://example.com",
-    techStack: ["Next.js", "Python", "Flask", "PostgreSQL", "Docker"],
-    services: ["Feature 1", "Feature 2", "Feature 3"],
-  },
-  {
-    title: "Project Title 6",
-    image: getAssetPath("home-page.jpg"),
-    description: "Brief description of your sixth project. Explain the problem it solves, key features, and technologies used. Keep it concise and highlight what makes this project unique.",
-    githubUrl: "https://github.com/Sebas-D-Dev",
-    techStack: ["Vue.js", "Express", "MySQL", "AWS", "Redis"],
-    services: ["Feature 1", "Feature 2", "Feature 3"],
+    id: "directory-generator",
+    title: "Directory Structure Generator",
+    status: "Prototype",
+    category: "Developer tools",
+    visual: "directory",
+    imageLabel: "Concept artwork · Not an app screenshot",
+    description: "An experiment in planning project directory structures through workspaces. The prototype includes workspace and gallery APIs, plus a Gemini text-generation endpoint.",
+    githubUrl: "https://github.com/Sebas-D-Dev/directory-structure-generator",
+    techStack: ["Workspaces", "APIs", "Gemini"],
+    services: ["Project planning", "Directory structures"],
   },
 ];
 

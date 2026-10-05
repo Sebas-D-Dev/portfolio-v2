@@ -1,5 +1,6 @@
 "use client";
 
+import { MotionConfig } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 import ParticlesBackground from "@/components/ParticlesBackground";
 import SectionDivider from "@/components/SectionDivider";
@@ -28,6 +29,7 @@ export default function HomePage() {
   }, []);
 
   return (
+    <MotionConfig reducedMotion="user">
     <div className="relative w-full">
       {/* Fixed Navigation */}
       <Navigation />
@@ -39,14 +41,14 @@ export default function HomePage() {
       </div>
 
       {/* Main Content - Centered Container */}
-      <main className="relative z-10 w-full">
+      <main id="main-content" className="relative z-10 w-full">
         <div ref={cardRef}>
           <HeroSection />
         </div>
         <SectionDivider variant="default" />
-        <AboutExperienceSection />
-        <SectionDivider variant="dots" />
         <ProjectsSection />
+        <SectionDivider variant="dots" />
+        <AboutExperienceSection />
         <SectionDivider variant="wave" />
         <NewsInterestsSection />
         <SectionDivider variant="default" />
@@ -59,5 +61,6 @@ export default function HomePage() {
       {/* Scroll Button */}
       <ScrollButton direction="up" />
     </div>
+    </MotionConfig>
   );
 }

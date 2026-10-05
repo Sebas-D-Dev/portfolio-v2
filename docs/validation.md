@@ -1,0 +1,24 @@
+# Validation notes
+
+## Scope
+
+This update preserves the existing single-page identity while repairing deployment paths, replacing placeholder project entries, and adding accurate screenshot/status presentation. It does not replace the résumé, change employment or graduation claims, publish a new site, or introduce service credentials.
+
+## Local checks
+
+- ESLint and TypeScript checks run against the changed source.
+- Static exports are built at both `/` and `/portfolio-v2`.
+- `check:export` verifies local asset/résumé URLs, section anchors, absolute social metadata, project ordering, and placeholder removal.
+- Original résumé contents are unchanged.
+
+## Browser checks
+
+The Playwright suite covers desktop and mobile Chromium, loaded images and résumé download, drawer focus/keyboard/backdrop/repeated-open behavior, normal and reduced motion, 320px overflow, unavailable contact configuration, failed/empty/valid RSS feeds, and unsafe article link filtering. It also records project-showcase screenshots.
+
+Local Chromium launch was blocked by the execution environment’s local socket restrictions before tests could run. Browser results must therefore come from the PR’s **Portfolio checks** workflow, which tests both export targets. See the workflow status for the exact commit; source inspection or a successful build is not a browser pass.
+
+Tests block real EmailJS calls. No live email was sent, and successful delivery with production credentials remains unverified. A missing EmailJS build configuration intentionally leaves the form unavailable with a direct email link.
+
+## Review
+
+An independent source and screenshot review found an IntersectionObserver margin portability issue; the implementation now uses viewport-height-derived pixel margins and recreates the observer on resize. No material source-review findings remained after this correction. This is a bounded review, not a full accessibility or security audit.
