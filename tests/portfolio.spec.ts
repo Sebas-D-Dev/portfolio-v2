@@ -48,24 +48,38 @@ test('export has working images, links, metadata and honest project statuses', a
   await portfolioCard.screenshot({ path: test.info().outputPath('portfolio-card.png'), style: '.nav-toggle-btn, .scroll-button, .skip-link { visibility: hidden !important; }' });
 
   if (test.info().project.name === 'desktop') {
-    // At this viewport, the site's native 85svh hero rounds to exactly 800px.
-    // Capture only that section; do not include a divider or the next heading.
+    // Take a padded 16:10 detail of the actual hero card, inside its section.
+    // This avoids adjacent headings, floating controls, and tiny text in the card.
     await page.setViewportSize({ width: 1280, height: 941 });
     await page.goto('./');
     await expect(page.locator('#home a').first().locator('..')).toHaveCSS('opacity', '1');
-    const hero = page.locator('#home');
-    const heroBounds = await hero.boundingBox();
-    const projectsBounds = await page.locator('#projects').boundingBox();
-    expect(heroBounds?.width).toBe(1280);
-    expect(Math.round(heroBounds?.height ?? 0)).toBe(800);
-    expect(projectsBounds?.y).toBeGreaterThan((heroBounds?.y ?? 0) + (heroBounds?.height ?? 0));
-    const thumbnail = await hero.screenshot({
+    await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+    const heroBounds = await page.locator('#home').boundingBox();
+    const cardBounds = await page.locator('#home .rounded-2xl').boundingBox();
+    expect(heroBounds).not.toBeNull();
+    expect(cardBounds).not.toBeNull();
+    const clip = {
+      x: Math.round(cardBounds!.x + cardBounds!.width / 2 - 500),
+      y: Math.round(cardBounds!.y + cardBounds!.height / 2 - 312.5),
+      width: 1000,
+      height: 625,
+    };
+    expect(clip.x).toBeGreaterThanOrEqual(heroBounds!.x);
+    expect(clip.y).toBeGreaterThanOrEqual(heroBounds!.y);
+    expect(clip.x + clip.width).toBeLessThanOrEqual(heroBounds!.x + heroBounds!.width);
+    expect(clip.y + clip.height).toBeLessThanOrEqual(heroBounds!.y + heroBounds!.height);
+    expect(cardBounds!.x - clip.x).toBeGreaterThan(40);
+    expect(cardBounds!.y - clip.y).toBeGreaterThan(40);
+    expect(clip.x + clip.width - cardBounds!.x - cardBounds!.width).toBeGreaterThan(40);
+    expect(clip.y + clip.height - cardBounds!.y - cardBounds!.height).toBeGreaterThan(40);
+    const thumbnail = await page.screenshot({
       path: test.info().outputPath('portfolio-thumbnail.png'),
+      clip,
       scale: 'css',
       style: '.nav-toggle-btn, .scroll-button, .skip-link { visibility: hidden !important; }',
     });
-    expect(thumbnail.readUInt32BE(16)).toBe(1280);
-    expect(thumbnail.readUInt32BE(20)).toBe(800);
+    expect(thumbnail.readUInt32BE(16)).toBe(1000);
+    expect(thumbnail.readUInt32BE(20)).toBe(625);
   }
 
 });
