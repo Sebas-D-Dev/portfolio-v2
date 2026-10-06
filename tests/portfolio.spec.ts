@@ -301,9 +301,16 @@ test('hover effects avoid layout transitions and canvas pauses behind the menu o
   await expect(up).toHaveCSS('transition-property', 'transform, background-color');
   const upBounds = await up.boundingBox();
   for (const element of await page.locator('footer a, footer .copyright').all()) {
-    const bounds = await element.boundingBox();
+    const bounds = await element.evaluate(node => {
+      if (node.matches('.copyright')) {
+        const range = document.createRange();
+        range.selectNodeContents(node);
+        return range.getBoundingClientRect().toJSON();
+      }
+      return node.getBoundingClientRect().toJSON();
+    });
     const overlaps = bounds && upBounds && bounds.x < upBounds.x + upBounds.width && bounds.x + bounds.width > upBounds.x && bounds.y < upBounds.y + upBounds.height && bounds.y + bounds.height > upBounds.y;
-    expect(overlaps, 'Back-to-top must not cover footer links or text').toBe(false);
+    expect(overlaps, `Back-to-top must not cover footer links or text: ${JSON.stringify({ bounds, upBounds })}`).toBe(false);
   }
   await page.locator('footer').screenshot({ path: test.info().outputPath('footer-hover.png') });
   await up.click();
