@@ -79,7 +79,15 @@ The form uses EmailJS. These **public build-time identifiers** are required:
 
 For GitHub Pages, add the public identifiers in **Repository Settings → Secrets and variables → Actions → Variables**. The Pages workflow explicitly passes those repository variables into `next build`. For Vercel, set them for the intended environment in the existing project's environment-variable settings and rebuild. Values configured on Vercel do not automatically reach GitHub Pages. No values, credentials, permissions, or account settings are provisioned by this PR. Never use a private EmailJS key or service password in a `NEXT_PUBLIC_*` field.
 
-Without required identifiers, the UI offers the direct email link and disables submission rather than promising delivery. Production delivery must be checked separately with approval to send a test email. CI uses fake identifiers and intercepts all email requests; no real mail is sent.
+Without required identifiers, the UI offers the direct email link and disables submission rather than promising delivery. After each build, a status line reports whether the rendered public form is configured or unavailable; it never prints identifier values. Production delivery must be checked separately with approval to send a test email. CI uses fake identifiers and intercepts all email requests; no real mail is sent.
+
+### Input handling and provider protections
+
+The form trims submitted fields, rejects blank names/messages, enforces name/email/message limits of 100/254/5,000 characters, and rejects control characters or line breaks in header-like name/email fields. Native email/form validity is checked before sending. Code snippets and angle brackets remain intact as plain message data; the page never renders the message as HTML.
+
+These browser checks are **not an anti-abuse security boundary**: anyone with public EmailJS identifiers can call its API directly. Provider template settings, recipient restrictions, origin controls and any chosen anti-spam protection must be reviewed separately. In templates, use escaped `{{message}}` and other double-brace variables, not unescaped HTML or visitor-controlled links. Use the connected service's default From address; keep the owner recipient fixed, and place the visitor address in Reply To.
+
+This implementation sends its optional visitor confirmation as a separate request. Do not additionally link an auto-reply from the owner template, or it can trigger duplicate/misrouted messages. CAPTCHA tokens are single-use; do not casually enable a two-send flow that reuses the same token. No provider/account settings are changed by this repository update.
 
 See [Next.js build-time public variables](https://nextjs.org/docs/pages/guides/environment-variables) and [EmailJS send requirements/rate limit](https://www.emailjs.com/docs/sdk/send/).
 

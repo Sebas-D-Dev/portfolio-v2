@@ -3,6 +3,7 @@
 import { useState, FormEvent, useRef } from 'react';
 import { motion } from 'framer-motion';
 import emailjs from '@emailjs/browser';
+import { CONTACT_LIMITS, validateContactFields } from '@/lib/contact-validation.mjs';
 import { personalInfo } from '@/app/data/content';
 
 const emailConfig = {
@@ -28,6 +29,21 @@ export default function ContactSection() {
 
     if (!form.current || submissionInFlight.current || !isConfigured) return;
 
+    const formData = new FormData(form.current);
+    const validation = validateContactFields({
+      name: formData.get('from_name'),
+      email: formData.get('from_email'),
+      message: formData.get('message'),
+    });
+    if (!validation.ok) {
+      setSubmitStatus({ success: false, message: validation.error });
+      return;
+    }
+    if (!form.current.checkValidity()) {
+      form.current.reportValidity();
+      return;
+    }
+
     submissionInFlight.current = true;
 
     setIsSubmitting(true);
@@ -40,10 +56,7 @@ export default function ContactSection() {
       if (!serviceId || !userMessageTemplateId || !publicKey) return;
 
       // Get form data
-      const formData = new FormData(form.current);
-      const userName = formData.get('from_name') as string;
-      const userEmail = formData.get('from_email') as string;
-      const message = formData.get('message') as string;
+      const { name: userName, email: userEmail, message } = validation.values;
       const timestamp = new Date().toLocaleString('en-US', {
         dateStyle: 'long',
         timeStyle: 'short',
@@ -242,6 +255,8 @@ export default function ContactSection() {
                   type="text"
                   id="from_name"
                   name="from_name"
+                  autoComplete="name"
+                  maxLength={CONTACT_LIMITS.name}
                   required
                   className="min-w-0 w-full rounded-lg border border-primary-500/20 bg-dark-900/50 px-4 py-3 text-white placeholder-gray-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/50"
                   placeholder="Your Name"
@@ -256,6 +271,8 @@ export default function ContactSection() {
                   type="email"
                   id="from_email"
                   name="from_email"
+                  autoComplete="email"
+                  maxLength={CONTACT_LIMITS.email}
                   required
                   className="min-w-0 w-full rounded-lg border border-primary-500/20 bg-dark-900/50 px-4 py-3 text-white placeholder-gray-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/50"
                   placeholder="your.email@example.com"
@@ -269,6 +286,7 @@ export default function ContactSection() {
                 <textarea
                   id="message"
                   name="message"
+                  maxLength={CONTACT_LIMITS.message}
                   required
                   rows={5}
                   className="min-w-0 w-full rounded-lg border border-primary-500/20 bg-dark-900/50 px-4 py-3 text-white placeholder-gray-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/50"

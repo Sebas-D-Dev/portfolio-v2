@@ -52,3 +52,7 @@ The first follow-on CI run (`37498784860`, head `2be9212`) fetched 48 real artic
 ## Owner-selected résumé and final copy refinement
 
 The downloadable résumé now uses the exact current 3D Portfolio PDF selected by the owner on October 6. It is copied unchanged; a SHA-256 guard validates both exported résumé links against the selected bytes. The project display name and social metadata use **Portfolio V2**, while repository URLs, filenames, and the Pages base path remain unchanged. About is reduced to one concise sentence without repeating the owner’s name, and the academic-recognition accordion is removed. Earlier notes about retaining the old PDF and recognition section describe superseded revisions, not the final UI.
+
+## Contact input hardening
+
+The follow-on input checks trim submitted data, enforce 100/254/5,000-character bounds, reject blank name/message and control characters in header-like fields, and retain browser-native email validity. Five unit cases and a configured-browser scenario cover whitespace, oversized/programmatically changed fields, header controls, and legitimate code/angle-bracket messages. The form never renders visitor text as HTML, and no message is pre-escaped or silently stripped. All test sends are intercepted. These are client-side input-hygiene checks, not protection against a caller who bypasses the page and uses EmailJS directly; provider/template protections remain a separate setup review.

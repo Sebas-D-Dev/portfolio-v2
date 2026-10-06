@@ -13,7 +13,8 @@
     "check:export": "node scripts/check-export.mjs",
     "prebuild": "node scripts/refresh-news.mjs",
     "news:refresh": "node scripts/refresh-news.mjs",
-    "test:unit": "node --test tests/unit/*.test.mjs"
+    "test:unit": "node --test tests/unit/*.test.mjs",
+    "postbuild": "node scripts/report-contact-state.mjs"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",

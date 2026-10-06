@@ -400,3 +400,41 @@ test('stalled snapshot times out and manual refresh can parse namespaced feeds',
   await page.getByRole('button', { name: 'Refresh sources', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Namespaced RSS story' })).toBeVisible();
 });
+
+test('contact rejects invalid fields while preserving code as message data', async ({ page }) => {
+  test.skip(!process.env.TEST_EMAIL_CONFIG || process.env.TEST_EMAIL_CONFIG === 'none', 'This build intentionally has no EmailJS configuration');
+  const ownerMessages: Record<string, string>[] = [];
+  await page.route('https://api.emailjs.com/**', async route => {
+    const data = route.request().postDataJSON();
+    if (data.template_id === 'test_owner') ownerMessages.push(data.template_params);
+    await route.fulfill({ status: 200, contentType: 'text/plain', body: 'OK' });
+  });
+  await page.goto('./');
+  await expect(page.getByLabel('Name', { exact: true })).toHaveAttribute('maxlength', '100');
+  await expect(page.getByLabel('Email', { exact: true })).toHaveAttribute('maxlength', '254');
+  await expect(page.getByLabel('Message', { exact: true })).toHaveAttribute('maxlength', '5000');
+  const fill = async (name: string, message: string) => {
+    await page.getByLabel('Name', { exact: true }).fill(name);
+    await page.getByLabel('Email', { exact: true }).fill('browser-test@example.invalid');
+    await page.getByLabel('Message', { exact: true }).fill(message);
+  };
+  await fill('   ', 'Hello');
+  await page.getByRole('button', { name: 'Send Message', exact: true }).click();
+  await expect(page.getByText('Please enter your name.', { exact: true })).toBeVisible();
+  await fill('Visitor', 'Hello');
+  await page.getByLabel('Message', { exact: true }).evaluate((node: HTMLTextAreaElement) => { node.value = 'x'.repeat(5001); });
+  await page.locator('#contact form').dispatchEvent('submit');
+  await expect(page.getByText('Keep your message to 5,000 characters or fewer.')).toBeVisible();
+  await fill('Visitor', 'Hello');
+  await page.getByLabel('Name', { exact: true }).evaluate((node: HTMLInputElement) => { node.value = 'Visitor\u0001Bcc:other@example.invalid'; });
+  await page.locator('#contact form').dispatchEvent('submit');
+  await expect(page.getByText('Name and email cannot contain line breaks or control characters.')).toBeVisible();
+  expect(ownerMessages).toHaveLength(0);
+  const code = '<script>window.contactScriptExecuted = true</script>\nconst comparison = a < b;';
+  await fill('  Visitor  ', `  ${code}\n`);
+  await page.getByRole('button', { name: 'Send Message', exact: true }).click();
+  await expect(page.getByText('Thank you! Your message has been sent successfully.')).toBeVisible();
+  expect(ownerMessages).toHaveLength(1);
+  expect(ownerMessages[0]).toMatchObject({ name: 'Visitor', from_name: 'Visitor', from_email: 'browser-test@example.invalid', message: code });
+  expect(await page.evaluate(() => Object.hasOwn(window, 'contactScriptExecuted'))).toBe(false);
+});
