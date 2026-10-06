@@ -148,6 +148,9 @@ test('drawer supports dismissal, focus return, navigation and repeated opening',
 test('narrow viewport does not overflow before or after menu use', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 740 });
   await page.goto('./');
+  const shortBio = page.locator('#about > div > p');
+  await expect(shortBio).toHaveCSS('font-size', '18px');
+  await expect(shortBio).toHaveCSS('overflow', 'visible');
   const fits = () => page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth);
   await test.info().attach('viewport-diagnostics', {
     body: JSON.stringify(await page.evaluate(() => ({
@@ -273,7 +276,10 @@ test('education accordions support repeated keyboard use with consistent timelin
   await expect(page.locator('#about')).not.toContainText('Academic recognition');
   await expect(page.locator('#about')).not.toContainText('I’m Seb');
   const bio = page.locator('#about > div > p');
-  await expect(bio).toHaveText('I build full-stack applications, desktop tools, and interactive experiences using Python, TypeScript, and React.');
+  await expect(bio).toHaveText('Curiosity drives what I build, from practical tools to playful 3D experiences. I like turning ‘what if?’ into something you can try.');
+  await expect(bio).toHaveCSS('font-size', '18px');
+  if (test.info().project.name === 'desktop') expect(await bio.evaluate(node => node.getBoundingClientRect().height <= 2 * parseFloat(getComputedStyle(node).lineHeight) + 1)).toBe(true);
+  await expect(bio).toHaveCSS('overflow', 'visible');
   await page.keyboard.press('Space');
   await expect(details).not.toHaveAttribute('open');
   await details.locator('summary').click();

@@ -1,6 +1,6 @@
 # October 6 content update
 
-The final About text is one concise sentence about building full-stack applications, desktop tools, and interactive experiences with Python, TypeScript, and React. These capabilities are supported by the owner-approved profile and verified projects. The introduction does not repeat the owner's name or infer a new employment status.
+The final About text is the owner's approved two-sentence copy: ‘Curiosity drives what I build, from practical tools to playful 3D experiences. I like turning “what if?” into something you can try.’ It adds personality without repeating their name or introducing an employment claim. Browser checks keep it within two natural desktop lines; smaller screens may wrap it over more lines so no approved text is clipped or shrunk.
 
 The FAU card consolidates the bachelor's degree and minor. Its May 2026 date, GPA 3.85, minor title and coursework were checked against the owner's current 3D Portfolio résumé/content. The standalone high-school diploma card and academic-recognition accordion are removed at the owner's request. The Global Career Accelerator entry retains neutral program wording without a new certificate claim.
 

@@ -55,7 +55,7 @@ export const personalInfo = {
   location: "Boynton Beach, FL",
   email: "sebas.t.nait@gmail.com",
   phone: "+1 (954) 304-7962",
-  bio: "I build full-stack applications, desktop tools, and interactive experiences using Python, TypeScript, and React.",
+  bio: "Curiosity drives what I build, from practical tools to playful 3D experiences. I like turning ‘what if?’ into something you can try.",
   skills: [
     "Full-Stack Developer",
     "AI & Machine Learning",
