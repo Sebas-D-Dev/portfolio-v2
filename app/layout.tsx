@@ -68,10 +68,15 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  manifest: `${basePath}/site.webmanifest`,
   icons: {
-    icon: `${basePath}/favicon.ico`,
-    shortcut: `${basePath}/favicon.ico`,
-    apple: `${basePath}/favicon.ico`,
+    icon: [
+      { url: `${basePath}/favicon-16x16.png`, type: "image/png", sizes: "16x16" },
+      { url: `${basePath}/favicon-32x32.png`, type: "image/png", sizes: "32x32" },
+      { url: `${basePath}/favicon.svg`, type: "image/svg+xml", sizes: "any" },
+    ],
+    shortcut: `${basePath}/favicon.ico?v=blue-facet-1`,
+    apple: { url: `${basePath}/apple-touch-icon.png`, type: "image/png", sizes: "180x180" },
   },
 };
 

@@ -25,6 +25,30 @@ test('export has working images, links, metadata and honest project statuses', a
   await expect(page.getByRole('link', { name: 'Explore in 3D for 3D Portfolio (opens in a new tab)' })).toHaveAttribute('href', 'https://engineering-3d-portfolio.storres788559.chatgpt.site');
   await expect(page).toHaveTitle('Portfolio V2 | Sebastian Torres');
   await expect(page.locator('meta[property="og:site_name"]')).toHaveAttribute('content', 'Portfolio V2');
+  const sitePath = new URL(page.url()).pathname.replace(/\/$/, '');
+  for (const link of await page.locator('link[rel="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"], link[rel="manifest"]').all()) {
+    const href = (await link.getAttribute('href'))!;
+    expect(new URL(href, page.url()).pathname).toMatch(new RegExp(`^${sitePath}/`));
+    expect((await request.get(href)).ok()).toBe(true);
+  }
+  await expect(page.locator('link[rel="icon"][type="image/svg+xml"]')).toHaveAttribute('href', `${sitePath}/favicon.svg`);
+  await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveAttribute('sizes', '180x180');
+  const manifestUrl = new URL((await page.locator('link[rel="manifest"]').getAttribute('href'))!, page.url());
+  const manifest = await (await request.get(manifestUrl.toString())).json();
+  expect(new URL(manifest.start_url, manifestUrl).pathname).toBe(`${sitePath}/`);
+  for (const icon of manifest.icons) {
+    const iconUrl = new URL(icon.src, manifestUrl);
+    const iconResponse = await request.get(iconUrl.toString());
+    expect(iconResponse.ok()).toBe(true);
+    expect(iconResponse.headers()['content-type']).toContain('image/png');
+    const dimensions = await page.evaluate(async url => {
+      const image = new Image();
+      image.src = url;
+      await image.decode();
+      return `${image.naturalWidth}x${image.naturalHeight}`;
+    }, iconUrl.toString());
+    expect(dimensions).toBe(icon.sizes);
+  }
   await expect(page.locator('#projects')).toContainText('Early prototype');
   await expect(page.locator('#projects')).toContainText('Not an app screenshot');
   await expect(page.locator('#projects button[disabled]')).toHaveCount(0);
