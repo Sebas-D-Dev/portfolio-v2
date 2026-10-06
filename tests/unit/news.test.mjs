@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { parseFeed } from '../../scripts/refresh-news.mjs';
-import { normalizeArticle, safeUrl, uniqueArticles, plainText } from '../../lib/news-feed.mjs';
+import { normalizeArticle, safeUrl, uniqueArticles, plainText, balanceSources } from '../../lib/news-feed.mjs';
 const feed = { id: 'test', source: 'Test feed', category: 'tech' };
 const now = Date.parse('2026-10-06T12:00:00Z');
 test('RSS keeps dated older articles, strips markup, deduplicates and excludes unsafe/future items', () => {
@@ -43,4 +43,12 @@ test('namespaced RDF dates and prefixed Atom fields are supported', () => {
 test('display excerpts end at a word boundary with an ellipsis and no executable markup', () => {
   assert.equal(plainText('<b>Clear words</b><script>bad()</script>', 50), 'Clear words');
   assert.equal(plainText('A useful explanation with more detail', 20), 'A useful…');
+});
+
+
+test('All view balances prolific publishers without losing their stories', () => {
+  const items = ['a', 'a', 'a', 'b', 'c'].map((id, index) => ({ source: { id }, publishedAt: new Date(now - index * 1000).toISOString(), title: `${id}-${index}` }));
+  const balanced = balanceSources(items);
+  assert.deepEqual(balanced.slice(0, 3).map(article => article.source.id), ['a', 'b', 'c']);
+  assert.equal(balanced.length, items.length);
 });

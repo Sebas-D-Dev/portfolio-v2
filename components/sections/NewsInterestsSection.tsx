@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { newsCategories, type FeedSnapshot, type NewsCategoryId } from '@/app/data/news';
+import { balanceSources } from '@/lib/news-feed.mjs';
 import { requestDeadline } from '@/lib/request-deadline';
 import { refreshLiveNews, validateSnapshot } from '@/lib/news-client';
 
@@ -42,7 +43,7 @@ export default function NewsInterestsSection() {
     finally { if (!controller.signal.aborted) setRefreshing(false); }
   };
 
-  const articles = useMemo(() => (snapshot?.articles ?? []).filter(article => activeCategory === 'all' || article.category === activeCategory), [snapshot, activeCategory]);
+  const articles = useMemo(() => activeCategory === 'all' ? balanceSources(snapshot?.articles ?? []) : (snapshot?.articles ?? []).filter(article => article.category === activeCategory), [snapshot, activeCategory]);
   const totalPages = Math.ceil(articles.length / PAGE_SIZE);
   const currentArticles = articles.slice(currentPage * PAGE_SIZE, (currentPage + 1) * PAGE_SIZE);
   const loadedSources = snapshot?.sources.filter(source => source.status === 'ok').length ?? 0;
