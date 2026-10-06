@@ -52,3 +52,12 @@ test('All view balances prolific publishers without losing their stories', () =>
   assert.deepEqual(balanced.slice(0, 3).map(article => article.source.id), ['a', 'b', 'c']);
   assert.equal(balanced.length, items.length);
 });
+
+
+test('numeric feed entities decode as text without interpreting markup or invalid Unicode', () => {
+  assert.equal(plainText('Please don&#39;t name it ParaMax.'), "Please don't name it ParaMax.");
+  assert.equal(plainText('India&#8217;s &#x1F4BB; &amp; don&#X27;t'), "India’s 💻 & don't");
+  assert.equal(plainText('don&amp;#39;t'), "don't");
+  assert.equal(plainText('&#60;img src=x onerror=alert(1)&#62;'), '<img src=x onerror=alert(1)>');
+  assert.equal(plainText('&#0; &#xD800; &#1114112; &#999999999999999999999999999999;'), '&#0; &#xD800; &#1114112; &#999999999999999999999999999999;');
+});

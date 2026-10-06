@@ -482,3 +482,17 @@ test('navigation, card actions, social and contact links have valid destinations
     await expect(page.getByRole('dialog')).not.toBeVisible();
   }
 });
+
+
+test('RSS numeric entities display as text without creating executable elements', async ({ page }) => {
+  const encoded = article('India&#8217;s code &amp; news');
+  encoded.description = 'Please don&#39;t name it ParaMax.';
+  const markup = article('Code: &#60;img src=x onerror=window.rssEntityExecuted=true&#62;', 'https://www.nasa.gov/entity-test/');
+  await page.route('**/news.json', route => route.fulfill({ json: snapshot([encoded, markup]) }));
+  await page.goto('./');
+  await expect(page.getByRole('heading', { name: 'India’s code & news', exact: true })).toBeVisible();
+  await expect(page.getByText("Please don't name it ParaMax.", { exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Code: <img src=x onerror=window.rssEntityExecuted=true>', exact: true })).toBeVisible();
+  await expect(page.locator('#news img')).toHaveCount(0);
+  expect(await page.evaluate(() => Object.hasOwn(window, 'rssEntityExecuted'))).toBe(false);
+});
