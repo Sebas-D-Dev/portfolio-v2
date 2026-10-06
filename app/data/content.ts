@@ -55,7 +55,7 @@ export const personalInfo = {
   location: "Boynton Beach, FL",
   email: "sebas.t.nait@gmail.com",
   phone: "+1 (954) 304-7962",
-  bio: "I’m Seb, a software developer exploring ideas through code, design, and experimentation. My projects span full-stack web apps, desktop tools, data workflows, and interactive 3D experiences. I work with Python, TypeScript, React, and Next.js, connecting interfaces with APIs and databases. Alongside my personal projects, I’ve worked on sports-data services, ISP onboarding, and university reservation systems.",
+  bio: "I build full-stack applications, desktop tools, and interactive experiences using Python, TypeScript, and React.",
   skills: [
     "Full-Stack Developer",
     "AI & Machine Learning",
@@ -116,7 +116,7 @@ export const projects: Project[] = [
   },
   {
     id: "portfolio",
-    title: "portfolio-v2",
+    title: "Portfolio V2",
     status: "Live · Ongoing",
     category: "Web development",
     image: getAssetPath("projects/portfolio-v2-hero-card.png"),
@@ -208,7 +208,6 @@ export const education: Education[] = [
     technologies: [],
     details: [
       { title: "Degree & coursework", items: ["GPA: 3.85", "Data Analytics", "Data Mining & Machine Learning", "Deep Learning", "Introduction to Artificial Intelligence"] },
-      { title: "Academic recognition", items: ["President’s Honor List (Fall 2023–2025)", "Spirit of Atlantic Merit Scholarship recipient", "Florida Medallion Scholarship recipient"] },
     ],
   },
   {

@@ -1,4 +1,4 @@
-# Portfolio Website v2
+# Portfolio V2
 
 Sebastian Torres’s personal portfolio, built with Next.js, React, TypeScript, and Tailwind CSS.
 
@@ -11,7 +11,7 @@ The blue-on-dark single-page design includes a project showcase, expandable expe
 Personal work appears directly after the hero; professional experience follows it. Each project states its current status and only offers relevant actions:
 
 - **3D Portfolio:** in-progress spatial portfolio, with an owner-supplied screenshot of the actual 3D facility scene
-- **portfolio-v2:** ongoing web portfolio, with source and live-site links
+- **Portfolio V2:** ongoing web portfolio, with source and live-site links
 - **Stack Inventory:** inventory application shown with its verified project logo, plus source and a sign-in-required app link
 - **Nexus:** early desktop-tool prototype, with source and labeled concept artwork
 - **Directory Structure Generator:** developer-tool prototype, with source and labeled concept artwork
@@ -65,7 +65,7 @@ Pull requests run checks for both `/` and `/portfolio-v2`. The Pages workflow de
 - Root-domain hosting/local development: omit those flags
 - `SITE_URL` sets the canonical public URL for metadata and social images, including a trailing slash; its default is the existing GitHub Pages site
 
-The existing downloadable résumé is retained. The About and consolidated FAU education card use the owner’s newer verified résumé/profile content; the older downloadable PDF still has earlier GPA/expected-graduation wording. See [content provenance](docs/content-updates.md).
+The downloadable résumé is the exact PDF selected by the owner from 3D Portfolio. About is a brief introduction, and the consolidated FAU card retains degree/minor/coursework details. See [content provenance](docs/content-updates.md).
 
 ## Contact form configuration
 

@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { createHash } from 'node:crypto';
 
 const emptySnapshot = { generatedAt: new Date().toISOString(), articles: [], sources: [{ id: 'techcrunch', status: 'ok', fetchedAt: new Date().toISOString() }] };
 const article = (title = 'Recent test article', url = 'https://www.nasa.gov/') => ({ title, url, description: 'A fixture for offline browser testing.', urlToImage: '', publishedAt: new Date().toISOString(), source: { id: 'techcrunch', name: 'TechCrunch' }, category: 'tech' });
@@ -20,6 +21,9 @@ test('export has working images, links, metadata and honest project statuses', a
   await expect(page.getByRole('heading', { name: 'Personal Projects' })).toBeVisible();
   await expect(page.locator('#projects article')).toHaveCount(5);
   await expect(page.locator('#project-3d-portfolio')).toHaveText('3D Portfolio');
+  await expect(page.locator('#project-portfolio')).toHaveText('Portfolio V2');
+  await expect(page).toHaveTitle('Portfolio V2 | Sebastian Torres');
+  await expect(page.locator('meta[property="og:site_name"]')).toHaveAttribute('content', 'Portfolio V2');
   await expect(page.locator('#projects')).toContainText('Early prototype');
   await expect(page.locator('#projects')).toContainText('Not an app screenshot');
   await expect(page.locator('#projects button[disabled]')).toHaveCount(0);
@@ -38,6 +42,7 @@ test('export has working images, links, metadata and honest project statuses', a
   const response = await request.get((await resume.getAttribute('href'))!);
   expect(response.ok()).toBe(true);
   expect(response.headers()['content-type']).toContain('application/pdf');
+  expect(createHash('sha256').update(await response.body()).digest('hex')).toBe('5708d87f4107469af7f7ddd8e6bbbf9dd96df5bcbdf968062f77ba261f487d6f');
   expect(await page.locator('meta[property="og:image"]').getAttribute('content')).toMatch(/^https:\/\//);
   expect(errors).toEqual([]);
   for (const card of await page.locator('#projects article').all()) {
@@ -260,11 +265,15 @@ test('education accordions support repeated keyboard use with consistent timelin
   await expect(page.locator('#about')).not.toContainText('High School Diploma');
   await expect(page.locator('#about')).not.toContainText('aspiring');
   await expect(page.getByRole('heading', { name: 'Bachelor of Arts in Computer Science' })).toHaveCount(1);
-  const details = page.locator('details').filter({ has: page.locator('summary', { hasText: 'Academic recognition' }) });
+  const details = page.locator('details').filter({ has: page.locator('summary', { hasText: 'Degree & coursework' }) });
   await details.locator('summary').focus();
   await page.keyboard.press('Enter');
   await expect(details).toHaveAttribute('open', '');
-  await expect(details).toContainText('Florida Medallion Scholarship');
+  await expect(details).toContainText('GPA: 3.85');
+  await expect(page.locator('#about')).not.toContainText('Academic recognition');
+  await expect(page.locator('#about')).not.toContainText('I’m Seb');
+  const bio = page.locator('#about > div > p');
+  await expect(bio).toHaveText('I build full-stack applications, desktop tools, and interactive experiences using Python, TypeScript, and React.');
   await page.keyboard.press('Space');
   await expect(details).not.toHaveAttribute('open');
   await details.locator('summary').click();

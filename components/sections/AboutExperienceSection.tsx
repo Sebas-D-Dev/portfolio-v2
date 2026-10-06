@@ -49,7 +49,7 @@ export default function AboutExperienceSection() {
       <p className="mx-auto mb-14 max-w-3xl text-center text-lg leading-relaxed text-gray-300">{personalInfo.bio}</p>
       <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
         <Timeline title="Professional Experience" items={experiences} />
-        <Timeline title="Education & Achievements" items={education} />
+        <Timeline title="Education" items={education} />
       </div>
     </div>
   </section>;
