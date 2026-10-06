@@ -3,7 +3,8 @@
 export const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
 
 export const assetPath = (filename: string) => `${basePath}/assets/${filename}`;
-export const resumeUrl = assetPath('resume.pdf');
+// Content version avoids serving the previously cached résumé after publication.
+export const resumeUrl = `${assetPath('resume.pdf')}?v=5708d87f`;
 
 // Override only when the canonical public deployment changes.
 export const siteUrl = new URL(

@@ -11,10 +11,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        github-pages: ['false', 'true']
+        include:
+          - github-pages: 'false'
+            contact: none
+          - github-pages: 'true'
+            contact: auto
+          - github-pages: 'false'
+            contact: owner
     env:
       GITHUB_PAGES: ${{ matrix.github-pages }}
       NEXT_TELEMETRY_DISABLED: '1'
+      TEST_EMAIL_CONFIG: ${{ matrix.contact }}
+      # Fake identifiers; Playwright intercepts every email request.
+      NEXT_PUBLIC_EMAILJS_SERVICE_ID: ${{ matrix.contact != 'none' && 'test_service' || '' }}
+      NEXT_PUBLIC_EMAILJS_TEMPLATE_USER_MESSAGE: ${{ matrix.contact != 'none' && 'test_owner' || '' }}
+      NEXT_PUBLIC_EMAILJS_TEMPLATE_AUTO_REPLY: ${{ matrix.contact == 'auto' && 'test_reply' || '' }}
+      NEXT_PUBLIC_EMAILJS_PUBLIC_KEY: ${{ matrix.contact != 'none' && 'test_public_key' || '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -24,6 +36,7 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run typecheck
+      - run: npm run test:unit
       - run: npm run build
       - run: npm run check:export
       - run: npx playwright install --with-deps chromium
@@ -31,6 +44,8 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: browser-evidence-pages-${{ matrix.github-pages }}
-          path: test-results/
+          name: browser-evidence-pages-${{ matrix.github-pages }}-contact-${{ matrix.contact }}
+          path: |
+            test-results/
+            public/news.json
           retention-days: 7

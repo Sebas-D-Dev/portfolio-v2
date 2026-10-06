@@ -1,27 +1,10 @@
 'use client';
 
-import { useEffect, useState } from "react";
 import Image from "next/image";
 import { assetPath } from "@/lib/site";
 import "../styles/footer.css";
 
 const Footer = () => {
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const footer = document.querySelector(".footer");
-      if (footer) {
-        const rect = footer.getBoundingClientRect();
-        setIsVisible(rect.top < window.innerHeight);
-      }
-    };
-
-    handleScroll();
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   // Public assets need the deployment base path.
   const socialLinks = [
     { 
@@ -47,7 +30,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className={`footer ${isVisible ? "visible" : ""}`}>
+    <footer className="footer">
       <div className="topSection">
         <div className="socials">
           {socialLinks.map((social) => (
@@ -59,7 +42,8 @@ const Footer = () => {
             >
               <Image 
                 src={social.icon} 
-                alt={social.name} 
+                alt=""
+                aria-hidden="true"
                 width={24} 
                 height={24} 
                 className="social-icon" 

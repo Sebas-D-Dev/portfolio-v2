@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: siteUrl,
   alternates: { canonical: siteUrl.toString() },
-  title: "Sebastian Torres | Full-Stack Developer Portfolio",
+  title: "Portfolio V2 | Sebastian Torres",
   description: "Full-stack developer specializing in React, Next.js, TypeScript, and modern web technologies. View my projects, experience, and latest tech interests.",
   keywords: [
     "Sebastian Torres",
@@ -39,21 +39,21 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: siteUrl.toString(),
-    title: "Sebastian Torres | Full-Stack Developer Portfolio",
+    title: "Portfolio V2 | Sebastian Torres",
     description: "Full-stack developer specializing in React, Next.js, TypeScript, and modern web technologies.",
-    siteName: "Sebastian Torres Portfolio",
+    siteName: "Portfolio V2",
     images: [
       {
         url: new URL("assets/projects/portfolio-v2-hero-card.png", siteUrl).toString(),
         width: 1000,
         height: 625,
-        alt: "Sebastian Torres Portfolio",
+        alt: "Portfolio V2 by Sebastian Torres",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Sebastian Torres | Full-Stack Developer Portfolio",
+    title: "Portfolio V2 | Sebastian Torres",
     description: "Full-stack developer specializing in React, Next.js, TypeScript, and modern web technologies.",
     images: [new URL("assets/projects/portfolio-v2-hero-card.png", siteUrl).toString()],
   },
