@@ -3,6 +3,7 @@ import { defineConfig, devices } from '@playwright/test';
 const basePath = process.env.GITHUB_PAGES === 'true' || process.env.DEPLOY_TARGET === 'github-pages' ? '/portfolio-v2' : '';
 export default defineConfig({
   testDir: './tests',
+  testMatch: '**/*.spec.ts',
   fullyParallel: true,
   retries: process.env.CI ? 1 : 0,
   reporter: 'list',

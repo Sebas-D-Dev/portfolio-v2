@@ -235,7 +235,7 @@ test('RSS loader, stale cache, refresh failure and category changes remain hones
   await page.getByRole('button', { name: 'Refresh sources', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Refresh sources', exact: true })).toBeEnabled();
   await expect(page.getByRole('heading', { name: 'Recent test article' })).toBeVisible();
-  await expect(page.getByText('9 sources could not be updated.', { exact: false })).toBeVisible();
+  await expect(page.getByText('8 sources could not be updated.', { exact: false })).toBeVisible();
   await page.getByRole('button', { name: 'AI & ML', exact: true }).click();
   await expect(page.getByText('No articles are currently available for this category.')).toBeVisible();
   await page.getByRole('button', { name: 'All', exact: true }).click();
@@ -254,6 +254,9 @@ test('manual RSS refresh can recover without the snapshot and never uses unsafe 
 
 test('education accordions support repeated keyboard use with consistent timeline alignment', async ({ page }) => {
   await page.goto('./');
+  const aboutHeading = page.getByRole('heading', { name: 'About Me', exact: true });
+  await aboutHeading.scrollIntoViewIfNeeded();
+  await expect(aboutHeading.locator('..')).toHaveCSS('opacity', '1');
   await expect(page.locator('#about')).not.toContainText('High School Diploma');
   await expect(page.locator('#about')).not.toContainText('aspiring');
   await expect(page.getByRole('heading', { name: 'Bachelor of Arts in Computer Science' })).toHaveCount(1);
@@ -271,9 +274,10 @@ test('education accordions support repeated keyboard use with consistent timelin
     const rail = await item.locator('..').boundingBox();
     expect(Math.abs(dot!.x + dot!.width / 2 - rail!.x - 1)).toBeLessThan(2);
   }
-  await page.locator('#about').screenshot({ path: test.info().outputPath('about-expanded.png'), style: '.nav-toggle-btn, .scroll-button { visibility: hidden !important; }' });
+  await page.getByRole('heading', { name: 'Professional Experience' }).click();
+  await page.locator('#about').screenshot({ path: test.info().outputPath('about-expanded.png'), style: '.nav-toggle-btn, .scroll-button, .skip-link { visibility: hidden !important; }' });
   await details.locator('summary').click();
-  await page.locator('#about').screenshot({ path: test.info().outputPath('about-collapsed.png'), style: '.nav-toggle-btn, .scroll-button { visibility: hidden !important; }' });
+  await page.locator('#about').screenshot({ path: test.info().outputPath('about-collapsed.png'), style: '.nav-toggle-btn, .scroll-button, .skip-link { visibility: hidden !important; }' });
 });
 
 test('hover effects avoid layout transitions and canvas pauses behind the menu or lower sections', async ({ page }) => {
@@ -351,11 +355,17 @@ test('build snapshot health is inspectable and news layout is captured', async (
   await test.info().attach('built-feed-health', { body: JSON.stringify({ generatedAt: saved.generatedAt, sources: saved.sources, articleCount: saved.articles.length }), contentType: 'application/json' });
   // Browser fixtures above are deterministic; this is the separately identified
   // real build result, so a live-provider outage cannot masquerade as mock success.
-  if (process.env.CI) expect(saved.articles.length, 'At least one real feed must load in the CI build').toBeGreaterThan(0);
+  if (process.env.CI) {
+    const freshSources = saved.sources.filter((source: { id: string; status: string; fetchedAt: string }) => source.status === 'ok' && source.fetchedAt === saved.generatedAt).map((source: { id: string }) => source.id);
+    expect(saved.articles.some((article: { source: { id: string } }) => freshSources.includes(article.source.id)), 'At least one real article must come from a successful source in this CI build').toBe(true);
+  }
   await page.route('**/news.json', route => route.fulfill({ json: saved }));
   await page.goto('./');
   await expect(page.getByText('Loading the latest saved stories…')).toHaveCount(0);
-  await page.locator('#news').screenshot({ path: test.info().outputPath('news-built-snapshot.png'), style: '.nav-toggle-btn, .scroll-button { visibility: hidden !important; }' });
+  const newsHeading = page.getByRole('heading', { name: 'My Interests & Latest News' });
+  await newsHeading.scrollIntoViewIfNeeded();
+  await expect(newsHeading.locator('..')).toHaveCSS('opacity', '1');
+  await page.locator('#news').screenshot({ path: test.info().outputPath('news-built-snapshot.png'), style: '.nav-toggle-btn, .scroll-button, .skip-link { visibility: hidden !important; }' });
 });
 
 

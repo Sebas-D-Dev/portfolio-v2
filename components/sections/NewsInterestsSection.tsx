@@ -27,7 +27,7 @@ export default function NewsInterestsSection() {
       .then(data => { if (!controller.signal.aborted) setSnapshot(validateSnapshot(data)); })
       .catch(() => { if (!controller.signal.aborted) setLoadFailed(true); })
       .finally(() => { deadline.dispose(); if (!controller.signal.aborted) setLoading(false); });
-    return () => { deadline.dispose(); controller.abort(); requestRef.current?.abort(); };
+    return () => { controller.abort(); requestRef.current?.abort(); deadline.dispose(); };
   }, []);
 
   const refresh = async () => {

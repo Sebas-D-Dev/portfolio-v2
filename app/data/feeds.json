@@ -21,13 +21,6 @@
     "category": "tech"
   },
   {
-    "id": "ai-news",
-    "label": "AI News",
-    "url": "https://www.artificialintelligence-news.com/feed/",
-    "source": "AI News",
-    "category": "ai"
-  },
-  {
     "id": "ml-mastery",
     "label": "ML Mastery",
     "url": "https://machinelearningmastery.com/feed/",
