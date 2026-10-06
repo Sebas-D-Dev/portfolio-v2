@@ -21,7 +21,7 @@ test('export has working images, links, metadata and honest project statuses', a
   await expect(page.locator('#projects')).not.toContainText('Caverna D Sebas');
   await expect(page.locator('#projects')).not.toContainText('STRATUM');
   await expect(page.locator('#projects')).not.toContainText('Earlier development build');
-  await expect(page.getByRole('link', { name: 'View 3D Portfolio screenshot (opens in a new tab)' })).toHaveCount(0);
+  await expect(page.getByRole('link', { name: 'View 3D Portfolio screenshot (opens in a new tab)' })).toHaveAttribute('href', /3d-portfolio-scene\.png$/);
   await expect(page.getByRole('link', { name: 'View Stack Inventory logo (opens in a new tab)' })).toHaveAttribute('href', /stack-inventory-logo\.png$/);
   await expect(page.getByRole('img', { name: 'Stack Inventory project logo', exact: true })).toHaveAttribute('src', /stack-inventory-logo\.png$/);
 
@@ -40,6 +40,20 @@ test('export has working images, links, metadata and honest project statuses', a
     await expect(card).toHaveCSS('opacity', '1');
   }
   await page.locator('#projects').screenshot({ path: test.info().outputPath('project-showcase.png'), style: '.nav-toggle-btn, .scroll-button, .skip-link { visibility: hidden !important; }' });
+  const sceneCard = page.locator('article[aria-labelledby="project-3d-portfolio"]');
+  await sceneCard.scrollIntoViewIfNeeded();
+  await expect(sceneCard).toHaveCSS('opacity', '1');
+  const sceneImage = sceneCard.locator('img');
+  await expect(sceneImage).toHaveAttribute('src', /3d-portfolio-scene\.png$/);
+  await expect(sceneImage).toHaveCSS('object-fit', 'contain');
+  const sceneFraming = await sceneImage.evaluate((image: HTMLImageElement) => ({
+    naturalRatio: image.naturalWidth / image.naturalHeight,
+    renderedRatio: image.getBoundingClientRect().width / image.getBoundingClientRect().height,
+  }));
+  expect(sceneFraming.naturalRatio).toBeCloseTo(1973 / 908, 3);
+  expect(sceneFraming.renderedRatio).toBeCloseTo(sceneFraming.naturalRatio, 3);
+  await sceneCard.screenshot({ path: test.info().outputPath('3d-scene-card.png'), style: '.nav-toggle-btn, .scroll-button, .skip-link { visibility: hidden !important; }' });
+
   // Inspect the final card itself, not only its raw source image.
   const portfolioCard = page.locator('article[aria-labelledby="project-portfolio"]');
   await portfolioCard.scrollIntoViewIfNeeded();
@@ -194,4 +208,8 @@ test('normal-motion navigation and backdrop dismissal stay usable', async ({ pag
   await open.click();
   await expect(dialog.getByRole('link', { name: 'About & Experience' })).toHaveAttribute('aria-current', 'location');
   await page.keyboard.press('Escape');
+  const sceneCard = page.locator('article[aria-labelledby="project-3d-portfolio"]');
+  await sceneCard.scrollIntoViewIfNeeded();
+  await sceneCard.hover();
+  await expect(sceneCard.locator('img')).toHaveCSS('transform', 'none');
 });

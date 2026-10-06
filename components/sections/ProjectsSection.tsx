@@ -5,17 +5,23 @@ import Image from 'next/image';
 import { ArrowUpRight, Code2, FolderTree, LayoutGrid } from 'lucide-react';
 import { projects, type Project } from '@/app/data/content';
 
+const usesWideFeature = (project: Project, featured: boolean) =>
+  featured && Boolean(project.imageWidth && project.imageHeight && project.imageWidth / project.imageHeight > 1.9);
+
 function ProjectVisual({ project, featured }: { project: Project; featured: boolean }) {
   return (
     <figure className="flex min-w-0 flex-col bg-dark-900">
-      <div className={`relative aspect-[16/10] overflow-hidden bg-dark-900 ${featured ? 'lg:flex-1 lg:min-h-80' : ''}`}>
+      <div
+        className={`relative overflow-hidden bg-dark-900 ${featured && !usesWideFeature(project, featured) ? 'lg:flex-1 lg:min-h-80' : ''}`}
+        style={{ aspectRatio: project.imageWidth && project.imageHeight ? `${project.imageWidth} / ${project.imageHeight}` : '16 / 10' }}
+      >
         {project.image ? (
           <Image
             src={project.image}
             alt={project.imageAlt ?? project.title}
             fill
-            sizes={featured ? '(min-width: 1024px) 55vw, 100vw' : '(min-width: 768px) 50vw, 100vw'}
-            className={`${project.id === 'stack-inventory' ? 'object-contain p-10 bg-dark-900' : 'object-contain'} transition-transform duration-500 motion-safe:group-hover:scale-[1.03]`}
+            sizes={usesWideFeature(project, featured) ? '(min-width: 1280px) 1232px, 100vw' : featured ? '(min-width: 1024px) 55vw, 100vw' : '(min-width: 768px) 50vw, 100vw'}
+            className={`${project.id === 'stack-inventory' ? 'object-contain p-10 bg-dark-900' : 'object-contain'} transition-transform duration-500 ${project.id === '3d-portfolio' ? '' : 'motion-safe:group-hover:scale-[1.03]'}`}
           />
         ) : (
           <div aria-hidden="true" className="flex h-full flex-col items-center justify-center gap-5 bg-gradient-to-br from-primary-900/60 via-dark-900 to-secondary-900/40 p-8">
@@ -39,7 +45,7 @@ function ProjectCard({ project, featured = false }: { project: Project; featured
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.1 }}
       transition={{ duration: 0.35 }}
-      className={`group min-w-0 overflow-hidden rounded-2xl border border-primary-500/20 bg-dark-800/40 transition-colors hover:border-primary-400/60 ${featured && project.image ? 'grid lg:grid-cols-[1.2fr_1fr]' : 'flex flex-col'}`}
+      className={`group min-w-0 overflow-hidden rounded-2xl border border-primary-500/20 bg-dark-800/40 transition-colors hover:border-primary-400/60 ${featured && project.image && !usesWideFeature(project, featured) ? 'grid lg:grid-cols-[1.2fr_1fr]' : 'flex flex-col'}`}
       aria-labelledby={`project-${project.id}`}
     >
       {(project.image || project.visual) && <ProjectVisual project={project} featured={featured} />}

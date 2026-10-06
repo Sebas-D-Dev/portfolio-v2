@@ -30,7 +30,7 @@ for (const stale of ['Caverna D Sebas', 'STRATUM', 'caverna-earlier-home.png', '
 }
 assert(html.includes('assets/projects/portfolio-v2-hero-card.png'), 'Updated portfolio screenshot is missing');
 assert(html.includes('assets/projects/stack-inventory-logo.png'), 'Stack Inventory must use its project logo');
-// The 3D project stays text-only until a fresh renamed-build capture is verified.
-assert(!html.includes('View 3D Portfolio screenshot'), 'Do not advertise an unavailable 3D screenshot');
+assert(html.includes('assets/projects/3d-portfolio-scene.png'), 'The verified 3D scene screenshot is missing');
+assert(html.includes('View 3D Portfolio screenshot'), 'The 3D screenshot action is missing');
 
 console.log(`Static export checks passed (${basePath || '/'}, ${assets} local URLs)`);

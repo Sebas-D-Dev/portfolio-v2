@@ -13,6 +13,8 @@ export interface Project {
   id: string;
   image?: string;
   imageAlt?: string;
+  imageWidth?: number;
+  imageHeight?: number;
   imageLabel: string;
   status: string;
   category: string;
@@ -102,8 +104,11 @@ export const projects: Project[] = [
     title: "3D Portfolio",
     status: "In progress",
     category: "3D engineering portfolio",
-    // Add a screenshot only after a fresh capture of the renamed build is verified.
-    imageLabel: "Project overview",
+    image: getAssetPath("projects/3d-portfolio-scene.png"),
+    imageAlt: "3D Portfolio’s underground facility scene, with a central workstation, project monitors, and hardware exhibits.",
+    imageWidth: 1973,
+    imageHeight: 908,
+    imageLabel: "3D scene screenshot",
     description: "An interactive portfolio set inside an underground engineering facility. A work-in-progress experiment in exploring projects through a spatial, 3D environment.",
     techStack: ["3D", "Interactive design", "Web development"],
     services: ["Spatial navigation", "Personal portfolio"],

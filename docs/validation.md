@@ -27,8 +27,12 @@ The first CI browser run caught a missing Shift+Tab wrap in the drawer and a hor
 
 ## Project visual revision
 
-The follow-up revision renames the featured project to **3D Portfolio**, replaces the portfolio-v2 thumbnail/social image with the current PR-build hero capture, and uses the verified Stack Inventory logo instead of an old application screenshot. The 3D card is temporarily text-only while a fresh renamed-build capture is unavailable. Static export and browser guards reject the former brand and stale image references; image loading and the logo action remain covered by the browser suite.
+The follow-up revision renames the featured project to **3D Portfolio**, replaces the portfolio-v2 thumbnail/social image with the current PR-build hero capture, and uses the verified Stack Inventory logo instead of an old application screenshot. The 3D card initially stayed text-only; the October 6 owner-supplied scene image now replaces that temporary state. Static export and browser guards reject the former brand and stale image references; image loading and the logo action remain covered by the browser suite.
 
 ## Hero framing revision
 
 The portfolio-v2 image now uses a padded 16:10 detail of the actual hero card. Browser checks verify that the capture rectangle stays inside the hero, leaves at least 40 pixels around all meaningful card content, and produces exactly 1000×625 pixels. Both desktop and mobile checks also verify the installed image path, natural/rendered aspect ratios, and `object-fit: contain`, then save an isolated `portfolio-card.png` for visual inspection. This supplements the complete showcase captures.
+
+## 3D scene integration
+
+The owner-supplied 1973×908 PNG is preserved byte-for-byte. The featured image uses its full native ratio, contain sizing, and no hover zoom. Desktop/mobile checks verify the scene asset, full-size screenshot action, natural/rendered ratio, and no normal-motion hover transform, then save isolated `3d-scene-card.png` captures for pixel inspection. The existing clean portfolio hero image and Stack Inventory logo are unchanged.
