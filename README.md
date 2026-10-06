@@ -65,6 +65,8 @@ Pull requests run checks for both `/` and `/portfolio-v2`. The Pages workflow de
 - Root-domain hosting/local development: omit those flags
 - `SITE_URL` sets the canonical public URL for metadata and social images, including a trailing slash; its default is the existing GitHub Pages site
 
+The approved blue faceted S favicon includes a multi-size ICO, a simplified SVG and 16/32 px PNGs, an opaque 180 px Apple touch icon, and 192/512 px manifest icons. Metadata uses the deployment base path; the manifest resolves its icons, start URL and scope relative to itself so both hosting paths work. The manifest keeps browser navigation and does not add offline support. Asset pixels are the owner-approved design from October 6, 2026.
+
 The downloadable résumé is the exact PDF selected by the owner from 3D Portfolio. About is a brief introduction, and the consolidated FAU card retains degree/minor/coursework details. See [content provenance](docs/content-updates.md).
 
 ## Contact form configuration

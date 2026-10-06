@@ -38,4 +38,23 @@ assert(html.includes('Portfolio V2'), 'Project display name must use Portfolio V
 assert(!html.includes('Academic recognition'), 'Removed academic recognition section remains');
 assert.equal(createHash('sha256').update(await readFile('out/assets/resume.pdf')).digest('hex'), '5708d87f4107469af7f7ddd8e6bbbf9dd96df5bcbdf968062f77ba261f487d6f', 'Exported résumé must be the exact selected 3D Portfolio PDF');
 
+assert(html.includes(`href="${basePath}/favicon.svg"`), 'SVG favicon must use the deployment base path');
+assert(html.includes(`href="${basePath}/apple-touch-icon.png"`), 'Apple touch icon must use the deployment base path');
+assert(html.includes(`href="${basePath}/site.webmanifest"`), 'Manifest must use the deployment base path');
+const manifest = JSON.parse(await readFile('out/site.webmanifest', 'utf8'));
+const manifestUrl = new URL(`${basePath}/site.webmanifest`, 'https://portfolio.example');
+assert.equal(new URL(manifest.start_url, manifestUrl).pathname, `${basePath}/`);
+assert.equal(new URL(manifest.scope, manifestUrl).pathname, `${basePath}/`);
+for (const icon of manifest.icons) {
+  const url = new URL(icon.src, manifestUrl);
+  assert.equal(url.origin, manifestUrl.origin);
+  assert(url.pathname.startsWith(`${basePath}/`));
+  const file = await readFile(resolve('out', `.${url.pathname.slice(basePath.length)}`));
+  assert.equal(`${file.readUInt32BE(16)}x${file.readUInt32BE(20)}`, icon.sizes);
+}
+const favicon = await readFile('out/favicon.ico');
+assert.equal(favicon.readUInt16LE(2), 1, 'Fallback favicon must be an ICO');
+assert.equal(favicon.readUInt16LE(4), 3, 'ICO must include the approved 16/32/48 px sizes');
+assert.deepEqual([favicon[6], favicon[22], favicon[38]], [16, 32, 48]);
+
 console.log(`Static export checks passed (${basePath || '/'}, ${assets} local URLs)`);
