@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { parseFeed } from '../../scripts/refresh-news.mjs';
-import { normalizeArticle, safeUrl, uniqueArticles } from '../../lib/news-feed.mjs';
+import { normalizeArticle, safeUrl, uniqueArticles, plainText } from '../../lib/news-feed.mjs';
 const feed = { id: 'test', source: 'Test feed', category: 'tech' };
 const now = Date.parse('2026-10-06T12:00:00Z');
 test('RSS keeps dated older articles, strips markup, deduplicates and excludes unsafe/future items', () => {
@@ -37,4 +37,10 @@ test('namespaced RDF dates and prefixed Atom fields are supported', () => {
   assert.equal(parseFeed(rdf, feed, now)[0].title, 'RDF story');
   const atom = '<a:feed xmlns:a="http://www.w3.org/2005/Atom"><a:entry><a:title>Prefixed story</a:title><a:link href="https://news.example/atom"/><a:updated>2026-10-06T10:00:00Z</a:updated></a:entry></a:feed>';
   assert.equal(parseFeed(atom, feed, now)[0].title, 'Prefixed story');
+});
+
+
+test('display excerpts end at a word boundary with an ellipsis and no executable markup', () => {
+  assert.equal(plainText('<b>Clear words</b><script>bad()</script>', 50), 'Clear words');
+  assert.equal(plainText('A useful explanation with more detail', 20), 'A useful…');
 });

@@ -112,3 +112,8 @@
     font-size: 13px;
   }
 }
+
+/* Leave a clear mobile lane for the fixed back-to-top control. */
+@media (max-width: 640px) {
+  .footer { padding-bottom: calc(6rem + env(safe-area-inset-bottom, 0px)); }
+}

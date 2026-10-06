@@ -299,6 +299,12 @@ test('hover effects avoid layout transitions and canvas pauses behind the menu o
   const up = page.getByRole('button', { name: 'Scroll up' });
   await up.hover();
   await expect(up).toHaveCSS('transition-property', 'transform, background-color');
+  const upBounds = await up.boundingBox();
+  for (const element of await page.locator('footer a, footer .copyright').all()) {
+    const bounds = await element.boundingBox();
+    const overlaps = bounds && upBounds && bounds.x < upBounds.x + upBounds.width && bounds.x + bounds.width > upBounds.x && bounds.y < upBounds.y + upBounds.height && bounds.y + bounds.height > upBounds.y;
+    expect(overlaps, 'Back-to-top must not cover footer links or text').toBe(false);
+  }
   await page.locator('footer').screenshot({ path: test.info().outputPath('footer-hover.png') });
   await up.click();
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBeLessThan(5);
