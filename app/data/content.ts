@@ -105,6 +105,8 @@ export const projects: Project[] = [
     title: "3D Portfolio",
     status: "In progress",
     category: "3D engineering portfolio",
+    liveUrl: "https://engineering-3d-portfolio.storres788559.chatgpt.site",
+    liveLabel: "Explore in 3D",
     image: getAssetPath("projects/3d-portfolio-scene.png"),
     imageAlt: "3D Portfolio’s underground facility scene, with a central workstation, project monitors, and hardware exhibits.",
     imageWidth: 1973,

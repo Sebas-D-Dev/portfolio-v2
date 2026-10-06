@@ -56,3 +56,8 @@ The downloadable résumé now uses the exact current 3D Portfolio PDF selected b
 ## Contact input hardening
 
 The follow-on input checks trim submitted data, enforce 100/254/5,000-character bounds, reject blank name/message and control characters in header-like fields, and retain browser-native email validity. Five unit cases and a configured-browser scenario cover whitespace, oversized/programmatically changed fields, header controls, and legitimate code/angle-bracket messages. The form never renders visitor text as HTML, and no message is pre-escaped or silently stripped. All test sends are intercepted. These are client-side input-hygiene checks, not protection against a caller who bypasses the page and uses EmailJS directly; provider/template protections remain a separate setup review.
+
+
+## Public 3D link and release audit
+
+The owner approved anyone-with-the-link access for 3D Portfolio. Its public access setting and an anonymous200 response with no login gate were verified before adding the exact public URL. See `link-audit.md` for local/navigation/contact coverage, verified public source repositories, and external-service limitations. The final About copy is the owner's approved two-sentence curiosity-led introduction; browser checks enforce at most two natural desktop lines and preserve readable, unclipped wrapping on smaller screens.

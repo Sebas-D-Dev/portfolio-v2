@@ -42,7 +42,8 @@ const Footer = () => {
             >
               <Image 
                 src={social.icon} 
-                alt={social.name} 
+                alt=""
+                aria-hidden="true"
                 width={24} 
                 height={24} 
                 className="social-icon" 

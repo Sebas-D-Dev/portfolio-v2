@@ -22,6 +22,7 @@ test('export has working images, links, metadata and honest project statuses', a
   await expect(page.locator('#projects article')).toHaveCount(5);
   await expect(page.locator('#project-3d-portfolio')).toHaveText('3D Portfolio');
   await expect(page.locator('#project-portfolio')).toHaveText('Portfolio V2');
+  await expect(page.getByRole('link', { name: 'Explore in 3D for 3D Portfolio (opens in a new tab)' })).toHaveAttribute('href', 'https://engineering-3d-portfolio.storres788559.chatgpt.site');
   await expect(page).toHaveTitle('Portfolio V2 | Sebastian Torres');
   await expect(page.locator('meta[property="og:site_name"]')).toHaveAttribute('content', 'Portfolio V2');
   await expect(page.locator('#projects')).toContainText('Early prototype');
@@ -280,6 +281,7 @@ test('education accordions support repeated keyboard use with consistent timelin
   await expect(bio).toHaveCSS('font-size', '18px');
   if (test.info().project.name === 'desktop') expect(await bio.evaluate(node => node.getBoundingClientRect().height <= 2 * parseFloat(getComputedStyle(node).lineHeight) + 1)).toBe(true);
   await expect(bio).toHaveCSS('overflow', 'visible');
+  await test.info().attach('about-line-count', { body: JSON.stringify(await bio.evaluate(node => ({ width: node.getBoundingClientRect().width, lines: Math.round(node.getBoundingClientRect().height / parseFloat(getComputedStyle(node).lineHeight)), fontSize: getComputedStyle(node).fontSize }))), contentType: 'application/json' });
   await page.keyboard.press('Space');
   await expect(details).not.toHaveAttribute('open');
   await details.locator('summary').click();
@@ -443,4 +445,40 @@ test('contact rejects invalid fields while preserving code as message data', asy
   expect(ownerMessages).toHaveLength(1);
   expect(ownerMessages[0]).toMatchObject({ name: 'Visitor', from_name: 'Visitor', from_email: 'browser-test@example.invalid', message: code });
   expect(await page.evaluate(() => Object.hasOwn(window, 'contactScriptExecuted'))).toBe(false);
+});
+
+test('navigation, card actions, social and contact links have valid destinations', async ({ page, request }) => {
+  await page.goto('./');
+  const localLinks = new Set<string>();
+  for (const link of await page.locator('a[href]').all()) {
+    const href = (await link.getAttribute('href'))!;
+    if (href.startsWith('#')) {
+      await expect(page.locator(`[id="${href.slice(1)}"]`)).toHaveCount(1);
+    } else if (href.startsWith('/')) {
+      localLinks.add(href);
+    } else if (href.startsWith('mailto:')) {
+      expect(href).toBe('mailto:sebas.t.nait@gmail.com');
+    } else if (href.startsWith('tel:')) {
+      expect(href).toBe('tel:+19543047962');
+    } else {
+      const url = new URL(href);
+      expect(url.protocol).toBe('https:');
+      expect(url.username + url.password).toBe('');
+    }
+    if (await link.getAttribute('target') === '_blank') {
+      expect(await link.getAttribute('rel')).toContain('noopener');
+      expect(await link.getAttribute('rel')).toContain('noreferrer');
+    }
+  }
+  for (const href of localLinks) expect((await request.get(href)).ok(), href).toBe(true);
+  for (const action of await page.locator('#projects a').all()) await expect(action).toHaveAccessibleName(/.+/);
+  await expect(page.locator('#contact a[href^="tel:"]')).toHaveText('+1 (954) 304-7962');
+  const social = { GitHub: 'https://github.com/Sebas-D-Dev', LinkedIn: 'https://www.linkedin.com/in/sebastian-torres-cs/', Discord: 'https://discord.com/users/1373891287392194620/', Instagram: 'https://www.instagram.com/xsea_bassx/' };
+  for (const [label, href] of Object.entries(social)) await expect(page.locator('footer').getByRole('link', { name: label, exact: true })).toHaveAttribute('href', href);
+  for (const [label, id] of [['Home', 'home'], ['Projects', 'projects'], ['About & Experience', 'about'], ['News', 'news'], ['Contact', 'contact']]) {
+    await page.getByRole('button', { name: 'Open navigation menu' }).click();
+    await page.getByRole('dialog').getByRole('link', { name: label, exact: true }).click();
+    await expect(page).toHaveURL(new RegExp(`#${id}$`));
+    await expect(page.getByRole('dialog')).not.toBeVisible();
+  }
 });

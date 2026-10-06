@@ -194,7 +194,7 @@ export default function ContactSection() {
                 </div>
                 <div>
                   <h4 className="font-semibold text-white">Phone</h4>
-                  <p className="text-gray-400">{personalInfo.phone}</p>
+                  <a href={`tel:${personalInfo.phone.replace(/[^+\d]/g, '')}`} className="text-primary-400 hover:text-primary-300">{personalInfo.phone}</a>
                 </div>
               </div>
             </div>

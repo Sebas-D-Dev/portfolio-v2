@@ -10,7 +10,7 @@ The blue-on-dark single-page design includes a project showcase, expandable expe
 
 Personal work appears directly after the hero; professional experience follows it. Each project states its current status and only offers relevant actions:
 
-- **3D Portfolio:** in-progress spatial portfolio, with an owner-supplied screenshot of the actual 3D facility scene
+- **3D Portfolio:** in-progress spatial portfolio, with an owner-supplied screenshot and a verified publicly accessible site link
 - **Portfolio V2:** ongoing web portfolio, with source and live-site links
 - **Stack Inventory:** inventory application shown with its verified project logo, plus source and a sign-in-required app link
 - **Nexus:** early desktop-tool prototype, with source and labeled concept artwork
