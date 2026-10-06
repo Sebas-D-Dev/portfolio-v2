@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef, useEffect } from "react";
+import { useReducedMotion } from "framer-motion";
 import { usePathname } from "next/navigation";
 
 class Particle {
@@ -106,9 +107,11 @@ const ParticlesBackground = ({ particleCount = 200, maxDistance = 100, cardRect 
   const animationRef = useRef<number | null>(null);
   const effectRef = useRef<Effect | null>(null);
   const pathname = usePathname();
+  const reduceMotion = useReducedMotion();
 
   // This effect handles initialization and cleanup
   useEffect(() => {
+    if (reduceMotion) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -178,9 +181,9 @@ const ParticlesBackground = ({ particleCount = 200, maxDistance = 100, cardRect 
       }
       effectRef.current = null;
     };
-  }, [particleCount, maxDistance, cardRect, pathname]); // Add pathname to dependencies to reinitialize on route change
+  }, [particleCount, maxDistance, cardRect, pathname, reduceMotion]); // Add pathname to dependencies to reinitialize on route change
 
-  return <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full -z-10" />;
+  return <canvas aria-hidden="true" ref={canvasRef} className="absolute top-0 left-0 w-full h-full -z-10" />;
 };
 
 export default ParticlesBackground;

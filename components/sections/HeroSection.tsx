@@ -1,32 +1,35 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { resumeUrl } from '@/lib/site';
 import { personalInfo } from '@/app/data/content';
 
 export default function HeroSection() {
+  const reduceMotion = useReducedMotion();
   const [activeSkill, setActiveSkill] = useState(0);
   const skills = useMemo(() => personalInfo.skills, []);
 
   useEffect(() => {
+    if (reduceMotion) return;
     const interval = setInterval(() => {
       setActiveSkill((prev) => (prev + 1) % skills.length);
     }, 3000);
 
     return () => clearInterval(interval);
-  }, [skills.length]);
+  }, [skills.length, reduceMotion]);
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      element.scrollIntoView({ behavior: reduceMotion ? 'instant' : 'smooth' });
     }
   };
 
   return (
     <section
       id="home"
-      className="relative flex min-h-screen items-center justify-center overflow-hidden"
+      className="relative flex min-h-[85svh] py-28 items-center justify-center overflow-hidden"
     >
       {/* Content */}
       <motion.div
@@ -36,13 +39,13 @@ export default function HeroSection() {
         className="relative z-10 mx-auto w-full max-w-4xl px-6 text-center"
       >
         {/* Glassmorphism Card */}
-        <div className="rounded-2xl bg-dark-900/75 p-8 shadow-2xl backdrop-blur-md border border-primary-500/20 md:p-12">
+        <div className="rounded-2xl bg-dark-900/75 p-6 shadow-2xl sm:p-8 backdrop-blur-md border border-primary-500/20 md:p-12">
           {/* Title */}
           <motion.h1
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.8 }}
-            className="mb-4 text-5xl font-bold md:text-7xl text-white [text-shadow:_0_0_30px_rgb(96_165_250_/_50%)] dark-reader-mode"
+            className="mb-4 text-4xl font-bold sm:text-5xl md:text-7xl text-white [text-shadow:_0_0_30px_rgb(96_165_250_/_50%)] dark-reader-mode"
             style={{
               background: 'linear-gradient(to right, #60a5fa, #38bdf8, #22d3ee)',
               WebkitBackgroundClip: 'text',
@@ -58,9 +61,9 @@ export default function HeroSection() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.8 }}
-            className="mb-6 flex justify-center text-2xl md:text-3xl"
+            className="mb-6 flex justify-center text-lg sm:text-2xl md:text-3xl"
           >
-            <div className="relative overflow-hidden" style={{ minWidth: '350px', height: '1.5em', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div className="relative overflow-hidden" style={{ width: '100%', minWidth: 0, height: '1.5em', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <AnimatePresence mode="wait">
                 <motion.span
                   key={activeSkill}
@@ -121,7 +124,7 @@ export default function HeroSection() {
             </button>
             
             <a
-              href="/assets/resume.pdf"
+              href={resumeUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="group relative overflow-hidden rounded-lg border-2 border-accent-400 bg-dark-800/50 px-8 py-4 font-semibold text-accent-400 transition-all duration-300 hover:bg-accent-400 hover:text-white hover:scale-105"
@@ -140,7 +143,7 @@ export default function HeroSection() {
         className="absolute bottom-8 left-1/2 -translate-x-1/2"
       >
         <motion.div
-          animate={{ y: [0, 10, 0] }}
+          animate={reduceMotion ? undefined : { y: [0, 10, 0] }}
           transition={{ duration: 1.5, repeat: Infinity }}
           className="text-primary-400"
         >

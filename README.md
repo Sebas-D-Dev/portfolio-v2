@@ -1,448 +1,96 @@
-<div align="center">
+# Portfolio Website v2
 
-![Banner](https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,18,20&height=200&section=header&text=Portfolio%20Website%20v2&fontSize=70&animation=fadeIn&fontAlignY=35&desc=Sebastian%20Torres&descAlignY=55&descSize=20)
+Sebastian Torres’s personal portfolio, built with Next.js, React, TypeScript, and Tailwind CSS.
 
-<p align="center">
-  <a href="#features">Features</a> •
-  <a href="#demo">Demo</a> •
-  <a href="#tech-stack">Tech Stack</a> •
-  <a href="#installation">Installation</a> •
-  <a href="#development">Development</a>
-</p>
+[Visit the portfolio](https://sebas-d-dev.github.io/portfolio-v2/) · [GitHub](https://github.com/Sebas-D-Dev)
 
-[![GitHub license](https://img.shields.io/github/license/Sebas-D-Dev/portfolio-v2?style=flat-square)](LICENSE)
-[![Website](https://img.shields.io/website?style=flat-square&url=https%3A%2F%2Fsebas-d-dev.github.io%2Fportfolio-v2)](https://sebas-d-dev.github.io/portfolio-v2)
-[![Next.js](https://img.shields.io/badge/Next.js-15.5-black?style=flat-square&logo=next.js)](https://nextjs.org)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org)
-[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4-38bdf8?style=flat-square&logo=tailwindcss)](https://tailwindcss.com)
+The blue-on-dark single-page design includes a project showcase, experience and education timeline, optional RSS reader, and contact information.
 
-<p align="center">A modern, professional single-page portfolio showcasing projects, experience, and tech interests with dynamic RSS news integration, smooth animations, and a unified blue design system. ✨</p>
+## Project showcase
 
-</div>
+Personal work appears directly after the hero; professional experience follows it. Each project states its current status and only offers relevant actions:
 
----
+- **3D Portfolio:** in-progress spatial portfolio, with an owner-supplied screenshot of the actual 3D facility scene
+- **portfolio-v2:** ongoing web portfolio, with source and live-site links
+- **Stack Inventory:** inventory application shown with its verified project logo, plus source and a sign-in-required app link
+- **Nexus:** early desktop-tool prototype, with source and labeled concept artwork
+- **Directory Structure Generator:** developer-tool prototype, with source and labeled concept artwork
 
-## ✨ Features
-<a id="features"></a>
+Project content lives in `app/data/content.ts`. See [image provenance](docs/project-images.md) before replacing or adding screenshots. Project screenshots and the Stack Inventory logo open directly in a new tab. Missing demos are not represented by disabled buttons or placeholder URLs.
 
-<div align="center">
+## Local development
 
-```mermaid
-mindmap
-  root((Portfolio v2))
-    Design System
-      Unified Blue Theme
-      CSS Variables
-      Tailwind v3
-      shadcn/ui Components
-    Dynamic Content
-      RSS News Feeds
-      Real-time Updates
-      Auto-pagination
-    User Experience
-      Single Page App
-      Smooth Animations
-      Side Navigation
-      Framer Motion
-    Sections
-      Hero with Skills
-      About & Timeline
-      Projects Showcase
-      News & Interests
-      Contact Form
-    Integrations
-      EmailJS Forms
-      GitHub Pages
-      RSS Feeds
-      Social Links
-    Performance
-      Static Export
-      Optimized Images
-      Lazy Loading
-      SEO Ready
+Use **Node.js 24 LTS** (see `.nvmrc`) and npm.
+
+```sh
+npm ci
+npm run dev
 ```
 
-</div>
+Development serves at `http://localhost:3000`. Optional configuration is documented in `.env.example`; copy it to `.env.local` only if needed.
 
-## 🚀 Demo
-<a id="demo"></a>
+## Build and verify
 
-Experience the live portfolio at **[https://sebas-d-dev.github.io/portfolio-v2](https://sebas-d-dev.github.io/portfolio-v2)**
-
-![Portfolio Preview](public/assets/home-page.jpg)
-
-## 🎨 Design System
-
-### Blue Theme Color Palette
-- **Primary Blue**: `#2563eb` - Main interactive elements
-- **Secondary Blue**: `#38bdf8` - Accents and highlights  
-- **Accent Cyan**: `#22d3ee` - Special highlights
-- **Dark Background**: `#020617` - Base background
-
-### Features
-- ✅ Unified blue design system (replacing 25+ inconsistent colors)
-- ✅ Tailwind CSS v4 with custom configuration
-- ✅ CSS variables for consistent spacing, shadows, and transitions
-- ✅ Responsive design with mobile-first approach
-- ✅ Accessible with WCAG AA color contrast
-
-## 🚀 Architecture
-
-### Single-Page Application
-Transformed from 4 separate pages into a seamless single-page experience:
-
-1. **Hero Section** - Animated introduction with rotating skills
-2. **About & Experience Section** - Bio, tech stack, and timeline
-3. **Projects Section** - Portfolio showcase with GitHub integration
-4. **News & Interests Section** - Dynamic RSS feeds from tech sources
-5. **Contact Section** - Form with EmailJS integration
-
-### Tech Stack
-<a id="tech-stack"></a>
-
-<div align="center">
-
-<table>
-<tr>
-<td align="center" width="96">
-<img src="https://skillicons.dev/icons?i=nextjs" width="48" height="48" alt="Next.js" />
-<br>Next.js 15.5
-</td>
-<td align="center" width="96">
-<img src="https://skillicons.dev/icons?i=react" width="48" height="48" alt="React" />
-<br>React 19
-</td>
-<td align="center" width="96">
-<img src="https://skillicons.dev/icons?i=typescript" width="48" height="48" alt="TypeScript" />
-<br>TypeScript 5
-</td>
-<td align="center" width="96">
-<img src="https://skillicons.dev/icons?i=tailwindcss" width="48" height="48" alt="Tailwind" />
-<br>Tailwind v3
-</td>
-</tr>
-<tr>
-<td align="center" width="96">
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/framermotion/framermotion-original.svg" width="48" height="48" alt="Framer Motion" />
-<br>Framer Motion
-</td>
-<td align="center" width="96">
-<img src="https://skillicons.dev/icons?i=github" width="48" height="48" alt="GitHub" />
-<br>GitHub Pages
-</td>
-<td align="center" width="96">
-<img src="https://skillicons.dev/icons?i=vercel" width="48" height="48" alt="Vercel" />
-<br>Vercel
-</td>
-<td align="center" width="96">
-<img src="https://skillicons.dev/icons?i=vscode" width="48" height="48" alt="VS Code" />
-<br>VS Code
-</td>
-</tr>
-</table>
-
-</div>
-
-## 📰 News Integration
-
-RSS feeds from multiple sources:
-- **Tech Giants**: FAANG companies (Google, Apple, Meta, Amazon, Microsoft)
-- **AI Companies**: NVIDIA, AMD, OpenAI
-- **VR/AR**: Virtual Reality and Augmented Reality news
-- **Automation**: n8n, workflow automation tools
-- **Software Engineering**: Backend, frontend, DevOps topics
-- **FAU**: Florida Atlantic University news
-
-## 🔧 Setup & Installation
-<a id="installation"></a>
-
-### Prerequisites
-- Node.js 20+ 
-- npm or yarn
-
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/Sebas-D-Dev/portfolio-v2.git
-   cd portfolio-v2
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Environment Variables**
-   
-   Create a `.env.local` file based on `.env.local.example`:
-   ```env
-   # EmailJS Configuration (required for contact form)
-   NEXT_PUBLIC_EMAILJS_SERVICE_ID=your_service_id
-   NEXT_PUBLIC_EMAILJS_TEMPLATE_USER_MESSAGE=your_user_message_template_id
-   NEXT_PUBLIC_EMAILJS_TEMPLATE_AUTO_REPLY=your_auto_reply_template_id
-   NEXT_PUBLIC_EMAILJS_PUBLIC_KEY=your_public_key
-   ```
-
-4. **Run development server**
-   ```bash
-   npm run dev
-   ```
-   
-   Open [http://localhost:3000](http://localhost:3000)
-
-5. **Build for production**
-   ```bash
-   npm run build
-   ```
-
-## 📁 Project Structure
-
-```
-portfolio-v2/
-├── app/
-│   ├── data/
-│   │   ├── content.ts          # Centralized content management
-│   │   └── news.ts             # News categories configuration
-│   ├── layouts/
-│   │   ├── navigation.tsx      # Fixed navigation with smooth scroll
-│   │   └── footer.tsx          # Footer with social links
-│   ├── pages/                  # Redirect pages for old routes
-│   ├── styles/                 # CSS modules and global styles
-│   ├── globals.css             # Design system variables
-│   ├── layout.tsx              # Root layout with metadata
-│   └── page.tsx                # Main single-page app
-├── components/
-│   ├── sections/               # Section components
-│   │   ├── HeroSection.tsx
-│   │   ├── AboutExperienceSection.tsx
-│   │   ├── ProjectsSection.tsx
-│   │   ├── NewsInterestsSection.tsx
-│   │   └── ContactSection.tsx
-│   ├── ParticlesBackground.tsx # Canvas particle animation
-│   ├── ScrollButton.tsx        # Animated scroll-to-top button
-│   └── DropdownMenu.tsx        # Mobile navigation menu
-├── public/assets/              # Static assets (images, icons, resume)
-├── tailwind.config.ts          # Tailwind configuration
-├── next.config.ts              # Next.js configuration
-└── package.json                # Dependencies
-```
-
-## 🎯 Key Features
-
-### 1. Design System
-- Unified blue color palette across entire site
-- CSS variables for consistent spacing and effects
-- Tailwind-first approach with custom utilities
-- Accessible focus states and ARIA landmarks
-
-### 2. Smooth Animations
-- Framer Motion for page sections and transitions
-- Viewport-triggered animations
-- Staggered children animations
-- Interactive hover effects
-- Particle background with Canvas API
-
-### 3. Responsive Design
-- Mobile-first approach
-- Breakpoints: 360px, 640px, 768px, 1024px, 1200px
-- Adaptive navigation (hamburger menu on mobile)
-- Optimized images with Next.js Image component
-
-### 4. Performance Optimizations
-- Static site generation for fast load times
-- Optimized particle system (100 particles, down from 200)
-- Lazy loading for below-fold content
-- Compressed images and assets
-
-### 5. SEO & Accessibility
-- Comprehensive meta tags (Open Graph, Twitter Card)
-- Semantic HTML structure
-- ARIA labels and landmarks
-- Keyboard navigation support
-- Focus visible indicators
-- Alt text for all images
-
-## 🛠️ Development
-<a id="development"></a>
-
-### Available Scripts
-
-```bash
-npm run dev      # Start development server
-npm run build    # Build for production
-npm run start    # Start production server
-npm run lint     # Run ESLint
-```
-
-### Adding Content
-
-Edit `/app/data/content.ts` to update:
-- Personal information
-- Skills and tech stack
-- Projects
-- Work experience
-- Education
-
-### Customizing Design
-
-Modify `/tailwind.config.ts` to adjust:
-- Color palette
-- Breakpoints
-- Spacing scale
-- Typography
-- Animations
-
-Edit `/app/globals.css` for:
-- CSS variables
-- Global styles
-- Custom animations
-
-## 📧 EmailJS Setup
-
-> **💡 See [EMAILJS_SETUP_GUIDE.md](./Docs/Email/EMAILJS_SETUP_GUIDE.md) for complete setup guide with HTML templates**
-
-This portfolio uses **dual-email system**:
-1. **User Message Template** - Sends you a notification when someone contacts you
-2. **Auto-Reply Template** - Sends the user an automatic confirmation with social links
-
-### Quick Setup
-
-1. Create account at [EmailJS](https://www.emailjs.com/)
-2. Create an email service (Gmail, Outlook, etc.)
-3. Create **two templates** (see [Docs/Email/](./Docs/Email/) for HTML templates)
-4. Add credentials to `.env.local`:
-   ```env
-   NEXT_PUBLIC_EMAILJS_SERVICE_ID=service_xxxxx
-   NEXT_PUBLIC_EMAILJS_TEMPLATE_USER_MESSAGE=template_xxxxx
-   NEXT_PUBLIC_EMAILJS_TEMPLATE_AUTO_REPLY=template_xxxxx
-   NEXT_PUBLIC_EMAILJS_PUBLIC_KEY=your_public_key
-   ```
-
-### Benefits
-- ✅ Professional auto-reply with social media links (Portfolio, GitHub, LinkedIn)
-- ✅ Clean, formatted email notifications for you
-- ✅ Easy reply with pre-configured reply-to headers
-- ✅ Mobile-responsive HTML templates
-- ✅ Reduces "Did you get my message?" follow-ups
-
-## 📰 News API Setup
-
-1. Get free API key at [NewsAPI.org](https://newsapi.org/)
-2. Add `NEXT_PUBLIC_NEWS_API_KEY` to `.env.local`
-3. News section will automatically fetch latest articles
-
-**Note**: Free tier has limitations (100 requests/day). For production, consider upgrading or using alternative news sources.
-
-## 🚀 Deployment
-
-> **📖 See [DEPLOYMENT_FIX.md](./Docs/DEPLOYMENT_FIX.md) for detailed deployment configuration**
-
-This portfolio supports **dual deployment** with automatic environment detection:
-
-### Vercel (Recommended)
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Sebas-D-Dev/portfolio-v2)
-
-**Steps:**
-1. Import repository to Vercel
-2. Add environment variables (EmailJS credentials)
-3. **Do NOT set GITHUB_PAGES env var** (Vercel auto-detects)
-4. Deploy automatically
-
-**Result:** Deploys to root domain (e.g., `portfolio-v2.vercel.app`)
-
-### GitHub Pages
-
-**Automatic Deployment via GitHub Actions:**
-- Push to `main` branch
-- Workflow automatically builds with `basePath="/portfolio-v2"`
-- Deploys to `https://username.github.io/portfolio-v2/`
-
-**Manual Deployment:**
-```bash
-# Set environment variable for GitHub Pages
-export GITHUB_PAGES=true  # Linux/Mac
-$env:GITHUB_PAGES="true"  # PowerShell
-
-# Build and deploy
+```sh
+npm run lint
+npm run typecheck
 npm run build
-# Upload the out/ directory to GitHub Pages
+npm run check:export
+npx playwright install chromium
+npm run test:smoke
 ```
 
-### Configuration Difference
+`npm run build` writes a static site to `out/`, with Next.js intermediates in `.next/`. Use `npm run serve:export` to preview the export at `http://127.0.0.1:4173/`; `next start` does not serve a static export.
 
-| Platform | basePath | Environment Variable |
-|----------|----------|---------------------|
-| **Vercel** | None (root) | None needed |
-| **GitHub Pages** | `/portfolio-v2` | `GITHUB_PAGES=true` |
-| **Local Dev** | None | None |
+For GitHub Pages, build and test with the same target:
 
-The `next.config.ts` automatically detects the deployment target and configures paths accordingly.
-
-## 🐛 Troubleshooting
-
-### Vercel 404 Errors
-
-**Issue**: All assets return 404 (_next/static/..., fonts, CSS)
-
-**Solution**: 
-- Ensure `GITHUB_PAGES` environment variable is NOT set in Vercel dashboard
-- See [DEPLOYMENT_FIX.md](./Docs/DEPLOYMENT_FIX.md) for details
-
-### Build Errors
-
-**Issue**: Module not found errors
-```bash
-npm install           # Reinstall dependencies
-rm -rf .next          # Clear Next.js cache
-npm run build         # Rebuild
+```sh
+GITHUB_PAGES=true npm run build
+GITHUB_PAGES=true npm run check:export
+GITHUB_PAGES=true npm run test:smoke
 ```
 
-**Issue**: TypeScript errors
-```bash
-npm run lint          # Check for lint errors
-```
+On PowerShell, set `$env:GITHUB_PAGES="true"` before running those commands. Remove it or set it to `false` when returning to root-domain development. To use a locally installed Chromium for testing, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` to its executable path; CI downloads Playwright’s Chromium.
 
-### Development Issues
+The export check verifies local asset URLs, résumé paths, anchors, metadata, project ordering, and absence of placeholder project links. Playwright tests desktop and mobile Chromium, drawer dismissal/focus/navigation, image loading, narrow-screen overflow, and unavailable-service states. They block external email requests and simulate unavailable RSS feeds; they do not send real email.
 
-**Issue**: Port 3000 already in use
-- Dev server will automatically use port 3001
-- Or manually specify: `npm run dev -- -p 3002`
+Pull requests run checks for both `/` and `/portfolio-v2`. The Pages workflow deploys only on `main` pushes or an explicit workflow dispatch. Opening a PR does not deploy it.
 
-**Issue**: Environment variables not working
-- Ensure `.env.local` exists
-- Restart dev server after adding variables
-- Use `NEXT_PUBLIC_` prefix for client-side variables
+## Deployment paths and metadata
 
-## 📝 License
+`next.config.ts` sets the base path and injects `NEXT_PUBLIC_BASE_PATH`. Use `assetPath()` or `resumeUrl` from `lib/site.ts` for files under `public/assets`; plain image URLs and native anchors do not automatically receive Next.js’s base path.
 
-MIT License - See [LICENSE](LICENSE) file
+- GitHub Pages: `GITHUB_PAGES=true` (or `DEPLOY_TARGET=github-pages`) uses `/portfolio-v2`
+- Root-domain hosting/local development: omit those flags
+- `SITE_URL` sets the canonical public URL for metadata and social images, including a trailing slash; its default is the existing GitHub Pages site
 
-## 👤 Author
+The current résumé PDF and factual employment/education entries are retained. Replace them only with verified updated information.
 
-**Sebastian Torres**
-- GitHub: [@Sebas-D-Dev](https://github.com/Sebas-D-Dev)
-- LinkedIn: [Sebastian Torres](https://www.linkedin.com/in/sebastian-torres-dev/)
-- Email: sebas.t.nait@gmail.com
+## Optional contact form
 
-## 🙏 Acknowledgments
+The form uses EmailJS and expects all four build-time public values:
 
-- Design inspiration from modern portfolio sites
-- Particle animation technique from Canvas API tutorials
-- RSS feeds powered by [AllOrigins CORS Proxy](https://allorigins.win/)
-- Icons from [Heroicons](https://heroicons.com/)
-- Email service by [EmailJS](https://www.emailjs.com/)
-- UI components from [shadcn/ui](https://ui.shadcn.com/)
+- `NEXT_PUBLIC_EMAILJS_SERVICE_ID`
+- `NEXT_PUBLIC_EMAILJS_TEMPLATE_USER_MESSAGE`
+- `NEXT_PUBLIC_EMAILJS_TEMPLATE_AUTO_REPLY`
+- `NEXT_PUBLIC_EMAILJS_PUBLIC_KEY`
 
----
+Without them the form visibly explains that it is unavailable, disables submission, and offers the direct email link. It never reports a successful send when nothing was sent. If the owner notification succeeds but the auto-reply fails, the message is reported as sent so visitors are not encouraged to send duplicates.
 
-<div align="center">
+No credentials are committed or provisioned by this project. EmailJS public identifiers are exposed in the client bundle by design; private credentials must never be used in `NEXT_PUBLIC_*` variables. The Pages workflow does not currently supply EmailJS values.
 
-**Last Updated**: February 2025
+## RSS reader
 
-Built with ❤️ using Next.js, TypeScript, and Tailwind CSS
+The news section reads the configured RSS sources through AllOrigins, with a per-feed timeout. If all feeds fail, it shows an unavailable state and source links. If feeds load but contain no articles from the last three days, it shows a distinct empty state. Pagination is reader-controlled. No NewsAPI key is used.
 
-![Footer Banner](https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,18,20&height=120&section=footer)
+## Maintenance
 
-</div>
+Next.js and its ESLint config are kept together on the 15.5 maintenance release line, currently 15.5.27, rather than introducing a major framework migration. See the [September 2026 security release](https://nextjs.org/blog/september-2026-security-release). CI uses [supported Node.js 24 LTS](https://nodejs.org/en/about/previous-releases). These dependency updates do not constitute a complete security audit.
+
+## License
+
+[MIT](LICENSE)
+
+### Remaining dependency advisories
+
+The October 5, 2026 production-dependency audit still reports three entries (two high, one moderate), arising from Next.js’s pinned transitive PostCSS and optional Sharp dependencies. This static export does not run a production Next.js server or image optimizer, and builds repository-controlled CSS; that narrows exposure but is not a blanket security guarantee. No forced major upgrade or unverified transitive override is included. Reassess these advisories before adding server-side processing or untrusted CSS/image inputs.

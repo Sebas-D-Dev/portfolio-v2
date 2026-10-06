@@ -20,7 +20,7 @@ const itemVariants = {
 
 export default function AboutExperienceSection() {
   return (
-    <section className="relative bg-dark-950 py-18">
+    <section id="about" aria-labelledby="about-heading" className="relative bg-dark-950 py-18">
       <div className="container mx-auto max-w-7xl px-6">
         {/* Section Title */}
         <motion.div
@@ -30,7 +30,7 @@ export default function AboutExperienceSection() {
           transition={{ duration: 0.6 }}
           className="mb-12 text-center"
         >
-          <h2 id="about" className="mb-6 text-4xl font-bold text-white md:text-5xl">
+          <h2 id="about-heading" className="mb-6 text-4xl font-bold text-white md:text-5xl">
             About Me
           </h2>
           <div className="mx-auto h-1 w-24 rounded-full bg-gradient-to-r from-primary-500 to-accent-400"></div>

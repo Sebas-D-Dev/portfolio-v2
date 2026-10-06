@@ -1,143 +1,101 @@
-"use client";
-import { useEffect, useState } from "react";
-import "../styles/navigation.css";
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+import { resumeUrl } from '@/lib/site';
+import '../styles/navigation.css';
 
 const NAV_ITEMS = [
-  { label: "Home", id: "home" },
-  { label: "About", id: "about" },
-  { label: "Projects", id: "projects" },
-  { label: "News", id: "news" },
-  { label: "Contact", id: "contact" },
-  {
-    label: "Resume",
-    path:
-      process.env.NODE_ENV === "production"
-        ? "https://sebas-d-dev.github.io/portfolio-v2/assets/resume.pdf"
-        : "/assets/resume.pdf",
-    external: true,
-  },
+  { label: 'Home', id: 'home' },
+  { label: 'Projects', id: 'projects' },
+  { label: 'About & Experience', id: 'about' },
+  { label: 'News', id: 'news' },
+  { label: 'Contact', id: 'contact' },
 ];
 
-const Navigation = () => {
+export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("home");
+  const [activeSection, setActiveSection] = useState('home');
+  const dialogRef = useRef<HTMLDialogElement>(null);
 
-  // Track active section
   useEffect(() => {
-    const handleScroll = () => {
-      const sections = NAV_ITEMS.filter((item) => item.id).map((item) => item.id!);
-      const scrollPosition = window.scrollY + 100;
-
-      for (const sectionId of sections) {
-        const element = document.getElementById(sectionId);
-        if (element) {
-          const offsetTop = element.offsetTop;
-          const offsetBottom = offsetTop + element.offsetHeight;
-
-          if (scrollPosition >= offsetTop && scrollPosition < offsetBottom) {
-            setActiveSection(sectionId);
-            break;
-          }
+    // Vertical rootMargin percentages use width, so derive pixels from height.
+    let observer: IntersectionObserver;
+    const observeSections = () => {
+      observer?.disconnect();
+      observer = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) setActiveSection(entry.target.id);
         }
-      }
+      }, { rootMargin: `-${window.innerHeight * 0.15}px 0px -${window.innerHeight * 0.65}px 0px`, threshold: 0 });
+      NAV_ITEMS.forEach(({ id }) => {
+        const section = document.getElementById(id);
+        if (section) observer.observe(section);
+      });
     };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    observeSections();
+    window.addEventListener('resize', observeSections);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', observeSections);
+    };
   }, []);
 
-  // Close drawer when clicking outside
   useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (isOpen && !target.closest('.side-nav') && !target.closest('.nav-toggle-btn')) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
-  }, [isOpen]);
-
-  // Prevent body scroll when drawer is open
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    if (!isOpen) {
+      dialog.close();
+      return;
     }
+    const previousOverflow = document.body.style.overflow;
+    dialog.showModal();
+    document.body.style.overflow = 'hidden';
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = previousOverflow;
+      dialog.close();
     };
   }, [isOpen]);
-
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-      setIsOpen(false);
-    }
-  };
-
-  const handleNavClick = (item: typeof NAV_ITEMS[number]) => {
-    if (item.external) {
-      window.open(item.path, "_blank", "noopener,noreferrer");
-      setIsOpen(false);
-    } else if (item.id) {
-      scrollToSection(item.id);
-    }
-  };
 
   return (
     <>
-      {/* Hamburger Menu Button - Fixed Top Right */}
-      <button
-        className="nav-toggle-btn"
-        onClick={() => setIsOpen(!isOpen)}
-        aria-label="Toggle navigation menu"
-      >
-        <div className={`hamburger ${isOpen ? 'open' : ''}`}>
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
+      <button type="button" className="nav-toggle-btn" onClick={() => setIsOpen(true)} aria-label="Open navigation menu" aria-expanded={isOpen} aria-controls="navigation-dialog">
+        <span className="hamburger" aria-hidden="true"><span /><span /><span /></span>
       </button>
-
-      {/* Overlay */}
-      <div 
-        className={`nav-overlay ${isOpen ? 'open' : ''}`}
-        onClick={() => setIsOpen(false)}
-      />
-
-      {/* Side Navigation Drawer */}
-      <nav className={`side-nav ${isOpen ? 'open' : ''}`}>
-        <div className="side-nav-items" style={{ paddingTop: '3rem' }}>
+      <dialog
+        ref={dialogRef}
+        id="navigation-dialog"
+        className="side-nav"
+        aria-label="Navigation menu"
+        onKeyDown={(event) => {
+          if (event.key !== 'Tab') return;
+          const controls = event.currentTarget.querySelectorAll<HTMLElement>('button:not([disabled]), a[href]');
+          const first = controls[0];
+          const last = controls[controls.length - 1];
+          if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last?.focus();
+          } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first?.focus();
+          }
+        }}
+        onCancel={() => setIsOpen(false)}
+        onClose={() => setIsOpen(false)}
+        onClick={(event) => {
+          const bounds = event.currentTarget.getBoundingClientRect();
+          if (event.target === event.currentTarget && (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom)) setIsOpen(false);
+        }}
+      >
+        <button type="button" className="nav-close-btn" onClick={() => setIsOpen(false)} aria-label="Close navigation menu">✕</button>
+        <nav aria-label="Main navigation" className="side-nav-items">
           {NAV_ITEMS.map((item) => (
-            item.external ? (
-              <a
-                key={item.label}
-                href={item.path}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="side-nav-link"
-                onClick={() => setIsOpen(false)}
-              >
-                {item.label}
-              </a>
-            ) : (
-              <button
-                key={item.label}
-                onClick={() => handleNavClick(item)}
-                className={`side-nav-link ${activeSection === item.id ? 'active' : ''}`}
-              >
-                {item.label}
-              </button>
-            )
+            <a key={item.id} href={`#${item.id}`} onClick={() => setIsOpen(false)} aria-current={activeSection === item.id ? 'location' : undefined} className={`side-nav-link ${activeSection === item.id ? 'active' : ''}`}>
+              {item.label}
+            </a>
           ))}
-        </div>
-      </nav>
+          <a href={resumeUrl} target="_blank" rel="noopener noreferrer" className="side-nav-link" onClick={() => setIsOpen(false)}>Resume</a>
+        </nav>
+      </dialog>
     </>
   );
-};
-
-export default Navigation;
+}

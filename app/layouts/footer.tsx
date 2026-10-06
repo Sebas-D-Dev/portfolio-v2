@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { assetPath } from "@/lib/site";
 import "../styles/footer.css";
 
 const Footer = () => {
@@ -16,31 +17,32 @@ const Footer = () => {
       }
     };
 
+    handleScroll();
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Social media icons - Next.js automatically adds basePath from next.config.ts
+  // Public assets need the deployment base path.
   const socialLinks = [
     { 
       name: "GitHub", 
       url: "https://github.com/Sebas-D-Dev", 
-      icon: "/assets/github.svg"
+      icon: assetPath("github.svg")
     },
     { 
       name: "LinkedIn", 
       url: "https://www.linkedin.com/in/sebastian-torres-cs/", 
-      icon: "/assets/linkedin.svg"
+      icon: assetPath("linkedin.svg")
     },
     { 
       name: "Discord", 
       url: "https://discord.com/users/1373891287392194620/", 
-      icon: "/assets/discord.svg"
+      icon: assetPath("discord.svg")
     },
     { 
       name: "Instagram", 
       url: "https://www.instagram.com/xsea_bassx/", 
-      icon: "/assets/instagram.svg"
+      icon: assetPath("instagram.svg")
     },
   ];
 

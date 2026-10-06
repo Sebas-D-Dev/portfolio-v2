@@ -60,6 +60,9 @@ export default function NewsInterestsSection() {
 
   // Fetch all feeds once on mount
   useEffect(() => {
+    let disposed = false;
+    let loadedFeeds = 0;
+    const controllers: AbortController[] = [];
     const fetchAllNews = async () => {
       setLoading(true);
       setError(null);
@@ -68,22 +71,23 @@ export default function NewsInterestsSection() {
         // Collect all feed fetch promises
         const feedPromises = newsCategories.flatMap(category =>
           category.feeds.map(async (feed) => {
+            const controller = new AbortController();
+            controllers.push(controller);
+            const timeoutId = setTimeout(() => controller.abort(), 5000);
             try {
-              const controller = new AbortController();
-              const timeoutId = setTimeout(() => controller.abort(), 3000);
               
               const response = await fetch(
                 `https://api.allorigins.win/raw?url=${encodeURIComponent(feed.url)}`,
                 { signal: controller.signal }
               );
               
-              clearTimeout(timeoutId);
-              
               if (!response.ok) return [];
               
               const text = await response.text();
               const parser = new DOMParser();
               const xmlDoc = parser.parseFromString(text, 'text/xml');
+              if (xmlDoc.querySelector('parsererror') || !['rss', 'feed', 'RDF'].includes(xmlDoc.documentElement.localName)) return [];
+              loadedFeeds += 1;
               const items = xmlDoc.querySelectorAll('item, entry');
               
               if (items.length === 0) return [];
@@ -123,7 +127,7 @@ export default function NewsInterestsSection() {
                   description: cleanDescription.substring(0, 150) + (cleanDescription.length > 150 ? '...' : ''),
                   url: getTextContent('link') || item.querySelector('link')?.getAttribute('href') || '',
                   urlToImage: imageUrl,
-                  publishedAt: getTextContent('pubDate') || getTextContent('published') || new Date().toISOString(),
+                  publishedAt: getTextContent('pubDate') || getTextContent('published') || getTextContent('updated'),
                   source: { id: feed.id, name: feed.source },
                   category: category.id,
                 };
@@ -131,6 +135,8 @@ export default function NewsInterestsSection() {
             } catch {
               // Silently ignore failed feeds
               return [];
+            } finally {
+              clearTimeout(timeoutId);
             }
           })
         );
@@ -141,16 +147,24 @@ export default function NewsInterestsSection() {
           .filter(result => result.status === 'fulfilled')
           .flatMap(result => (result as PromiseFulfilledResult<RSSArticle[]>).value);
 
-        setAllArticles(fetchedArticles);
+        if (disposed) return;
+        if (loadedFeeds === 0) {
+          setError('News feeds are temporarily unavailable. You can visit the sources below.');
+        }
+        setAllArticles(fetchedArticles.filter(article => /^https?:\/\//i.test(article.url)));
       } catch (err) {
         console.error('RSS fetch failed:', err);
-        setError('Failed to load news articles. Please try again later.');
+        if (!disposed) setError('Failed to load news articles. Please try again later.');
       } finally {
-        setLoading(false);
+        if (!disposed) setLoading(false);
       }
     };
 
     fetchAllNews();
+    return () => {
+      disposed = true;
+      controllers.forEach(controller => controller.abort());
+    };
   }, []); // Only fetch once on mount
 
   // Filter articles when category changes
@@ -178,18 +192,7 @@ export default function NewsInterestsSection() {
     setCurrentPage(0); // Reset to first page when category changes
   }, [activeCategory, allArticles]);
 
-  // Auto-advance pagination every 30 seconds
-  useEffect(() => {
-    if (totalPages <= 1) return; // Don't auto-advance if only one page
-
-    const interval = setInterval(() => {
-      setCurrentPage((prev) => (prev + 1) % totalPages);
-    }, 30000); // 30 seconds
-
-    return () => clearInterval(interval);
-  }, [totalPages]);
-
-  // Manual page navigation (resets auto-timer)
+  // Pages change only when the reader asks.
   const goToPage = (page: number) => {
     setCurrentPage(page);
   };
@@ -203,7 +206,7 @@ export default function NewsInterestsSection() {
   };
 
   return (
-    <section className="relative bg-dark-950 py-18">
+    <section id="news" aria-labelledby="news-heading" className="relative overflow-x-clip bg-dark-950 py-18">
       <div className="container mx-auto max-w-7xl px-6">
         {/* Section Title */}
         <motion.div
@@ -213,7 +216,7 @@ export default function NewsInterestsSection() {
           transition={{ duration: 0.6 }}
           className="mb-12 text-center"
         >
-          <h2 id="news" className="mb-6 text-4xl font-bold text-white md:text-5xl">
+          <h2 id="news-heading" className="mb-6 text-4xl font-bold text-white md:text-5xl">
             My Interests & Latest News
           </h2>
           <div className="mx-auto h-1 w-24 rounded-full bg-gradient-to-r from-primary-500 to-accent-400"></div>
@@ -269,8 +272,13 @@ export default function NewsInterestsSection() {
 
         {/* Error State */}
         {error && (
-          <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-8 text-center text-red-400">
+          <div role="status" className="rounded-xl border border-primary-500/20 bg-dark-800/50 p-8 text-center text-gray-300">
             <p>{error}</p>
+            <div className="mt-4 flex flex-wrap justify-center gap-4">
+              {newsCategories.slice(0, 3).map(category => (
+                <a key={category.id} href={category.feeds[0].url} target="_blank" rel="noopener noreferrer" className="text-primary-300 underline">{category.feeds[0].source} RSS</a>
+              ))}
+            </div>
           </div>
         )}
 
@@ -303,7 +311,7 @@ export default function NewsInterestsSection() {
                     className="group relative flex flex-col overflow-hidden rounded-xl border border-primary-500/20 bg-dark-800/50 backdrop-blur-sm transition-all hover:border-primary-500 hover:shadow-glow-blue"
                   >
                     {/* Article Image */}
-                    {article.urlToImage ? (
+                    {/^https?:\/\//i.test(article.urlToImage) ? (
                       <div className="relative h-48 overflow-hidden">
                         <Image
                           src={article.urlToImage}
@@ -424,7 +432,7 @@ export default function NewsInterestsSection() {
               transition={{ delay: 0.5 }}
               className="mt-6 text-center text-sm text-gray-500"
             >
-              Showing page {currentPage + 1} of {totalPages} • Auto-advancing every 30s
+              Showing page {currentPage + 1} of {totalPages}
             </motion.p>
           )}
           </>
