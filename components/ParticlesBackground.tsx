@@ -1,189 +1,84 @@
-"use client";
+'use client';
 
-import React, { useRef, useEffect } from "react";
-import { useReducedMotion } from "framer-motion";
-import { usePathname } from "next/navigation";
+import { useEffect, useRef } from 'react';
+import { useReducedMotion } from 'framer-motion';
 
-class Particle {
-  radius: number;
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  color: string;
+interface Particle { x: number; y: number; vx: number; vy: number; radius: number }
 
-  constructor(public effect: Effect) {
-    this.radius = Math.random() * 5 + 2;
-    this.x = this.radius + Math.random() * (this.effect.width - this.radius * 2);
-    this.y = this.radius + Math.random() * (this.effect.height - this.radius * 2);
-    this.vx = (Math.random() - 0.5) * 2;
-    this.vy = (Math.random() - 0.5) * 2;
-    this.color = Math.random() > 0.5 ? "#3b82f6" : "#2563eb"; // Blue variations
-  }
-
-  draw(ctx: CanvasRenderingContext2D) {
-    ctx.fillStyle = this.color;
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
-  update() {
-    this.x += this.vx;
-    if (this.x > this.effect.width - this.radius || this.x < this.radius) this.vx *= -1;
-    this.y += this.vy;
-    if (this.y > this.effect.height - this.radius || this.y < this.radius) this.vy *= -1;
-  }
-}
-
-class Effect {
-  width: number;
-  height: number;
-  particles: Particle[];
-
-  constructor(public canvas: HTMLCanvasElement, public particleCount: number, public maxDistance: number) {
-    this.width = canvas.width;
-    this.height = canvas.height;
-    this.particles = [];
-    this.createParticles();
-  }
-
-  createParticles() {
-    for (let i = 0; i < this.particleCount; i++) {
-      this.particles.push(new Particle(this));
-    }
-  }
-
-  handleParticles(ctx: CanvasRenderingContext2D) {
-    ctx.clearRect(0, 0, this.width, this.height);
-
-    this.particles.forEach((particle) => {
-      particle.update();
-      particle.draw(ctx);
-    });
-
-    this.connectParticles(ctx);
-  }
-
-  connectParticles(ctx: CanvasRenderingContext2D) {
-    ctx.save();
-    for (let i = 0; i < this.particles.length; i++) {
-      for (let j = i + 1; j < this.particles.length; j++) {
-        const dx = this.particles[i].x - this.particles[j].x;
-        const dy = this.particles[i].y - this.particles[j].y;
-        const distance = Math.hypot(dx, dy);
-        if (distance < this.maxDistance) {
-          // Create a gradient stroke effect
-          const gradient = ctx.createLinearGradient(
-            this.particles[i].x,
-            this.particles[i].y,
-            this.particles[j].x,
-            this.particles[j].y
-          );
-          gradient.addColorStop(0, "#3b82f6"); // Blue
-          gradient.addColorStop(1, "#2563eb"); // Darker Blue
-
-          ctx.strokeStyle = gradient;
-          ctx.globalAlpha = 1 - distance / this.maxDistance;
-          ctx.beginPath();
-          ctx.moveTo(this.particles[i].x, this.particles[i].y);
-          ctx.lineTo(this.particles[j].x, this.particles[j].y);
-          ctx.stroke();
-        }
-      }
-    }
-    ctx.restore();
-  }
-}
-
-interface ParticlesBackgroundProps {
-  particleCount?: number;
-  maxDistance?: number;
-  cardRect?: DOMRect | null;
-}
-
-const ParticlesBackground = ({ particleCount = 200, maxDistance = 100, cardRect }: ParticlesBackgroundProps) => {
+export default function ParticlesBackground({ particleCount = 80, maxDistance = 100 }: { particleCount?: number; maxDistance?: number }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animationRef = useRef<number | null>(null);
-  const effectRef = useRef<Effect | null>(null);
-  const pathname = usePathname();
   const reduceMotion = useReducedMotion();
 
-  // This effect handles initialization and cleanup
   useEffect(() => {
-    if (reduceMotion) return;
     const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    // Setup canvas
-    const resizeCanvas = () => {
+    if (!canvas || reduceMotion) return;
+    const ctx = canvas.getContext('2d');
+    const hero = document.getElementById('home');
+    if (!ctx || !hero) return;
+    let particles: Particle[] = [];
+    let frame = 0;
+    let previousTime = 0;
+    let inView = true;
+    const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      
-      // Recreate effect when canvas is resized
-      if (effectRef.current) {
-        effectRef.current = new Effect(canvas, particleCount, maxDistance);
-      }
+      const count = Math.min(particleCount, Math.ceil(canvas.width * canvas.height / 14000));
+      particles = Array.from({ length: count }, () => ({
+        x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.7, vy: (Math.random() - 0.5) * 0.7, radius: Math.random() * 3 + 2,
+      }));
     };
-
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
-
-    // Create effect
-    effectRef.current = new Effect(canvas, particleCount, maxDistance);
-
-    // Animation function
-    const animate = () => {
-      if (effectRef.current && ctx) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        effectRef.current.particles.forEach((particle) => {
-          // Check if particle is under the card
-          let isUnderCard = false;
-          if (cardRect) {
-            const x = particle.x;
-            const y = particle.y;
-            if (
-              x >= cardRect.left &&
-              x <= cardRect.right &&
-              y >= cardRect.top &&
-              y <= cardRect.bottom
-            ) {
-              isUnderCard = true;
-            }
-          }
-          if (isUnderCard) {
-            // Draw glow
-            ctx.save();
-            ctx.shadowColor = particle.color;
-            ctx.shadowBlur = 50;
-            particle.draw(ctx);
-            ctx.restore();
-          } else {
-            particle.draw(ctx);
-          }
-          particle.update();
-        });
-        effectRef.current.connectParticles(ctx);
-        animationRef.current = requestAnimationFrame(animate);
+    const animate = (time: number) => {
+      const step = previousTime ? Math.min((time - previousTime) / 16.67, 2) : 1;
+      previousTime = time;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#3b82f6';
+      ctx.strokeStyle = '#2563eb';
+      for (let i = 0; i < particles.length; i++) {
+        const particle = particles[i];
+        particle.x += particle.vx * step;
+        particle.y += particle.vy * step;
+        if (particle.x < 0 || particle.x > canvas.width) particle.vx *= -1;
+        if (particle.y < 0 || particle.y > canvas.height) particle.vy *= -1;
+        ctx.globalAlpha = 0.8;
+        ctx.beginPath(); ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2); ctx.fill();
+        for (let j = i + 1; j < particles.length; j++) {
+          const other = particles[j];
+          const squaredDistance = (particle.x - other.x) ** 2 + (particle.y - other.y) ** 2;
+          if (squaredDistance >= maxDistance ** 2) continue;
+          ctx.globalAlpha = (1 - Math.sqrt(squaredDistance) / maxDistance) * 0.65;
+          ctx.beginPath(); ctx.moveTo(particle.x, particle.y); ctx.lineTo(other.x, other.y); ctx.stroke();
+        }
       }
+      ctx.globalAlpha = 1;
+      frame = requestAnimationFrame(animate);
     };
-
-    animate();
-
-    // Cleanup function
+    const updatePlayback = () => {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      previousTime = 0;
+      const active = inView && !document.hidden && !document.querySelector('dialog[open]');
+      canvas.dataset.running = String(Boolean(active));
+      if (active) frame = requestAnimationFrame(animate);
+    };
+    const observer = new IntersectionObserver(([entry]) => { inView = entry.isIntersecting; updatePlayback(); });
+    observer.observe(hero);
+    const dialogObserver = new MutationObserver(updatePlayback);
+    const dialog = document.getElementById('navigation-dialog');
+    if (dialog) dialogObserver.observe(dialog, { attributes: true, attributeFilter: ['open'] });
+    resize();
+    updatePlayback();
+    window.addEventListener('resize', resize);
+    document.addEventListener('visibilitychange', updatePlayback);
     return () => {
-      window.removeEventListener("resize", resizeCanvas);
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-        animationRef.current = null;
-      }
-      effectRef.current = null;
+      cancelAnimationFrame(frame);
+      canvas.dataset.running = 'false';
+      observer.disconnect(); dialogObserver.disconnect();
+      window.removeEventListener('resize', resize);
+      document.removeEventListener('visibilitychange', updatePlayback);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
     };
-  }, [particleCount, maxDistance, cardRect, pathname, reduceMotion]); // Add pathname to dependencies to reinitialize on route change
+  }, [particleCount, maxDistance, reduceMotion]);
 
-  return <canvas aria-hidden="true" ref={canvasRef} className="absolute top-0 left-0 w-full h-full -z-10" />;
-};
-
-export default ParticlesBackground;
+  return <canvas aria-hidden="true" ref={canvasRef} className="pointer-events-none absolute inset-0 -z-10 h-full w-full" />;
+}

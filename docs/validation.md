@@ -36,3 +36,11 @@ The portfolio-v2 image now uses a padded 16:10 detail of the actual hero card. B
 ## 3D scene integration
 
 The owner-supplied 1973×908 PNG is preserved byte-for-byte. The featured image uses its full native ratio, contain sizing, and no hover zoom. Desktop/mobile checks verify the scene asset, full-size screenshot action, natural/rendered ratio, and no normal-motion hover transform, then save isolated `3d-scene-card.png` captures for pixel inspection. The existing clean portfolio hero image and Stack Inventory logo are unchanged.
+
+## October 6 interaction, contact, RSS and About follow-on
+
+- Hover effects use narrow opacity/color/transform transitions; drawer hover no longer animates width and height, and the back-to-top button no longer has two competing transform engines. Footer scroll-time layout reads are removed. Canvas work pauses when the hero is offscreen, the tab is hidden, or the native menu is open; expensive per-particle shadow/gradient work is removed. These are measured behavior/implementation guards, not a claim of a particular FPS on the user's hardware.
+- Native details/summary controls consolidate education/recognition and expose role details. Consistent left rails work at desktop and mobile widths. Content sources and the older downloadable résumé limitation are recorded in `content-updates.md`.
+- Required EmailJS identifiers are explicitly wired from GitHub repository variables. No configuration values were read, added or changed. Tests use only fake identifiers and intercepted requests, covering no configuration, owner-only delivery, optional auto-reply, failure, and the one-second send interval.
+- RSS parser unit tests cover RSS/Atom, plain-text normalization, HTTPS link/date validation, duplicate entries, empty feeds, malformed XML, entity declarations and oversized input. Browser cases cover delayed loader, saved/empty/malformed snapshots, stale results, partial failures, manual refresh, filtering and unsafe URLs. Real build-feed health is reported separately.
+- Existing local Chromium restrictions remain. Final desktop/mobile pixels and browser results must be obtained from the new PR's CI artifacts. Both export paths are built locally with `NEWS_FETCH=false`; live source fetching is tested in CI. No recurring deploy is configured.

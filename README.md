@@ -4,7 +4,7 @@ Sebastian Torres’s personal portfolio, built with Next.js, React, TypeScript, 
 
 [Visit the portfolio](https://sebas-d-dev.github.io/portfolio-v2/) · [GitHub](https://github.com/Sebas-D-Dev)
 
-The blue-on-dark single-page design includes a project showcase, experience and education timeline, optional RSS reader, and contact information.
+The blue-on-dark single-page design includes a project showcase, expandable experience/education timeline, RSS reader, and contact information.
 
 ## Project showcase
 
@@ -34,6 +34,7 @@ Development serves at `http://localhost:3000`. Optional configuration is documen
 ```sh
 npm run lint
 npm run typecheck
+npm run test:unit
 npm run build
 npm run check:export
 npx playwright install chromium
@@ -64,24 +65,33 @@ Pull requests run checks for both `/` and `/portfolio-v2`. The Pages workflow de
 - Root-domain hosting/local development: omit those flags
 - `SITE_URL` sets the canonical public URL for metadata and social images, including a trailing slash; its default is the existing GitHub Pages site
 
-The current résumé PDF and factual employment/education entries are retained. Replace them only with verified updated information.
+The existing downloadable résumé is retained. The About and consolidated FAU education card use the owner’s newer verified résumé/profile content; the older downloadable PDF still has earlier GPA/expected-graduation wording. See [content provenance](docs/content-updates.md).
 
-## Optional contact form
+## Contact form configuration
 
-The form uses EmailJS and expects all four build-time public values:
+The form uses EmailJS. These **public build-time identifiers** are required:
 
 - `NEXT_PUBLIC_EMAILJS_SERVICE_ID`
 - `NEXT_PUBLIC_EMAILJS_TEMPLATE_USER_MESSAGE`
-- `NEXT_PUBLIC_EMAILJS_TEMPLATE_AUTO_REPLY`
 - `NEXT_PUBLIC_EMAILJS_PUBLIC_KEY`
 
-Without them the form visibly explains that it is unavailable, disables submission, and offers the direct email link. It never reports a successful send when nothing was sent. If the owner notification succeeds but the auto-reply fails, the message is reported as sent so visitors are not encouraged to send duplicates.
+`NEXT_PUBLIC_EMAILJS_TEMPLATE_AUTO_REPLY` is optional. A missing confirmation template does not block the owner's message. When configured, the confirmation is sent at least one second later to respect EmailJS's rate limit. A failed confirmation never asks the visitor to duplicate an already-delivered message.
 
-No credentials are committed or provisioned by this project. EmailJS public identifiers are exposed in the client bundle by design; private credentials must never be used in `NEXT_PUBLIC_*` variables. The Pages workflow does not currently supply EmailJS values.
+For GitHub Pages, add the public identifiers in **Repository Settings → Secrets and variables → Actions → Variables**. The Pages workflow explicitly passes those repository variables into `next build`. For Vercel, set them for the intended environment in the existing project's environment-variable settings and rebuild. Values configured on Vercel do not automatically reach GitHub Pages. No values, credentials, permissions, or account settings are provisioned by this PR. Never use a private EmailJS key or service password in a `NEXT_PUBLIC_*` field.
+
+Without required identifiers, the UI offers the direct email link and disables submission rather than promising delivery. Production delivery must be checked separately with approval to send a test email. CI uses fake identifiers and intercepts all email requests; no real mail is sent.
+
+See [Next.js build-time public variables](https://nextjs.org/docs/pages/guides/environment-variables) and [EmailJS send requirements/rate limit](https://www.emailjs.com/docs/sdk/send/).
 
 ## RSS reader
 
-The news section reads the configured RSS sources through AllOrigins, with a per-feed timeout. If all feeds fail, it shows an unavailable state and source links. If feeds load but contain no articles from the last three days, it shows a distinct empty state. Pagination is reader-controlled. No NewsAPI key is used.
+`npm run build` first runs `news:refresh`: it reads the allowlisted RSS/Atom sources directly with eight-second deadlines, three concurrent requests, and a two-megabyte limit per response. The output is sanitized plain-text JSON at `public/news.json`. The site loads this one same-origin file, avoiding a browser dependency on nine proxy requests. No feed HTML or third-party article images are embedded. Invalid dates, future-dated entries and non-HTTPS/credential-bearing links are excluded.
+
+The reader shows source-check and publication timestamps, a reduced-motion-aware loader, partial failure/empty states, category filters and manual pagination. It shows latest available stories instead of silently hiding everything older than three days. **Refresh sources** attempts the existing AllOrigins proxy only when requested, retaining saved stories if it fails. The checked-in file is a bootstrap; each regular build regenerates it and retains valid existing entries for individual failed sources.
+
+Snapshots update during builds/deployments. There is **no automatic refresh/deployment schedule**. Old saved results are visibly labeled after 24 hours; a failed refresh never changes their last-success timestamps. Run `npm run news:refresh` to update locally when permitted, or use the existing manual Pages deployment after publication is authorized. For an offline build, use `NEWS_FETCH=false npm run build`.
+
+CI reports real feed health separately from browser fixtures and requires at least one real article in its build. It also tests cached partial/outage states and manual-refresh recovery without contacting the real proxy from browser tests.
 
 ## Maintenance
 

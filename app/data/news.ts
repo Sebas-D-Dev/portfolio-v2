@@ -1,3 +1,4 @@
+import feeds from './feeds.json';
 // RSS Feed types and configuration
 export interface RSSArticle {
   title: string;
@@ -9,7 +10,7 @@ export interface RSSArticle {
     id: string;
     name: string;
   };
-  category?: string;
+  category: string;
 }
 
 export interface RSSFeed {
@@ -17,27 +18,10 @@ export interface RSSFeed {
   label: string;
   url: string;
   source: string;
+  category: string;
 }
 
-export const rssFeeds: Record<string, RSSFeed[]> = {
-  'tech': [
-    { id: 'techcrunch', label: 'TechCrunch', url: 'https://techcrunch.com/feed/', source: 'TechCrunch' },
-    { id: 'engadget', label: 'Engadget', url: 'https://www.engadget.com/rss.xml', source: 'Engadget' },
-    { id: 'zdnet', label: 'ZDNet', url: 'https://www.zdnet.com/news/rss.xml', source: 'ZDNet' },
-  ],
-  'ai': [
-    { id: 'ai-news', label: 'AI News', url: 'https://www.artificialintelligence-news.com/feed/', source: 'AI News' },
-    { id: 'ml-mastery', label: 'ML Mastery', url: 'https://machinelearningmastery.com/feed/', source: 'ML Mastery' },
-  ],
-  'startup': [
-    { id: 'entrepreneur', label: 'Entrepreneur', url: 'https://www.entrepreneur.com/latest.rss', source: 'Entrepreneur' },
-    { id: 'inc', label: 'Inc.com', url: 'https://www.inc.com/rss/', source: 'Inc.com' },
-  ],
-  'dev': [
-    { id: 'dev-to', label: 'DEV Community', url: 'https://dev.to/feed', source: 'DEV.to' },
-    { id: 'freecodcamp', label: 'freeCodeCamp', url: 'https://www.freecodecamp.org/news/rss/', source: 'freeCodeCamp' },
-  ],
-};
+export const rssFeeds: Record<string, RSSFeed[]> = Object.fromEntries(['tech', 'ai', 'startup', 'dev'].map(category => [category, feeds.filter(feed => feed.category === category)]));
 
 export const newsCategories = [
   { id: 'tech', label: 'Tech News', feeds: rssFeeds.tech },
@@ -47,3 +31,9 @@ export const newsCategories = [
 ] as const;
 
 export type NewsCategoryId = typeof newsCategories[number]['id'];
+
+export interface FeedSnapshot {
+  generatedAt: string;
+  articles: RSSArticle[];
+  sources: { id: string; status: 'ok' | 'unavailable'; fetchedAt: string | null }[];
+}

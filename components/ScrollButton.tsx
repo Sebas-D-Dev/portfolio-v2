@@ -26,7 +26,7 @@ const ScrollButton: React.FC<ScrollButtonProps> = ({
     };
 
     toggleVisibility();
-    window.addEventListener("scroll", toggleVisibility);
+    window.addEventListener("scroll", toggleVisibility, { passive: true });
     return () => window.removeEventListener("scroll", toggleVisibility);
   }, []);
 
@@ -48,15 +48,14 @@ const ScrollButton: React.FC<ScrollButtonProps> = ({
           transition={{ duration: 0.3 }}
           className={`scroll-button ${className}`}
         >
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
+          <button
+            type="button"
             className="ScrollButton-button"
             onClick={handleScroll}
             aria-label={`Scroll ${direction}`}
           >
             <span className="text-2xl font-bold">{direction === 'up' ? '↑' : '↓'}</span>
-          </motion.button>
+          </button>
         </motion.div>
       )}
     </AnimatePresence>

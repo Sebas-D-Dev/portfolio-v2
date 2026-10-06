@@ -1,0 +1,65 @@
+[
+  {
+    "id": "techcrunch",
+    "label": "TechCrunch",
+    "url": "https://techcrunch.com/feed/",
+    "source": "TechCrunch",
+    "category": "tech"
+  },
+  {
+    "id": "engadget",
+    "label": "Engadget",
+    "url": "https://www.engadget.com/rss.xml",
+    "source": "Engadget",
+    "category": "tech"
+  },
+  {
+    "id": "zdnet",
+    "label": "ZDNet",
+    "url": "https://www.zdnet.com/news/rss.xml",
+    "source": "ZDNet",
+    "category": "tech"
+  },
+  {
+    "id": "ai-news",
+    "label": "AI News",
+    "url": "https://www.artificialintelligence-news.com/feed/",
+    "source": "AI News",
+    "category": "ai"
+  },
+  {
+    "id": "ml-mastery",
+    "label": "ML Mastery",
+    "url": "https://machinelearningmastery.com/feed/",
+    "source": "ML Mastery",
+    "category": "ai"
+  },
+  {
+    "id": "entrepreneur",
+    "label": "Entrepreneur",
+    "url": "https://www.entrepreneur.com/latest.rss",
+    "source": "Entrepreneur",
+    "category": "startup"
+  },
+  {
+    "id": "inc",
+    "label": "Inc.com",
+    "url": "https://www.inc.com/rss/",
+    "source": "Inc.com",
+    "category": "startup"
+  },
+  {
+    "id": "dev-to",
+    "label": "DEV Community",
+    "url": "https://dev.to/feed",
+    "source": "DEV.to",
+    "category": "dev"
+  },
+  {
+    "id": "freecodcamp",
+    "label": "freeCodeCamp",
+    "url": "https://www.freecodecamp.org/news/rss/",
+    "source": "freeCodeCamp",
+    "category": "dev"
+  }
+]

@@ -1,442 +1,111 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import Image from 'next/image';
-import { newsCategories, type RSSArticle, type NewsCategoryId } from '@/app/data/news';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
+import { newsCategories, type FeedSnapshot, type NewsCategoryId } from '@/app/data/news';
+import { requestDeadline } from '@/lib/request-deadline';
+import { refreshLiveNews, validateSnapshot } from '@/lib/news-client';
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.15,
-      delayChildren: 0.1,
-    },
-  },
-};
-
-const cardVariants = {
-  hidden: { opacity: 0, x: -50 },
-  visible: { 
-    opacity: 1, 
-    x: 0,
-    transition: {
-      type: 'spring' as const,
-      stiffness: 100,
-      damping: 15,
-    },
-  },
-  exit: { opacity: 0, x: 50 },
-};
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+const PAGE_SIZE = 6;
 
 export default function NewsInterestsSection() {
   const [activeCategory, setActiveCategory] = useState<NewsCategoryId | 'all'>('all');
-  const [allArticles, setAllArticles] = useState<RSSArticle[]>([]);
-  const [filteredArticles, setFilteredArticles] = useState<RSSArticle[]>([]);
+  const [snapshot, setSnapshot] = useState<FeedSnapshot | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  
-  const itemsPerPage = 6;
-  const totalPages = Math.ceil(filteredArticles.length / itemsPerPage);
-  const currentArticles = filteredArticles.slice(
-    currentPage * itemsPerPage,
-    (currentPage + 1) * itemsPerPage
-  );
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [loadFailed, setLoadFailed] = useState(false);
+  const requestRef = useRef<AbortController | null>(null);
 
-  // Filter articles by date (last 3 days)
-  const filterByDate = (articles: RSSArticle[]) => {
-    const threeDaysAgo = new Date();
-    threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
-    
-    return articles.filter(article => {
-      const articleDate = new Date(article.publishedAt);
-      return articleDate >= threeDaysAgo;
-    }).sort((a, b) => 
-      new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-    );
-  };
-
-  // Fetch all feeds once on mount
   useEffect(() => {
-    let disposed = false;
-    let loadedFeeds = 0;
-    const controllers: AbortController[] = [];
-    const fetchAllNews = async () => {
-      setLoading(true);
-      setError(null);
+    const controller = new AbortController();
+    requestRef.current = controller;
+    const deadline = requestDeadline(controller.signal, 6000);
+    fetch(`${basePath}/news.json`, { signal: deadline.signal, cache: 'no-cache' })
+      .then(response => { if (!response.ok) throw new Error('Snapshot unavailable'); return response.json(); })
+      .then(data => { if (!controller.signal.aborted) setSnapshot(validateSnapshot(data)); })
+      .catch(() => { if (!controller.signal.aborted) setLoadFailed(true); })
+      .finally(() => { deadline.dispose(); if (!controller.signal.aborted) setLoading(false); });
+    return () => { deadline.dispose(); controller.abort(); requestRef.current?.abort(); };
+  }, []);
 
-      try {
-        // Collect all feed fetch promises
-        const feedPromises = newsCategories.flatMap(category =>
-          category.feeds.map(async (feed) => {
-            const controller = new AbortController();
-            controllers.push(controller);
-            const timeoutId = setTimeout(() => controller.abort(), 5000);
-            try {
-              
-              const response = await fetch(
-                `https://api.allorigins.win/raw?url=${encodeURIComponent(feed.url)}`,
-                { signal: controller.signal }
-              );
-              
-              if (!response.ok) return [];
-              
-              const text = await response.text();
-              const parser = new DOMParser();
-              const xmlDoc = parser.parseFromString(text, 'text/xml');
-              if (xmlDoc.querySelector('parsererror') || !['rss', 'feed', 'RDF'].includes(xmlDoc.documentElement.localName)) return [];
-              loadedFeeds += 1;
-              const items = xmlDoc.querySelectorAll('item, entry');
-              
-              if (items.length === 0) return [];
-              
-              return Array.from(items).slice(0, 3).map((item) => {
-                const getTextContent = (tagName: string) => {
-                  const element = item.querySelector(tagName);
-                  return element?.textContent || '';
-                };
-                
-                // Extract image from various possible locations
-                let imageUrl = '';
-                const mediaContent = item.querySelector('media\\:content, content');
-                const mediaThumbnail = item.querySelector('media\\:thumbnail, thumbnail');
-                const enclosure = item.querySelector('enclosure[type^="image"]');
-                
-                if (mediaContent) {
-                  imageUrl = mediaContent.getAttribute('url') || '';
-                } else if (mediaThumbnail) {
-                  imageUrl = mediaThumbnail.getAttribute('url') || '';
-                } else if (enclosure) {
-                  imageUrl = enclosure.getAttribute('url') || '';
-                } else {
-                  // Try to extract from description
-                  const description = getTextContent('description');
-                  const imgMatch = description.match(/<img[^>]+src="([^"]+)"/);
-                  if (imgMatch) {
-                    imageUrl = imgMatch[1];
-                  }
-                }
-                
-                const description = getTextContent('description') || getTextContent('summary');
-                const cleanDescription = description.replace(/<[^>]*>/g, '');
-                
-                return {
-                  title: getTextContent('title'),
-                  description: cleanDescription.substring(0, 150) + (cleanDescription.length > 150 ? '...' : ''),
-                  url: getTextContent('link') || item.querySelector('link')?.getAttribute('href') || '',
-                  urlToImage: imageUrl,
-                  publishedAt: getTextContent('pubDate') || getTextContent('published') || getTextContent('updated'),
-                  source: { id: feed.id, name: feed.source },
-                  category: category.id,
-                };
-              });
-            } catch {
-              // Silently ignore failed feeds
-              return [];
-            } finally {
-              clearTimeout(timeoutId);
-            }
-          })
-        );
-
-        // Fetch all feeds in parallel
-        const results = await Promise.allSettled(feedPromises);
-        const fetchedArticles = results
-          .filter(result => result.status === 'fulfilled')
-          .flatMap(result => (result as PromiseFulfilledResult<RSSArticle[]>).value);
-
-        if (disposed) return;
-        if (loadedFeeds === 0) {
-          setError('News feeds are temporarily unavailable. You can visit the sources below.');
-        }
-        setAllArticles(fetchedArticles.filter(article => /^https?:\/\//i.test(article.url)));
-      } catch (err) {
-        console.error('RSS fetch failed:', err);
-        if (!disposed) setError('Failed to load news articles. Please try again later.');
-      } finally {
-        if (!disposed) setLoading(false);
-      }
-    };
-
-    fetchAllNews();
-    return () => {
-      disposed = true;
-      controllers.forEach(controller => controller.abort());
-    };
-  }, []); // Only fetch once on mount
-
-  // Filter articles when category changes
-  useEffect(() => {
-    if (allArticles.length === 0) return;
-    
-    let filtered: RSSArticle[];
-    
-    if (activeCategory === 'all') {
-      // Show all articles
-      filtered = allArticles;
-    } else {
-      const category = newsCategories.find((c) => c.id === activeCategory);
-      if (!category) return;
-
-      const feedIds = category.feeds.map(f => f.id);
-      filtered = allArticles.filter(article => 
-        feedIds.includes(article.source.id)
-      );
-    }
-    
-    // Filter by date (last 3 days) and sort
-    const dateFiltered = filterByDate(filtered);
-    setFilteredArticles(dateFiltered);
-    setCurrentPage(0); // Reset to first page when category changes
-  }, [activeCategory, allArticles]);
-
-  // Pages change only when the reader asks.
-  const goToPage = (page: number) => {
-    setCurrentPage(page);
+  const refresh = async () => {
+    if (loading || refreshing) return;
+    const controller = new AbortController();
+    requestRef.current = controller;
+    setRefreshing(true);
+    try {
+      const next = await refreshLiveNews(snapshot, controller.signal);
+      if (!controller.signal.aborted) { setSnapshot(next); setLoadFailed(false); setCurrentPage(0); }
+    } catch { /* Aborted refresh leaves the last visible results intact. */ }
+    finally { if (!controller.signal.aborted) setRefreshing(false); }
   };
 
-  const nextPage = () => {
-    setCurrentPage((prev) => (prev + 1) % totalPages);
-  };
-
-  const prevPage = () => {
-    setCurrentPage((prev) => (prev - 1 + totalPages) % totalPages);
-  };
+  const articles = useMemo(() => (snapshot?.articles ?? []).filter(article => activeCategory === 'all' || article.category === activeCategory), [snapshot, activeCategory]);
+  const totalPages = Math.ceil(articles.length / PAGE_SIZE);
+  const currentArticles = articles.slice(currentPage * PAGE_SIZE, (currentPage + 1) * PAGE_SIZE);
+  const loadedSources = snapshot?.sources.filter(source => source.status === 'ok').length ?? 0;
+  const failedSources = snapshot?.sources.filter(source => source.status !== 'ok').length ?? 0;
+  const fetchedTimes = (snapshot?.sources.map(source => source.fetchedAt).filter((time): time is string => Boolean(time)) ?? []).map(Date.parse);
+  const lastFetched = fetchedTimes.length ? Math.max(...fetchedTimes) : null;
+  const stale = fetchedTimes.some(time => Date.now() - time > 24 * 60 * 60 * 1000);
+  const unavailable = !loading && (loadFailed || !loadedSources) && !snapshot?.articles.length;
 
   return (
-    <section id="news" aria-labelledby="news-heading" className="relative overflow-x-clip bg-dark-950 py-18">
+    <section id="news" aria-labelledby="news-heading" className="relative bg-dark-950 py-18">
       <div className="container mx-auto max-w-7xl px-6">
-        {/* Section Title */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mb-12 text-center"
-        >
-          <h2 id="news-heading" className="mb-6 text-4xl font-bold text-white md:text-5xl">
-            My Interests & Latest News
-          </h2>
-          <div className="mx-auto h-1 w-24 rounded-full bg-gradient-to-r from-primary-500 to-accent-400"></div>
-          <p className="mt-6 text-lg text-gray-400">
-            Stay updated with the latest in tech, AI, and more
-          </p>
+        <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-10 text-center">
+          <h2 id="news-heading" className="mb-6 text-4xl font-bold text-white md:text-5xl">My Interests & Latest News</h2>
+          <div className="mx-auto h-1 w-24 rounded-full bg-gradient-to-r from-primary-500 to-accent-400" />
+          <p className="mt-6 text-lg text-gray-400">Latest available stories in tech, AI, startups, and development</p>
         </motion.div>
 
-        {/* Category Filter */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mb-12 flex flex-wrap justify-center gap-4"
-        >
-          <button
-            onClick={() => setActiveCategory('all')}
-            className={`rounded-full px-8 py-3 text-sm font-semibold transition-all duration-300 ${
-              activeCategory === 'all'
-                ? 'bg-gradient-to-r from-primary-600 to-primary-500 text-white shadow-lg shadow-primary-500/50 scale-105'
-                : 'border-2 border-primary-500/30 bg-dark-800/50 text-gray-300 hover:border-primary-500 hover:bg-primary-500/10 hover:text-primary-400 hover:scale-105'
-            }`}
-          >
-            All
-          </button>
-          {newsCategories.map((category) => (
-            <button
-              key={category.id}
-              onClick={() => setActiveCategory(category.id)}
-              className={`rounded-full px-8 py-3 text-sm font-semibold transition-all duration-300 ${
-                activeCategory === category.id
-                  ? 'bg-gradient-to-r from-primary-600 to-primary-500 text-white shadow-lg shadow-primary-500/50 scale-105'
-                  : 'border-2 border-primary-500/30 bg-dark-800/50 text-gray-300 hover:border-primary-500 hover:bg-primary-500/10 hover:text-primary-400 hover:scale-105'
-              }`}
-            >
-              {category.label}
-            </button>
+        <div className="mb-6 flex flex-wrap justify-center gap-3" aria-label="News categories">
+          {[{ id: 'all' as const, label: 'All' }, ...newsCategories].map(category => (
+            <button key={category.id} type="button" aria-pressed={activeCategory === category.id} onClick={() => { setActiveCategory(category.id); setCurrentPage(0); }} className={`rounded-full border px-5 py-2.5 text-sm font-semibold transition-colors duration-150 ${activeCategory === category.id ? 'border-primary-500 bg-primary-600 text-white' : 'border-primary-500/30 bg-dark-800 text-gray-300 hover:bg-primary-900'}`}>{category.label}</button>
           ))}
-        </motion.div>
+        </div>
 
-        {/* Loading State */}
-        {loading && (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {[...Array(6)].map((_, i) => (
-              <div
-                key={i}
-                className="h-96 animate-pulse rounded-xl bg-dark-800/50"
-              ></div>
-            ))}
-          </div>
-        )}
+        <div className="mb-8 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-gray-400">
+          {lastFetched && <p>Sources last checked <time dateTime={new Date(lastFetched).toISOString()}>{new Date(lastFetched).toLocaleString()}</time>{stale ? ' · Includes saved stories older than 24 hours' : ''}</p>}
+          <button type="button" disabled={loading || refreshing} onClick={refresh} className="rounded-lg border border-primary-500/40 px-4 py-2 font-medium text-primary-300 transition-colors hover:bg-primary-500/10 disabled:cursor-wait disabled:opacity-60">{refreshing ? 'Refreshing sources…' : 'Refresh sources'}</button>
+        </div>
 
-        {/* Error State */}
-        {error && (
-          <div role="status" className="rounded-xl border border-primary-500/20 bg-dark-800/50 p-8 text-center text-gray-300">
-            <p>{error}</p>
-            <div className="mt-4 flex flex-wrap justify-center gap-4">
-              {newsCategories.slice(0, 3).map(category => (
-                <a key={category.id} href={category.feeds[0].url} target="_blank" rel="noopener noreferrer" className="text-primary-300 underline">{category.feeds[0].source} RSS</a>
-              ))}
+        <div aria-busy={loading || refreshing}>
+          {(loading || refreshing) && (
+            <div role="status" className="mb-8 flex items-center justify-center gap-3 rounded-xl border border-primary-500/20 bg-dark-800/50 p-6 text-primary-200">
+              <span aria-hidden="true" className="news-loader h-6 w-6 rounded-full border-2 border-primary-500/30 border-t-primary-300" />
+              {loading ? 'Loading the latest saved stories…' : 'Checking RSS sources. Saved stories stay available below.'}
             </div>
-          </div>
-        )}
-
-        {/* Articles Grid */}
-        {!loading && !error && (
-          <>
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={`${activeCategory}-${currentPage}`}
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
-                exit="hidden"
-                className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-10"
-              >
-                {currentArticles.length === 0 ? (
-                  <div className="col-span-full rounded-xl border border-primary-500/20 bg-dark-800/50 p-12 text-center text-gray-400">
-                    <p>No recent articles found for this category.</p>
-                    <p className="mt-2 text-sm text-gray-500">Showing articles from the last 3 days</p>
-                  </div>
-                ) : (
-                  currentArticles.map((article, index) => (
-                  <motion.a
-                    key={index}
-                    href={article.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    variants={cardVariants}
-                    whileHover={{ y: -10 }}
-                    className="group relative flex flex-col overflow-hidden rounded-xl border border-primary-500/20 bg-dark-800/50 backdrop-blur-sm transition-all hover:border-primary-500 hover:shadow-glow-blue"
-                  >
-                    {/* Article Image */}
-                    {/^https?:\/\//i.test(article.urlToImage) ? (
-                      <div className="relative h-48 overflow-hidden">
-                        <Image
-                          src={article.urlToImage}
-                          alt={article.title}
-                          fill
-                          className="object-cover transition-transform duration-500 group-hover:scale-110"
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.style.display = 'none';
-                          }}
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-dark-800 to-transparent"></div>
-                      </div>
-                    ) : (
-                      <div className="flex h-48 items-center justify-center bg-gradient-to-br from-primary-500/20 to-secondary-500/20">
-                        <svg
-                          className="h-16 w-16 text-primary-400"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
-                          />
-                        </svg>
-                      </div>
-                    )}
-
-                    {/* Article Content */}
-                    <div className="flex flex-1 flex-col p-8">
-                      {/* Source & Date */}
-                      <div className="mb-3 flex items-center justify-between text-xs">
-                        <span className="rounded-full bg-primary-500/20 px-3 py-1 font-medium text-primary-300">
-                          {article.source.name}
-                        </span>
-                        <span className="text-gray-500">
-                          {new Date(article.publishedAt).toLocaleDateString()}
-                        </span>
-                      </div>
-
-                      {/* Title */}
-                      <h3 className="mb-2 line-clamp-3 text-lg font-semibold text-white transition-colors group-hover:text-primary-400">
-                        {article.title}
-                      </h3>
-
-                      {/* Description */}
-                      <p className="mb-4 line-clamp-3 flex-1 text-sm text-gray-400">
-                        {article.description || 'No description available.'}
-                      </p>
-
-                      {/* Read More Link */}
-                      <div className="text-sm font-medium text-primary-400">
-                        <span>Read more</span>
-                      </div>
-                    </div>
-                  </motion.a>
-                ))
-              )}
-            </motion.div>
-          </AnimatePresence>
-
-          {/* Pagination Controls */}
-          {totalPages > 1 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="mt-12 flex items-center justify-center gap-4"
-            >
-              {/* Previous Button */}
-              <button
-                onClick={prevPage}
-                className="group flex h-12 w-12 items-center justify-center rounded-full border-2 border-primary-500/30 bg-dark-800/50 text-primary-400 transition-all duration-300 hover:border-primary-500 hover:bg-primary-500/10 hover:scale-110"
-                aria-label="Previous page"
-              >
-                <svg className="h-5 w-5 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-
-              {/* Page Indicators */}
-              <div className="flex items-center gap-2">
-                {Array.from({ length: totalPages }, (_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => goToPage(i)}
-                    className={`h-3 rounded-full transition-all duration-300 ${
-                      i === currentPage
-                        ? 'w-8 bg-gradient-to-r from-primary-500 to-accent-400'
-                        : 'w-3 bg-primary-500/30 hover:bg-primary-500/50'
-                    }`}
-                    aria-label={`Go to page ${i + 1}`}
-                  />
-                ))}
-              </div>
-
-              {/* Next Button */}
-              <button
-                onClick={nextPage}
-                className="group flex h-12 w-12 items-center justify-center rounded-full border-2 border-primary-500/30 bg-dark-800/50 text-primary-400 transition-all duration-300 hover:border-primary-500 hover:bg-primary-500/10 hover:scale-110"
-                aria-label="Next page"
-              >
-                <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-            </motion.div>
           )}
-
-          {/* Auto-advance indicator */}
-          {totalPages > 1 && (
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-              className="mt-6 text-center text-sm text-gray-500"
-            >
-              Showing page {currentPage + 1} of {totalPages}
-            </motion.p>
+          {!loading && !unavailable && (failedSources > 0 || stale) && (
+            <p role="status" className="mb-6 rounded-lg border border-primary-500/20 bg-primary-500/5 px-5 py-3 text-sm text-gray-300">{failedSources > 0 ? `${failedSources} sources could not be updated. ` : ''}Showing the latest available saved stories with their original publication dates.</p>
           )}
-          </>
-        )}
+          {unavailable && (
+            <div role="status" className="rounded-xl border border-primary-500/20 bg-dark-800/50 p-8 text-center text-gray-300">
+              <p>News feeds are temporarily unavailable. Try refreshing or visit a source below.</p>
+              <div className="mt-4 flex flex-wrap justify-center gap-4">{newsCategories.map(category => <a key={category.id} href={category.feeds[0].url} target="_blank" rel="noopener noreferrer" className="text-primary-300 underline">{category.feeds[0].source} RSS</a>)}</div>
+            </div>
+          )}
+          {!loading && !unavailable && (
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {currentArticles.length ? currentArticles.map(article => (
+                <a key={article.url} href={article.url} target="_blank" rel="noopener noreferrer" className="group flex min-w-0 flex-col rounded-xl border border-primary-500/25 bg-dark-800/60 p-6 transition-colors duration-150 hover:border-primary-400">
+                  <div className="mb-5 flex flex-wrap items-center gap-3 text-xs"><span className="rounded-full bg-primary-500/15 px-3 py-1 text-primary-300">{article.source.name}</span><time dateTime={article.publishedAt} className="text-gray-400">{new Date(article.publishedAt).toLocaleDateString()}</time></div>
+                  <h3 className="mb-3 text-lg font-semibold leading-snug text-white group-hover:text-primary-300">{article.title}</h3>
+                  <p className="mb-6 flex-1 text-sm leading-relaxed text-gray-400">{article.description}</p>
+                  <span className="text-sm font-medium text-primary-300">Read at {article.source.name} <span aria-hidden="true">↗</span></span>
+                </a>
+              )) : <div role="status" className="col-span-full rounded-xl border border-primary-500/20 bg-dark-800/50 p-10 text-center text-gray-400">No articles are currently available for this category.</div>}
+            </div>
+          )}
+        </div>
+        {totalPages > 1 && <nav aria-label="News pages" className="mt-8 flex items-center justify-center gap-5 text-sm">
+          <button type="button" disabled={currentPage === 0} onClick={() => setCurrentPage(page => page - 1)} className="rounded-lg border border-primary-500/30 px-4 py-3 text-primary-300 hover:bg-primary-500/10 disabled:opacity-40">Previous page</button>
+          <span className="text-gray-300" aria-live="polite">Page {currentPage + 1} of {totalPages}</span>
+          <button type="button" disabled={currentPage + 1 >= totalPages} onClick={() => setCurrentPage(page => page + 1)} className="rounded-lg border border-primary-500/30 px-4 py-3 text-primary-300 hover:bg-primary-500/10 disabled:opacity-40">Next page</button>
+        </nav>}
       </div>
     </section>
   );

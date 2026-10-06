@@ -1,200 +1,62 @@
-/* Hamburger Menu Button */
+/* The drawer uses native dialog semantics; hover effects change no dimensions. */
 .nav-toggle-btn {
   position: fixed;
   top: 1.5rem;
   right: 1.5rem;
   z-index: 1001;
-  background: rgba(37, 99, 235, 0.1);
+  background: rgba(15, 23, 42, 0.96);
   border: 2px solid var(--primary-500);
   border-radius: 8px;
   padding: 0.75rem;
   cursor: pointer;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+  transition: background-color 120ms ease, border-color 120ms ease;
 }
-
-.nav-toggle-btn:hover {
-  background: rgba(37, 99, 235, 0.2);
-  border-color: var(--primary-400);
-  box-shadow: 0 0 20px rgba(37, 99, 235, 0.3);
+.nav-toggle-btn:hover, .nav-toggle-btn:focus-visible {
+  background: var(--primary-900);
+  border-color: var(--primary-300);
 }
-
-/* Hamburger Icon */
-.hamburger {
-  width: 24px;
-  height: 20px;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.hamburger span {
-  display: block;
-  height: 3px;
-  width: 100%;
-  background: var(--primary-400);
-  border-radius: 2px;
-  transition: all 0.3s ease;
-}
-
-.hamburger.open span:nth-child(1) {
-  transform: rotate(45deg) translate(6px, 6px);
-}
-
-.hamburger.open span:nth-child(2) {
-  opacity: 0;
-}
-
-.hamburger.open span:nth-child(3) {
-  transform: rotate(-45deg) translate(6px, -6px);
-}
-
-/* Overlay */
-.nav-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(4px);
-  z-index: 999;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
-}
-
-.nav-overlay.open {
-  opacity: 1;
-  visibility: visible;
-}
-
-/* Side Navigation Drawer */
+.hamburger { width: 24px; height: 20px; display: flex; flex-direction: column; justify-content: space-between; }
+.hamburger span { display: block; height: 3px; width: 100%; background: var(--primary-400); border-radius: 2px; }
 .side-nav {
   position: fixed;
-  top: 0;
-  right: 0;
-  width: 320px;
-  height: 100vh;
-  background: linear-gradient(180deg, rgba(2, 6, 23, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%);
+  inset: 0 0 0 auto;
+  margin: 0;
+  padding: 0;
+  width: min(320px, 100%);
+  max-width: 100%;
+  height: 100dvh;
+  max-height: 100%;
+  background: linear-gradient(180deg, #020617, #0f172a);
+  color: white;
+  border: 0;
   border-left: 2px solid var(--primary-500);
   box-shadow: -10px 0 50px rgba(0, 0, 0, 0.5);
-  z-index: 1000;
-  transform: translateX(100%);
-  transition: transform 0.3s ease;
   overflow-y: auto;
-  backdrop-filter: blur(20px);
 }
-
-.side-nav.open {
-  transform: translateX(0);
-}
-
-.side-nav-items {
-  padding: 4rem 0 2rem 0;
-  display: flex;
-  flex-direction: column;
-}
-
+.side-nav::backdrop { background: rgba(0, 0, 0, 0.75); }
+.side-nav-items { display: flex; flex-direction: column; padding: 1rem 0 2rem; }
 .side-nav-link {
+  isolation: isolate;
+  position: relative;
   color: white;
   text-decoration: none;
   font-size: 1.125rem;
   padding: 1rem 1.5rem;
-  transition: all 0.3s ease;
-  background: none;
-  border: none;
-  cursor: pointer;
-  text-align: left;
   width: 100%;
-  position: relative;
+  text-align: left;
   border-left: 3px solid transparent;
 }
-
-.side-nav-link:hover {
-  background: rgba(37, 99, 235, 0.1);
-  border-left-color: var(--primary-400);
-  color: white;
-}
-
-.side-nav-link.active {
-  background: rgba(37, 99, 235, 0.15);
-  border-left-color: var(--primary-500);
-  color: var(--primary-600);
-  font-weight: 600;
-}
-
 .side-nav-link::before {
   content: '';
   position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 0;
-  height: 0;
-  background: linear-gradient(90deg, var(--primary-500), transparent);
-  transition: width 0.3s ease;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(37, 99, 235, 0.35), transparent);
+  opacity: 0;
+  transition: opacity 120ms ease-out;
 }
-
-.side-nav-link:hover::before {
-  width: 100%;
-  height: 100%;
-}
-
-@media (max-width: 768px) {
-  .side-nav {
-    width: 280px;
-  }
-  
-  .nav-toggle-btn {
-    top: 1rem;
-    right: 1rem;
-  }
-}
-
-@media (max-width: 1200px) {
-  .about-container,
-  .projects-section,
-  .contact-container,
-  .timeline-container {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-}
-
-body,
-main {
-  padding-top: 0;
-}
-/* Native modal behavior keeps the closed drawer out of the tab order and
-   contains focus while open. Its backdrop replaces the off-screen overlay. */
-.side-nav {
-  margin: 0 0 0 auto;
-  padding: 0;
-  width: min(320px, 100%);
-  max-width: 100%;
-  max-height: 100%;
-  height: 100dvh;
-  color: white;
-  transform: none;
-  border-top: 0;
-  border-bottom: 0;
-  border-right: 0;
-}
-.side-nav::backdrop {
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(4px);
-}
-.nav-close-btn {
-  display: block;
-  margin: 1rem 1rem 0 auto;
-  width: 48px;
-  height: 48px;
-  border: 1px solid var(--primary-500);
-  border-radius: 8px;
-  color: var(--primary-300);
-  font-size: 1.5rem;
-}
-.side-nav-items { padding-top: 1rem; }
-.side-nav-link.active { color: var(--primary-300); }
+.side-nav-link:hover::before, .side-nav-link:focus-visible::before { opacity: 1; }
+.side-nav-link.active { background: rgba(37, 99, 235, 0.15); border-left-color: var(--primary-500); color: var(--primary-300); font-weight: 600; }
+.nav-close-btn { display: block; margin: 1rem 1rem 0 auto; width: 48px; height: 48px; border: 1px solid var(--primary-500); border-radius: 8px; color: var(--primary-300); font-size: 1.5rem; }
+.nav-close-btn:hover { background: var(--primary-900); }
+@media (max-width: 768px) { .nav-toggle-btn { top: 1rem; right: 1rem; } }

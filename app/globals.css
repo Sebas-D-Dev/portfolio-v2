@@ -252,3 +252,11 @@ section[id] { scroll-margin-top: 2rem; }
     transition-duration: 0.01ms !important;
   }
 }
+
+@keyframes news-spin { to { transform: rotate(360deg); } }
+.news-loader { animation: news-spin 850ms linear infinite; }
+@media (prefers-reduced-motion: reduce) { .news-loader { animation: none; } }
+.timeline-details summary::-webkit-details-marker { display: none; }
+.details-chevron { transition: transform 120ms ease-out; }
+.timeline-details[open] .details-chevron { transform: rotate(180deg); }
+.timeline-details summary:hover { color: var(--primary-200); }

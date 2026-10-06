@@ -43,6 +43,7 @@ export interface Education {
   description: string;
   type: 'education';
   technologies: string[];
+  details?: { title: string; items: string[] }[];
 }
 
 export type TimelineItem = Experience | Education;
@@ -54,7 +55,7 @@ export const personalInfo = {
   location: "Boynton Beach, FL",
   email: "sebas.t.nait@gmail.com",
   phone: "+1 (954) 304-7962",
-  bio: "I am an aspiring full-stack developer with a passion for building scalable applications using modern technologies. I love working with frameworks like React, Next.js, and Flask, and I always seek to optimize code efficiency and user experience.",
+  bio: "I’m Seb, a software developer exploring ideas through code, design, and experimentation. My projects span full-stack web apps, desktop tools, data workflows, and interactive 3D experiences. I work with Python, TypeScript, React, and Next.js, connecting interfaces with APIs and databases. Alongside my personal projects, I’ve worked on sports-data services, ISP onboarding, and university reservation systems.",
   skills: [
     "Full-Stack Developer",
     "AI & Machine Learning",
@@ -202,53 +203,20 @@ export const education: Education[] = [
     type: 'education',
     title: "Bachelor of Arts in Computer Science",
     institution: "Florida Atlantic University",
-    date: "August 2023 - May 2026",
-    description: "Studying software development, algorithms, and data structures. Learning about web development, mobile app development, database management, and machine learning.",
-    technologies: ["Python", "JavaScript", "HTML", "CSS", "MySQL", "MongoDB", "Git", "Swift"],
-  },
-  {
-    type: 'education',
-    title: "Minor in Artificial Intelligence & Cybersecurity",
-    institution: "Florida Atlantic University",
-    date: "August 2024 - May 2026",
-    description: "Studying machine learning algorithms, natural language processing, and computer vision. Participating in AI research projects and programming multilayer neural networks in Python. Learning about cybersecurity principles, ethical hacking, and network security.",
-    technologies: ["TensorFlow", "PyTorch", "Neural Networks", "NLP", "Computer Vision", "Ethical Hacking", "Network Security"],
+    date: "May 2026",
+    description: "Minor in Artificial Intelligence and Cyber Security",
+    technologies: [],
+    details: [
+      { title: "Degree & coursework", items: ["GPA: 3.85", "Data Analytics", "Data Mining & Machine Learning", "Deep Learning", "Introduction to Artificial Intelligence"] },
+      { title: "Academic recognition", items: ["President’s Honor List (Fall 2023–2025)", "Spirit of Atlantic Merit Scholarship recipient", "Florida Medallion Scholarship recipient"] },
+    ],
   },
   {
     type: 'education',
     title: "Global Career Accelerator: Data Analytics",
     institution: "CareerBase",
-    date: "August 2025 - December 2025",
-    description: "Gain proficiency in data analysis, data visualization, and data-driven decision-making. Completing a capstone project using knowledge of data visualization with R and Python to create a data visualization dashboard in Tableau.",
+    date: "August 2025 – December 2025",
+    description: "Data analysis, visualization, and data-driven decision-making, with a Tableau dashboard capstone using R and Python.",
     technologies: ["R", "Python", "Tableau", "Data Analytics", "Data Visualization", "SQL", "Statistics"],
   },
-  {
-    type: 'education',
-    title: "High School Diploma",
-    institution: "Spanish River Community High School",
-    date: "August 2019 - June 2023",
-    description: "Graduated with honors. Participated in computer science club and coding competitions. Completed coursework in programming, web development, and data structures.",
-    technologies: ["Calculus", "Java", "Programming Fundamentals", "Object-Oriented Programming", "Data Structures"],
-  },
 ];
-
-// Helper function to parse dates from timeline items
-const parseTimelineDate = (dateString: string): number => {
-  // Extract the start date from "Month Year - Month Year" or "Month Year - Present"
-  const startDate = dateString.split(' - ')[0];
-  const date = new Date(startDate);
-  return date.getTime();
-};
-
-// Combine and sort timeline items in chronological order (oldest to newest)
-export const timelineItems: TimelineItem[] = [...experiences, ...education].sort((a, b) => {
-  const dateA = parseTimelineDate(a.date);
-  const dateB = parseTimelineDate(b.date);
-  const timeDiff = dateA - dateB; // Changed to dateA - dateB for chronological order
-  
-  // If dates are equal or invalid, use title for deterministic sorting
-  if (timeDiff === 0 || isNaN(timeDiff)) {
-    return a.title.localeCompare(b.title);
-  }
-  return timeDiff;
-});
